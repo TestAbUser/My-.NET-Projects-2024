@@ -25,14 +25,17 @@ namespace DownloadManager
 
         private async void DownloadPages(object sender, RoutedEventArgs e)
         {
-            string[] addresses = textBox.Text.Split(',');
+            string[] addresses = txtBox.Text.Split(',');
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
-            var t = Task.Run(async()=> await Downloader.Download(addresses, token));
+           // var t = Task.Run(async()=> await Downloader.Download(addresses, token));
             statBarText.Text="Downloading...";
+            downloadBtn.IsEnabled = false;
             cancelBtn.IsEnabled = true;
-            await t;
+            //await t;
+            await Downloader.Download(addresses, token);
             cancelBtn.IsEnabled = false;
+            downloadBtn.IsEnabled = true;
             statBarText.Text = "Ready";
         }
 
@@ -41,7 +44,18 @@ namespace DownloadManager
             cts.Cancel();
             cts.Dispose();
             cancelBtn.IsEnabled = false;
+            downloadBtn.IsEnabled = true;
             statBarText.Text="Ready";
+        }
+
+        private void AddUrls(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void discardUrls(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

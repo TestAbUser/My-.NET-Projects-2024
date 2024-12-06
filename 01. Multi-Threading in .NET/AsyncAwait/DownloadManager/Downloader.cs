@@ -16,7 +16,7 @@ namespace DownloadManager
         public static async Task Download(string[] addresses, CancellationToken ct)
         {
             string page;
-
+            await Task.Delay(10000);
             try
             {
                 foreach (string address in addresses)

@@ -1,0 +1,53 @@
+﻿<Window x:Class="DownloadManager.AddUrlWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DownloadManager"
+        mc:Ignorable="d"
+        Title="Add Page Address" Height="150" Width="430"
+        WindowStartupLocation="CenterScreen"
+        Background="AliceBlue"
+      Loaded="Window_Loaded">
+    <Grid>
+        <Grid x:Name="popupGrid" Background="AliceBlue" >
+            <Grid.RowDefinitions>
+                <!-- (*) same as (1*) means take up any available remaining space-->
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label  Name="lblAddUrl" FontSize="14">
+                Enter URL
+            </Label>
+            <TextBox x:Name="addWindowTextBox"
+                         FontSize="14"
+                         Width="400"
+                         TextAlignment="Left" 
+                         VerticalContentAlignment="Center"
+                         BorderBrush="Gray" 
+                         Grid.Row="0" 
+                         Height="30" 
+                         VerticalAlignment="Bottom"/>
+            <!--StackPanel allows to group buttons in one line horizontally-->
+            <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Right" 
+                            Margin="5,0,5,0" 
+                            Grid.Row="1">
+                <Button x:Name="cancelBtn" 
+                            Content="Cancel"
+                            Margin="5,0,5,0" 
+                            Padding="4,2" 
+                            Height="30"
+                            IsCancel="True"/>
+
+                <Button x:Name="okBtn"  
+                        Content="OK" 
+                        IsEnabled="{Binding ElementName=addWindowTextBox, Path=Text.Length}" 
+                        Margin="5,0,5,0" 
+                        Padding="4, 2" 
+                        Height="30" 
+                        Click="OkBtn_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

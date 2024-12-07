@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="300" Width="800">
     <DockPanel Background="AliceBlue">
-        <Label DockPanel.Dock="Top" Name="lblDownloadingInstr" FontSize="14">
-            Enter Page Addresses
+        <Label DockPanel.Dock="Top" Name="lblDownloading" FontSize="14">
+            Pages to download
         </Label>
         <StatusBar DockPanel.Dock="Bottom" Background="Beige">
             <StatusBarItem>
@@ -28,39 +28,68 @@
            Grid.RowSpan="1"/>-->
             <ListBox x:Name="listBox" Grid.Row="0" d:ItemsSource="{d:SampleData ItemCount=0}" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0,5,0" Grid.Row="1">
-                <ToggleButton x:Name="popupBtn" Margin="5,0,5,0" Grid.Row="1" Padding="4, 2"  Height="30">
-                    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="5,0,5,0" Grid.Row="0">
-                        <!--TextBlock acts as content element for the popup button-->
+                <Button x:Name="addUrlBtn" 
+                        Content="Add"
+                              Margin="5,0,5,0" 
+                              Grid.Row="1" 
+                              Padding="4, 2" 
+                              Height="30" 
+                              Click="AddUrlBtn_Click">
+                    <!--<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="5,0,5,0" Grid.Row="0">
+                        --><!--TextBlock acts as content element for the popup button--><!--
                         <TextBlock x:Name="txtBlock">
                             Add
                         </TextBlock>
-                            <!--Popup will be bound to Add button"-->
-                        <Popup x:Name="addPopup" Placement="Center" AllowsTransparency="True" Height="200" Width="550"
-        DataContext="{Binding ElementName=popupBtn}"  IsOpen="True">
-                                <Grid x:Name="popupGrid" Background="AliceBlue">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                            <!--<Border BorderBrush="Black" Grid.Row="0" BorderThickness="2" Background="AliceBlue">-->
-                                <TextBox x:Name="txtBox"  HorizontalAlignment="Center"  FontSize="14" 
-                  VerticalAlignment="Center" Height="30" Width="350" TextAlignment="Left"  BorderBrush="Blue" Margin="0,0,0,82"/>
-                                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="5,0,5,0" Grid.Row="2">
-                      
-                                    
-                                    <Button x:Name="popupCancelBtn" Content="Cancel" Grid.Row="2" HorizontalAlignment="Right" 
-                                        VerticalAlignment="Bottom"
-                                        Margin="5,0,5,0" Padding="4, 2" Height="30" Click="discardUrls"/>
-                                    <Button x:Name="popupOkBtn"  Content="OK"  Grid.Row="2" HorizontalAlignment="Right" IsEnabled="False" 
-                                        Margin="5,0,5,0" Padding="4, 2" Height="30" Click="AddUrls"/>
-                                </StackPanel>
-                                <!--</Border>-->
-                        </Grid>
+                        --><!--Popup will be bound to Add button"--><!--
+
+                        <Popup x:Name="addUrlPopup" 
+                               Placement="Center" 
+                               AllowsTransparency="True" 
+                               Height="130" 
+                               Width="430"
+                               Opened= "AddUrlPopupOpened">
+                            <Border BorderBrush="Gray" BorderThickness="1,1,1,1">
+                                <Grid x:Name="popupGrid" Background="AliceBlue" >
+                                    <Grid.RowDefinitions>
+                                        --><!-- (*) same as (1*) means take up any available remaining space--><!--
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label  Name="lblAddUrl" FontSize="14">
+                                        Enter Page Addresses
+                                    </Label>
+                                    <TextBox x:Name="popupTextBox"
+                                             FontSize="14"
+                                             Width="400"
+                                             TextAlignment="Left" 
+                                             VerticalContentAlignment="Center"
+                                             BorderBrush="Gray" 
+                                             Grid.Row="0" 
+                                             Height="30" 
+                                             VerticalAlignment="Bottom"/>
+                                    <StackPanel Orientation="Horizontal" 
+                                                HorizontalAlignment="Right" 
+                                                Margin="5,0,5,0" 
+                                                Grid.Row="1">
+                                        <Button x:Name="popupCancelBtn" 
+                                                Content="Cancel"
+                                                Margin="5,0,5,0" 
+                                                Padding="4,2" 
+                                                Height="30" 
+                                                Click="DiscardUrls"/>
+                                        <Button x:Name="popupOkBtn"  
+                                                Content="OK" 
+                                                IsEnabled="{Binding ElementName=popupTextBox, Path=Text.Length}" 
+                                                Margin="5,0,5,0" 
+                                                Padding="4, 2" 
+                                                Height="30" 
+                                                Click="AddUrls"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
                         </Popup>
-                    </StackPanel>
-                </ToggleButton>
+                    </StackPanel>-->
+                </Button>
                 <Button x:Name="downloadBtn" Content="Download" Margin="5,0,5,0" Padding="4, 2" Grid.Row="1" Height="30" 
                         Click="DownloadPages"/>
                 <Button x:Name="cancelBtn" Content="Cancel" IsEnabled="False" Margin="5,0,5,0" Padding="4, 2" Grid.Row="1" Height="30" 

@@ -20,7 +20,7 @@
             <Label  Name="lblAddUrl" FontSize="14">
                 Enter URL
             </Label>
-            <TextBox x:Name="addWindowTextBox"
+            <TextBox x:Name="addUrlTextBox"
                          FontSize="14"
                          Width="400"
                          TextAlignment="Left" 

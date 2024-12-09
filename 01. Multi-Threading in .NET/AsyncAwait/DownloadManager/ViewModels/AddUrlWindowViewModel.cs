@@ -28,6 +28,10 @@ namespace DownloadManager.ViewModels
         {
             get;
         }
+        public AddUrlWindowViewModel()
+        {
+          //  Keyboard.Focus(addWindowText);
+        }
 
        
 

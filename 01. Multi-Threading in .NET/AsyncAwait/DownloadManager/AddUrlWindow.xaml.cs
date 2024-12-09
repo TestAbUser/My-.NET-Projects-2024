@@ -39,7 +39,7 @@ namespace DownloadManager
 
 
             // As the window loads, move keyboard focus into the textbox.
-            Keyboard.Focus(addWindowTextBox);
+          //  Keyboard.Focus(addWindowTextBox);
         }
     }
 }

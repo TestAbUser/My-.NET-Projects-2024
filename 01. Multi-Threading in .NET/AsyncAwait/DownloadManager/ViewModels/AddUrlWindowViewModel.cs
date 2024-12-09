@@ -33,10 +33,8 @@ namespace DownloadManager.ViewModels
 
         private RelayCommand _okCommand;
 
-        public RelayCommand OkCommand
-        {
-            get;
-        }
+        public RelayCommand OkCommand => _okCommand ??= new RelayCommand(()=>Urls.Add(Url)); 
+   
 
 
 

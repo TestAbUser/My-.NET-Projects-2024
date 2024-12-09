@@ -21,15 +21,15 @@
                 Enter URL
             </Label>
             <TextBox x:Name="addUrlTextBox"
-                         FontSize="14"
-                         Width="400"
-                         TextAlignment="Left" 
-                         VerticalContentAlignment="Center"
-                         BorderBrush="Gray" 
-                         Grid.Row="0" 
-                         Height="30" 
-                     
-                         VerticalAlignment="Bottom"/>
+                     FontSize="14"
+                     Width="400"
+                     TextAlignment="Left" 
+                     VerticalContentAlignment="Center"
+                     BorderBrush="Gray" 
+                     Grid.Row="0" 
+                     Height="30" 
+                     Text="{Binding Url}"
+                     VerticalAlignment="Bottom"/>
             <!--StackPanel allows to group buttons in one line horizontally-->
             <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Right" 

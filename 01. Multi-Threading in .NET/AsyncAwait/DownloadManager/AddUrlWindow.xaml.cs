@@ -34,12 +34,5 @@ namespace DownloadManager
             DialogResult = true;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-
-
-            // As the window loads, move keyboard focus into the textbox.
-          //  Keyboard.Focus(addWindowTextBox);
-        }
     }
 }

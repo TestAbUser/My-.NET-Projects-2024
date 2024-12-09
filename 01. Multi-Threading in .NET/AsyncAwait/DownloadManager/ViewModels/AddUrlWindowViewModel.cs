@@ -23,8 +23,13 @@ namespace DownloadManager.ViewModels
         [DllImport("user32.dll")]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
-        private string _url; 
-        public IList<string> Urls  = new ObservableCollection<string>();
+        private string _url;
+        public string Url
+        {
+            get => _url;
+            set => _url = value;
+        }
+        public IList<string> Urls = new ObservableCollection<string>();
 
         private RelayCommand _okCommand;
 
@@ -34,7 +39,7 @@ namespace DownloadManager.ViewModels
         }
 
 
-       
+
 
         //public AddUrlWindow()
         //{

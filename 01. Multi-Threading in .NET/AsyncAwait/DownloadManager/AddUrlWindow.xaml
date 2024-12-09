@@ -9,7 +9,7 @@
         WindowStartupLocation="CenterScreen"
         Background="AliceBlue"
         FocusManager.FocusedElement="{Binding ElementName=addWindowTextBox}"
-         DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">
+        DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">
     <Grid>
         <Grid x:Name="popupGrid" Background="AliceBlue" >
             <Grid.RowDefinitions>

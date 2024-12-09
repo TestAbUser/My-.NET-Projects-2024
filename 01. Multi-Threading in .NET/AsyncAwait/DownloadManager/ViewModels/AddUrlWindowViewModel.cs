@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows;
 using DownloadManager.Commands;
+using System.Collections.ObjectModel;
 
 namespace DownloadManager.ViewModels
 {
@@ -22,16 +23,16 @@ namespace DownloadManager.ViewModels
         [DllImport("user32.dll")]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
+        private string _url; 
+        public IList<string> Urls  = new ObservableCollection<string>();
+
         private RelayCommand _okCommand;
 
         public RelayCommand OkCommand
         {
             get;
         }
-        public AddUrlWindowViewModel()
-        {
-          //  Keyboard.Focus(addWindowText);
-        }
+
 
        
 

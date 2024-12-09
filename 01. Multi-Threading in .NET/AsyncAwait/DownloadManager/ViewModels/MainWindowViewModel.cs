@@ -14,18 +14,17 @@ namespace DownloadManager.ViewModels
     {
         CancellationTokenSource cts;
 
-        private RelayCommand _addCommand;
+        private RelayCommand _addCommand = null;
 
         public RelayCommand AddCommand
         {
             get
             {
-                return _addCommand ??
-                    (_addCommand = new RelayCommand(() =>
-                    {
-                        AddUrlWindow auw = new();
-                        auw.ShowDialog();
-                    }));
+                return _addCommand ??= new RelayCommand(() =>
+                {
+                    AddUrlWindow auw = new();
+                    auw.ShowDialog();
+                });
             }
         }
 
@@ -52,12 +51,6 @@ namespace DownloadManager.ViewModels
             //cancelBtn.IsEnabled = false;
             //downloadBtn.IsEnabled = true;
             //statBarText.Text = "Ready";
-        }
-
-        private void AddUrlBtn_Click(object sender, RoutedEventArgs e)
-        {
-            AddUrlWindow auw = new();
-            auw.ShowDialog();
         }
     }
 }

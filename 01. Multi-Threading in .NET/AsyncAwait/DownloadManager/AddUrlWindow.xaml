@@ -8,7 +8,8 @@
         Title="Add Page Address" Height="150" Width="430"
         WindowStartupLocation="CenterScreen"
         Background="AliceBlue"
-      Loaded="Window_Loaded">
+      Loaded="Window_Loaded"
+         DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">
     <Grid>
         <Grid x:Name="popupGrid" Background="AliceBlue" >
             <Grid.RowDefinitions>
@@ -42,6 +43,7 @@
 
                 <Button x:Name="okBtn"  
                         Content="OK" 
+                        Command="{Binding OkCommand}"
                         IsEnabled="{Binding ElementName=addWindowTextBox, Path=Text.Length}" 
                         Margin="5,0,5,0" 
                         Padding="4, 2" 

@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DownloadManager;
+using DownloadManager.ViewModels;
 
 namespace DownloadManager
 {
@@ -17,57 +18,45 @@ namespace DownloadManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        CancellationTokenSource cts;
+      //  public MainWindowViewModel ViewModel { get; set; } = new MainWindowViewModel();
+      //  CancellationTokenSource cts;
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainWindowViewModel();
         }
 
-        private async void DownloadPages(object sender, RoutedEventArgs e)
-        {
-            //string[] addresses =  addWindowTextBox.Text.Split(',');
-            //cts = new CancellationTokenSource();
-            //CancellationToken token = cts.Token;
-            //var t = Task.Run(async()=> await Downloader.Download(addresses, token));
-            //statBarText.Text="Downloading...";
-            //downloadBtn.IsEnabled = false;
-            //cancelBtn.IsEnabled = true;
-            //await t;
-            //await Downloader.Download(addresses, token);
-            //cancelBtn.IsEnabled = false;
-            //downloadBtn.IsEnabled = true;
-            //statBarText.Text = "Ready";
-        }
+        //private async void DownloadPages(object sender, RoutedEventArgs e)
+        //{
+        //    string[] addresses = addWindowTextBox.Text.Split(','); 
+        //    cts = new CancellationTokenSource();
+        //    CancellationToken token = cts.Token;
+        //    var t = Task.Run(async () => await Downloader.Download(addresses, token));
+        //    statBarText.Text = "Downloading...";
+        //    downloadBtn.IsEnabled = false;
+        //    cancelBtn.IsEnabled = true;
+        //    await t;
+        //    await Downloader.Download(addresses, token);
+        //    cancelBtn.IsEnabled = false;
+        //    downloadBtn.IsEnabled = true;
+        //    statBarText.Text = "Ready";
+        //}
 
-        private void CancelDownloading(object sender, RoutedEventArgs e)
-        {
-            cts.Cancel();
-            cts.Dispose();
-            cancelBtn.IsEnabled = false;
-            downloadBtn.IsEnabled = true;
-            statBarText.Text="Ready";
-        }
+        //private void CancelDownloading(object sender, RoutedEventArgs e)
+        //{
+        //    cts.Cancel();
+        //    cts.Dispose();
+        //    cancelBtn.IsEnabled = false;
+        //    downloadBtn.IsEnabled = true;
+        //    statBarText.Text="Ready";
+        //}
 
-        private void AddUrls(object sender, RoutedEventArgs e)
-        {
 
-        }
 
-        private void DiscardUrls(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void EnterValue(object sender, KeyEventArgs e)
-        {
-
-        }
-
-        private void AddUrlBtn_Click(object sender, RoutedEventArgs e)
-        {
-            AddUrlWindow auw = new();
-            auw.ShowDialog();
-        }
-
- 
+        //private void AddUrlBtn_Click(object sender, RoutedEventArgs e)
+        //{
+        //    AddUrlWindow auw = new();
+        //    auw.ShowDialog();
+        //}
     }
 }

@@ -10,7 +10,7 @@
         <Label DockPanel.Dock="Top" Name="lblDownloading" FontSize="14">
             Pages to download
         </Label>
-        <StatusBar DockPanel.Dock="Bottom" Background="Beige">
+                <StatusBar DockPanel.Dock="Bottom" Background="Beige">
             <StatusBarItem>
                 <TextBlock Name="statBarText" Text="Ready"/>
             </StatusBarItem>
@@ -34,7 +34,7 @@
                               Grid.Row="1" 
                               Padding="4, 2" 
                               Height="30" 
-                              Click="AddUrlBtn_Click">
+                        Command="{Binding AddCommand}">
                     <!--<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="5,0,5,0" Grid.Row="0">
                         --><!--TextBlock acts as content element for the popup button--><!--
                         <TextBlock x:Name="txtBlock">
@@ -91,9 +91,9 @@
                     </StackPanel>-->
                 </Button>
                 <Button x:Name="downloadBtn" Content="Download" Margin="5,0,5,0" Padding="4, 2" Grid.Row="1" Height="30" 
-                        Click="DownloadPages"/>
+                        Command="ApplicationCommands.Save"/>
                 <Button x:Name="cancelBtn" Content="Cancel" IsEnabled="False" Margin="5,0,5,0" Padding="4, 2" Grid.Row="1" Height="30" 
-                        Click="CancelDownloading"/>
+                        />
             </StackPanel>
         </Grid>
     </DockPanel>

@@ -14,13 +14,13 @@ namespace DownloadManager.ViewModels
     {
         CancellationTokenSource cts;
 
-        private RelayCommand _addCommand = null;
+        private RelayCommand _openAddWindowCommand = null;
 
-        public RelayCommand AddCommand
+        public RelayCommand OpenAddWindowCommand
         {
             get
             {
-                return _addCommand ??= new RelayCommand(() =>
+                return _openAddWindowCommand ??= new RelayCommand(() =>
                 {
                     AddUrlWindow auw = new();
                     auw.ShowDialog();

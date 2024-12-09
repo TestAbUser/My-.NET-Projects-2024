@@ -20,7 +20,10 @@
                 <RowDefinition Height="150" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ListBox x:Name="listBox" Grid.Row="0" d:ItemsSource="{d:SampleData ItemCount=0}" />
+            <ListBox x:Name="listBox" 
+                     Grid.Row="0" 
+                     ItemsSource="{Binding Urls}"
+                     d:ItemsSource="{d:SampleData ItemCount=0}" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0,5,0" Grid.Row="1">
                 <Button x:Name="addUrlBtn" 
                         Content="Add"

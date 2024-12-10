@@ -8,7 +8,7 @@
         Title="Add Page Address" Height="150" Width="430"
         WindowStartupLocation="CenterScreen"
         Background="AliceBlue"
-        FocusManager.FocusedElement="{Binding ElementName=addWindowTextBox}"
+        FocusManager.FocusedElement="{Binding ElementName=addUrlTextBox}"
         DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">
     <Grid>
         <Grid x:Name="popupGrid" Background="AliceBlue" >
@@ -45,7 +45,7 @@
                 <Button x:Name="okBtn"  
                         Content="OK" 
                         Command="{Binding OkCommand}"
-                        IsEnabled="{Binding ElementName=addWindowTextBox, Path=Text.Length}" 
+                        IsEnabled="{Binding ElementName=addUrlTextBox, Path=Text.Length}" 
                         Margin="5,0,5,0" 
                         Padding="4, 2" 
                         Height="30" 

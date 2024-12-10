@@ -18,7 +18,7 @@ namespace DownloadManager
     /// </summary>
     public partial class MainWindow : Window
     {
-      //  public MainWindowViewModel ViewModel { get; set; } = new MainWindowViewModel();
+        //public MainWindowViewModel ViewModel { get; set; } = new MainWindowViewModel();
       //  CancellationTokenSource cts;
         public MainWindow()
         {

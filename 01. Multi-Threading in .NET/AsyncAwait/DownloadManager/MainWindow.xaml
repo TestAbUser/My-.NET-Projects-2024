@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DownloadManager"
         mc:Ignorable="d"
+        DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}"
         Title="MainWindow" Height="300" Width="800">
     <DockPanel Background="AliceBlue">
         <Label DockPanel.Dock="Top" Name="lblDownloading" FontSize="14">

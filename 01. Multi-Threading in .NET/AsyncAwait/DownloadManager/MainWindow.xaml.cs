@@ -18,12 +18,11 @@ namespace DownloadManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        //public MainWindowViewModel ViewModel { get; set; } = new MainWindowViewModel();
+        public MainWindowViewModel ViewModel { get; set; } = new MainWindowViewModel();
       //  CancellationTokenSource cts;
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel();
         }
 
         //private async void DownloadPages(object sender, RoutedEventArgs e)

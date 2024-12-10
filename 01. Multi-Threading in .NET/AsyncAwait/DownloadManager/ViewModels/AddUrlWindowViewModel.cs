@@ -9,6 +9,7 @@ using System.Windows.Interop;
 using System.Windows;
 using DownloadManager.Commands;
 using System.Collections.ObjectModel;
+using System.Runtime.ConstrainedExecution;
 
 namespace DownloadManager.ViewModels
 {
@@ -31,14 +32,18 @@ namespace DownloadManager.ViewModels
         }
         public IList<string> Urls = new ObservableCollection<string>();
 
-        private RelayCommand _okCommand;
+        private RelayCommand<object> _okCommand;
 
-        public RelayCommand OkCommand => _okCommand ??= new RelayCommand(()=>
+        public RelayCommand<object> OkCommand => _okCommand ??= new RelayCommand<object>(obj=>
         {
+            Window wnd = obj as Window;
             Urls.Add(Url);
             MainWindowViewModel mwViewModel = new MainWindowViewModel(this);
-        }); 
-   
+            wnd?.Close();
+        }, CanClose);
+
+        private bool CanClose(object param) => true;
+
 
 
 

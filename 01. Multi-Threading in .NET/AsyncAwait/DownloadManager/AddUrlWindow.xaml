@@ -46,7 +46,7 @@
                 <Button x:Name="okBtn"  
                         Content="OK" 
                         Command="{Binding OkCommand}"
-                        CommandParameter="{Binding ElementName=AddPageAddressWindow, Mode=OneWay}"
+                        CommandParameter="{Binding ElementName=addPageAddressWindow, Mode=OneWay}"
                         IsEnabled="{Binding ElementName=addUrlTextBox, Path=Text.Length}" 
                         Margin="5,0,5,0" 
                         Padding="4, 2" 

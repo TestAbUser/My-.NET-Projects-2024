@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DownloadManager"
         mc:Ignorable="d"
         Title="Add Page Address" Height="150" Width="430"
+        x:Name="addPageAddressWindow"
         WindowStartupLocation="CenterScreen"
         Background="AliceBlue"
         FocusManager.FocusedElement="{Binding ElementName=addUrlTextBox}"
@@ -45,11 +46,11 @@
                 <Button x:Name="okBtn"  
                         Content="OK" 
                         Command="{Binding OkCommand}"
+                        CommandParameter="{Binding ElementName=AddPageAddressWindow, Mode=OneWay}"
                         IsEnabled="{Binding ElementName=addUrlTextBox, Path=Text.Length}" 
                         Margin="5,0,5,0" 
                         Padding="4, 2" 
-                        Height="30" 
-                        Click="OkBtn_Click"/>
+                        Height="30" />
             </StackPanel>
         </Grid>
     </Grid>

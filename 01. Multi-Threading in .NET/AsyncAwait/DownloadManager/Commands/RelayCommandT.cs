@@ -3,13 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DownloadManager.Commands
 {
-    public class RelayCommand<T> : RelayCommand
+    public class RelayCommand<T>: ICommand//: RelayCommand
     {
         private readonly Action<T> _execute;
         private readonly Func<T, bool> _canExecute;
+
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
 
         public RelayCommand(Action<T> execute) : this(execute, null) { }
         public RelayCommand(

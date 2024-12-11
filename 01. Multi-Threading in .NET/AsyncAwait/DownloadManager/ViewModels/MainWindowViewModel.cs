@@ -9,13 +9,14 @@ using DownloadManager.Models;
 using DownloadManager.Commands;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
 
 namespace DownloadManager.ViewModels
 {
     public class MainWindowViewModel: INotifyPropertyChanged
     {
         // private AddUrlWindowViewModel _auwViewModel;
-        public IList<string> Urls { get; set; } = new List<string>();
+        public ObservableCollection<string> Urls { get; set; } = new ObservableCollection<string>();
         CancellationTokenSource cts;
 
         private RelayCommand _openAddWindowCommand = null;

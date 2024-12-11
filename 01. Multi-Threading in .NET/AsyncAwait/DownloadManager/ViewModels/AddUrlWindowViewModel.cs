@@ -32,7 +32,6 @@ namespace DownloadManager.ViewModels
             // Casting the argument to Window. 
             Window wnd = obj as Window;
             Urls.Add(Url);
-            MainWindowViewModel mwViewModel = new MainWindowViewModel(this);
             wnd?.Close();
         }, CanClose);
 

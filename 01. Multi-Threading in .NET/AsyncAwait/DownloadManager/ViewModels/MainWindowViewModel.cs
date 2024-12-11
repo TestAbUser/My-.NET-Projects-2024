@@ -12,8 +12,9 @@ namespace DownloadManager.ViewModels
 {
     public class MainWindowViewModel
     {
-      // private AddUrlWindowViewModel _auwViewModel;
-        public IList<string> Urls { get; set; }
+        // private AddUrlWindowViewModel _auwViewModel;
+        public IList<string> Urls { get; set; } = new List<string>();
+        public IList<string> Urls2 { get; set; } = new List<string>();
         CancellationTokenSource cts;
 
         private RelayCommand _openAddWindowCommand = null;
@@ -21,10 +22,7 @@ namespace DownloadManager.ViewModels
         public MainWindowViewModel()
         {
         }
-        public MainWindowViewModel(AddUrlWindowViewModel auwViewModel)
-        {
-            Urls = auwViewModel.Urls;
-        }
+
 
         public RelayCommand OpenAddWindowCommand
         {

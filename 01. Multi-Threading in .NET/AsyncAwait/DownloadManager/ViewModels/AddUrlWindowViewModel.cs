@@ -22,7 +22,6 @@ namespace DownloadManager.ViewModels
             get => _url;
             set => _url = value;
         }
-        public IList<string> Urls = new ObservableCollection<string>();
 
         private RelayCommand<object> _okCommand;
 

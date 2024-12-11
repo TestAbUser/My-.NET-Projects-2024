@@ -26,8 +26,10 @@ namespace DownloadManager.ViewModels
 
         private RelayCommand<object> _okCommand;
 
+        // When OK button is clicked addPageAddressWindow is passed as a CommandParameter to this method.
         public RelayCommand<object> OkCommand => _okCommand ??= new RelayCommand<object>(obj=>
         {
+            // Casting the argument to Window. 
             Window wnd = obj as Window;
             Urls.Add(Url);
             MainWindowViewModel mwViewModel = new MainWindowViewModel(this);

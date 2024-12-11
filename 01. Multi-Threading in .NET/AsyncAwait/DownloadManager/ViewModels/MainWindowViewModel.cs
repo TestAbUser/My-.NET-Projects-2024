@@ -7,12 +7,14 @@ using System.Windows.Input;
 using System.Windows;
 using DownloadManager.Models;
 using DownloadManager.Commands;
+using System.ComponentModel;
 
 namespace DownloadManager.ViewModels
 {
     public class MainWindowViewModel
     {
         // private AddUrlWindowViewModel _auwViewModel;
+        public IList<string> Urls { get; set; } = new List<string>();
         CancellationTokenSource cts;
 
         private RelayCommand _openAddWindowCommand = null;

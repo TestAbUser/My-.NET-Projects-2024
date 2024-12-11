@@ -1,6 +1,8 @@
-﻿using System.Runtime.InteropServices;
-using System.Windows;
+﻿using System.Windows;
+using System.Runtime.InteropServices;
 using DownloadManager.Commands;
+using DownloadManager.Models;
+
 using System.Collections.ObjectModel;
 
 namespace DownloadManager.ViewModels
@@ -17,11 +19,12 @@ namespace DownloadManager.ViewModels
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         private string _url;
-        public string Url
+        public string Ur
         {
             get => _url;
             set => _url = value;
         }
+
 
         private RelayCommand<object> _okCommand;
 
@@ -30,7 +33,7 @@ namespace DownloadManager.ViewModels
         {
             // Casting the argument to Window. 
             Window wnd = obj as Window;
-            Urls.Add(Url);
+            Url.Urls.Add(Ur);
             wnd?.Close();
         }, CanClose);
 

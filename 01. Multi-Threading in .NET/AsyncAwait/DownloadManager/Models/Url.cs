@@ -1,8 +1,8 @@
 ﻿namespace DownloadManager.Models
 {
-    public static class Url
+    public class Url
     {
-        public static string Value { get; set; }
+        public string Value { get; set; }
 
     }
 }

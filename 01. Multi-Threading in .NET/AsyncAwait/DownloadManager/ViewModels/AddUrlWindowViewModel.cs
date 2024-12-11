@@ -19,11 +19,7 @@ namespace DownloadManager.ViewModels
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         private string _url;
-        public string Ur
-        {
-            get => _url;
-            set => _url = value;
-        }
+        public ObservableCollection<Url> Urls { get; set; } = new ObservableCollection<Url>();
 
 
         private RelayCommand<object> _okCommand;
@@ -33,7 +29,6 @@ namespace DownloadManager.ViewModels
         {
             // Casting the argument to Window. 
             Window wnd = obj as Window;
-            Url.Urls.Add(Ur);
             wnd?.Close();
         }, CanClose);
 

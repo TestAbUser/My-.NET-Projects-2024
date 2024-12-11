@@ -8,10 +8,11 @@ using System.Windows;
 using DownloadManager.Models;
 using DownloadManager.Commands;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace DownloadManager.ViewModels
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel: INotifyPropertyChanged
     {
         // private AddUrlWindowViewModel _auwViewModel;
         public IList<string> Urls { get; set; } = new List<string>();
@@ -34,6 +35,13 @@ namespace DownloadManager.ViewModels
                     auw.ShowDialog();
                 });
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
         private async void DownloadPages(object sender, RoutedEventArgs e)

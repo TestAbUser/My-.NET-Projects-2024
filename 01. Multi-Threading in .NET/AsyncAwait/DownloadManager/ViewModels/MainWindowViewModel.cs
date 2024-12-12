@@ -16,13 +16,17 @@ namespace DownloadManager.ViewModels
     public class MainWindowViewModel: INotifyPropertyChanged
     {
         // private AddUrlWindowViewModel _auwViewModel;
-        public ObservableCollection<string> Urls { get; set; } = new ObservableCollection<string>();
+        //public ObservableCollection<string> Urls { get; set; } = new ObservableCollection<string>();
         CancellationTokenSource cts;
+        private readonly UrlModel _urlModel = new UrlModel();
 
         private RelayCommand _openAddWindowCommand = null;
 
+        public ObservableCollection<string> Urls { get;private set; }
+
         public MainWindowViewModel()
         {
+            Urls= _urlModel.Urls;
         }
 
 
@@ -32,7 +36,8 @@ namespace DownloadManager.ViewModels
             {
                 return _openAddWindowCommand ??= new RelayCommand(() =>
                 {
-                    AddUrlWindow auw = new();
+                    AddUrlWindowViewModel viewModel = new (_urlModel);
+                    AddUrlWindow auw = new(viewModel/*_urlModel*/);
                     auw.ShowDialog();
                 });
             }

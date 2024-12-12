@@ -9,8 +9,7 @@
         x:Name="addPageAddressWindow"
         WindowStartupLocation="CenterScreen"
         Background="AliceBlue"
-        FocusManager.FocusedElement="{Binding ElementName=addUrlTextBox}"
-        DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">
+        FocusManager.FocusedElement="{Binding ElementName=addUrlTextBox}">
     <Grid>
         <Grid x:Name="popupGrid" Background="AliceBlue" >
             <Grid.RowDefinitions>
@@ -29,7 +28,7 @@
                      BorderBrush="Gray" 
                      Grid.Row="0" 
                      Height="30" 
-                     Text="{Binding Ur}"
+                     Text="{Binding Url}"
                      VerticalAlignment="Bottom"/>
             <!--StackPanel allows to group buttons in one line horizontally-->
             <StackPanel Orientation="Horizontal" 

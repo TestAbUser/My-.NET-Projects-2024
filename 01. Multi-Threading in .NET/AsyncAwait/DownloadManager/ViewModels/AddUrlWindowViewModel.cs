@@ -18,8 +18,10 @@ namespace DownloadManager.ViewModels
         [DllImport("user32.dll")]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
+        private readonly UrlModel _urlModel;
+
+        // Url property is bound to the Text property of the TextBox.
         public string Url { get; set; }
-        private UrlModel _urlModel;
 
         public AddUrlWindowViewModel()
         {
@@ -30,7 +32,7 @@ namespace DownloadManager.ViewModels
         }
         private RelayCommand<object> _okCommand;
 
-        // When OK button is clicked addPageAddressWindow is passed as a CommandParameter to this method.
+        // When OK button is clicked addUrlWindow is passed as a CommandParameter to this method.
         public RelayCommand<object> OkCommand => _okCommand ??= new RelayCommand<object>(obj=>
         {
             _urlModel.Urls.Add(Url);

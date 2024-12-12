@@ -11,16 +11,16 @@ namespace DownloadManager
     /// </summary>
     public partial class AddUrlWindow : Window
     {
-        public AddUrlWindowViewModel ViewModel { get; set; }
-
         public AddUrlWindow()
         {
+            InitializeComponent();
         }
 
-        public AddUrlWindow(UrlModel url)
+        // 
+        public AddUrlWindow(AddUrlWindowViewModel viewModel) : this()
         {
-            InitializeComponent();
-            ViewModel = new(url);
+            
+            DataContext = viewModel;
         }
     }
 }

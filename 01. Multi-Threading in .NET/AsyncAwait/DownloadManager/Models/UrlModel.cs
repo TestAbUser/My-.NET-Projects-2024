@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace DownloadManager.Models
 {
-    public class Url: INotifyPropertyChanged
+    public class UrlModel: INotifyPropertyChanged
     {
        // public string Value { get; set; }
        private readonly ObservableCollection<string> _urls = new();
@@ -22,7 +22,7 @@ namespace DownloadManager.Models
             }
         }
 
-        public Url()
+        public UrlModel()
         {
             Urls = new ReadOnlyObservableCollection<string>(_urls);
         }

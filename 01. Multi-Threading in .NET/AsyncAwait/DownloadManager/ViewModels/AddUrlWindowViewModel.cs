@@ -19,9 +19,15 @@ namespace DownloadManager.ViewModels
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         private string _url;
-        public ObservableCollection<Url> Urls { get; set; } = new ObservableCollection<Url>();
+        public ReadOnlyObservableCollection<string> Urls { get; set; }
 
-
+        public AddUrlWindowViewModel()
+        {
+        }
+        public AddUrlWindowViewModel(UrlModel url)
+        {
+            Urls = url.Urls;
+        }
         private RelayCommand<object> _okCommand;
 
         // When OK button is clicked addPageAddressWindow is passed as a CommandParameter to this method.

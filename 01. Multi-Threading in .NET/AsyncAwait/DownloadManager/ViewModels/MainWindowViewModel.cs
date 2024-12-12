@@ -37,7 +37,7 @@ namespace DownloadManager.ViewModels
                 return _openAddWindowCommand ??= new RelayCommand(() =>
                 {
                     AddUrlWindowViewModel viewModel = new (_urlModel);
-                    AddUrlWindow auw = new(viewModel/*_urlModel*/);
+                    AddUrlWindow auw = new(viewModel);
                     auw.ShowDialog();
                 });
             }

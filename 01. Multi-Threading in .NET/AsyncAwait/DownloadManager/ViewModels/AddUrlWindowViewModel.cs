@@ -18,10 +18,8 @@ namespace DownloadManager.ViewModels
         [DllImport("user32.dll")]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
-        private string _url;
         public string Url { get; set; }
         private UrlModel _urlModel;
-        public ReadOnlyObservableCollection<string> Urls { get; set; }
 
         public AddUrlWindowViewModel()
         {

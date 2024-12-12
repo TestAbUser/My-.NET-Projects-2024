@@ -16,7 +16,7 @@ namespace DownloadManager
             InitializeComponent();
         }
 
-        // 
+       
         public AddUrlWindow(AddUrlWindowViewModel viewModel) : this()
         {
             

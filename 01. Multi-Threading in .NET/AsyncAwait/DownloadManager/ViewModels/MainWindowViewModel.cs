@@ -24,8 +24,8 @@ namespace DownloadManager.ViewModels
 
         private RelayCommand _openAddWindowCommand = null;
 
-        public ObservableCollection<UrlModel> UrlModels { get; } = new ObservableCollection<UrlModel>();
-        //public ObservableCollection<string> Urls /*{ get;set; }*/
+       // public ObservableCollection<UrlModel> UrlModels { get; } = new ObservableCollection<UrlModel>();
+        public ObservableCollection<string> Urls { get; }= new();
         //{
         //    get { return _urls; }
         //    set
@@ -50,7 +50,7 @@ namespace DownloadManager.ViewModels
                 {
                     //UModel = new UrlModel();
                    // UrlModels.Add(UModel);
-                    AddUrlWindowViewModel viewModel = new (UrlModels/*UModel*//*_urlModel*/);
+                    AddUrlWindowViewModel viewModel = new (Urls/*UModel*//*_urlModel*/);
                     AddUrlWindow auw = new(viewModel);
                     auw.ShowDialog();
                 });

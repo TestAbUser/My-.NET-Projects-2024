@@ -23,13 +23,13 @@
             </Grid.RowDefinitions>
             <DataGrid x:Name="dataGrid"
                       Grid.Row="0" 
-                      ItemsSource="{Binding UrlModels, UpdateSourceTrigger=Explicit}"
+                      ItemsSource="{Binding Urls, UpdateSourceTrigger= Explicit}"
                       IsReadOnly="True"
                       AutoGenerateColumns="False">
 
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url" Width="2*"
-                                         Binding="{Binding Url}" />
+                                         Binding="{Binding}" />
 
 
                     <!--<DataGridTemplateColumn Header="Progress" Width="*">

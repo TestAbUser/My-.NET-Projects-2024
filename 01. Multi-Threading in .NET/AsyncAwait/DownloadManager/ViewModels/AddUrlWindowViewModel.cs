@@ -21,7 +21,7 @@ namespace DownloadManager.ViewModels
         }
 
         // When OK button is clicked addUrlWindow is passed as a CommandParameter to this property.
-        public RelayCommand<object> OkCommand => _okCommand ??= new RelayCommand<object>(obj=>
+        public RelayCommand<object> OkCommand => _okCommand ??= new RelayCommand<object>(obj =>
         {
             _urlModel.Urls.Add(Url);
 
@@ -29,30 +29,5 @@ namespace DownloadManager.ViewModels
             Window wnd = obj as Window;
             wnd?.Close();
         }, null);
-
-
-
-
-
-
-        //public AddUrlWindow()
-        //{
-        //    InitializeComponent();
-        //}
-
-        //private void OkBtn_Click(object sender, RoutedEventArgs e)
-        //{
-        //    DialogResult = true;
-        //}
-
-        //private void Window_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    // Remove Window Control buttons from the title bar.
-        //    var hwnd = new WindowInteropHelper(this).Handle;
-        //    SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SYSMENU);
-
-        //    // As the window loads, move keyboard focus into the textbox.
-        //    Keyboard.Focus(addWindowTextBox);
-        //}
     }
 }

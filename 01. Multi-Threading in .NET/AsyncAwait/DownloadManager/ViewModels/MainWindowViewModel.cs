@@ -20,7 +20,7 @@ namespace DownloadManager.ViewModels
         CancellationTokenSource cts;
 
         private readonly UrlModel _urlModel = new UrlModel();
-        public UrlModel UModel { get; set; } //= new UrlModel();
+        public UrlModel UModel { get; set; }// = new UrlModel();
 
         private RelayCommand _openAddWindowCommand = null;
 
@@ -48,8 +48,9 @@ namespace DownloadManager.ViewModels
             {
                 return _openAddWindowCommand ??= new RelayCommand(() =>
                 {
-                    UrlModels.Add(UModel);
-                    AddUrlWindowViewModel viewModel = new (UModel/*_urlModel*/);
+                    //UModel = new UrlModel();
+                   // UrlModels.Add(UModel);
+                    AddUrlWindowViewModel viewModel = new (UrlModels/*UModel*//*_urlModel*/);
                     AddUrlWindow auw = new(viewModel);
                     auw.ShowDialog();
                 });

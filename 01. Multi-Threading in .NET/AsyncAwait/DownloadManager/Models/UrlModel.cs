@@ -6,8 +6,17 @@ namespace DownloadManager.Models
 {
     public class UrlModel: INotifyPropertyChanged
     {
-        public string Url { get; set; }
-       private readonly ObservableCollection<string> _urls = new();
+        private string _url;
+        public string Url
+        {
+            get => _url;
+            set
+            {
+                _url = value;
+               // PropertyChanged(this, new PropertyChangedEventArgs(nameof(Url)));
+            }
+        }
+        private readonly ObservableCollection<string> _urls = new();
         // public ObservableCollection<string> Urls;
 
         private bool _isChanged;

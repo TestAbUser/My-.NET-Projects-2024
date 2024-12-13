@@ -29,7 +29,7 @@
 
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url" Width="2*"
-                                         Binding="{Binding Url, FallbackValue=fb}" />
+                                         Binding="{Binding Url}" />
 
 
                     <!--<DataGridTemplateColumn Header="Progress" Width="*">

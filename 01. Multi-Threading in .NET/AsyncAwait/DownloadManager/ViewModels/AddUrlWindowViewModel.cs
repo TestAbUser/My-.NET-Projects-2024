@@ -9,17 +9,10 @@ namespace DownloadManager.ViewModels
     {
         private readonly UrlModel _urlModel;
         private RelayCommand<object> _okCommand;
-       // private string _url;
+
         // Url property is bound to the Text property of the TextBox.
         public string Url { get; set; }
-        //{
-        //    get => _url;
-        //    set
-        //    {
-        //        _url = value;
-        //        PropertyChanged(this, new PropertyChangedEventArgs(nameof(Urls)));
-        //    }
-        //}
+
         public ObservableCollection<UrlModel> UModels { get; } = new ObservableCollection<UrlModel>();
         public AddUrlWindowViewModel()
         {
@@ -28,7 +21,7 @@ namespace DownloadManager.ViewModels
         {
             // _urlModel = url;
             _urlModel = new UrlModel();
-           UModels = UrlModels;
+            UModels = UrlModels;
         }
 
         // When OK button is clicked addUrlWindow is passed as a CommandParameter to this property.

@@ -11,7 +11,7 @@
         <Label DockPanel.Dock="Top" Name="lblDownloading" FontSize="14">
             Pages to download
         </Label>
-                <StatusBar DockPanel.Dock="Bottom" Background="Beige">
+        <StatusBar DockPanel.Dock="Bottom" Background="Beige">
             <StatusBarItem>
                 <TextBlock Name="statBarText" Text="Ready"/>
             </StatusBarItem>
@@ -21,9 +21,24 @@
                 <RowDefinition Height="150" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ListBox x:Name="listBox" 
+            <DataGrid x:Name="dataGrid" 
+                      AutoGenerateColumns="False"
                      Grid.Row="0" 
-                     ItemsSource="{Binding Urls, UpdateSourceTrigger=Explicit}"/> 
+                      ItemsSource="{Binding Urls, UpdateSourceTrigger=Explicit}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Url" Width="2*"
+                                      Binding="{Binding Urls}"      />
+
+
+                    <DataGridTemplateColumn Header="Progress" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ProgressBar/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0,5,0" Grid.Row="1">
                 <Button x:Name="addUrlBtn" 
                         Content="Add"

@@ -21,22 +21,24 @@
                 <RowDefinition Height="150" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <DataGrid x:Name="dataGrid" 
-                      AutoGenerateColumns="False"
-                     Grid.Row="0" 
-                      ItemsSource="{Binding Urls, UpdateSourceTrigger=Explicit}">
+            <DataGrid x:Name="dataGrid"
+                      Grid.Row="0" 
+                      ItemsSource="{Binding UrlModels, UpdateSourceTrigger=Explicit}"
+                      IsReadOnly="True"
+                      AutoGenerateColumns="False">
+
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url" Width="2*"
-                                      Binding="{Binding Urls}"      />
+                                         Binding="{Binding Url, FallbackValue=fb}" />
 
 
-                    <DataGridTemplateColumn Header="Progress" Width="*">
+                    <!--<DataGridTemplateColumn Header="Progress" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <ProgressBar/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                    </DataGridTemplateColumn>-->
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0,5,0" Grid.Row="1">

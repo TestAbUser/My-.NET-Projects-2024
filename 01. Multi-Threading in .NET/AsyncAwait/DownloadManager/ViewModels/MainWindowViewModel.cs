@@ -10,23 +10,35 @@ using DownloadManager.Commands;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
+using System.Windows.Documents;
 
 namespace DownloadManager.ViewModels
 {
     public class MainWindowViewModel: INotifyPropertyChanged
     {
-        // private AddUrlWindowViewModel _auwViewModel;
-        //public ObservableCollection<string> Urls { get; set; } = new ObservableCollection<string>();
+        private ObservableCollection<string> _urls;
         CancellationTokenSource cts;
+
         private readonly UrlModel _urlModel = new UrlModel();
+        public UrlModel UrlMode { get; set; }= new UrlModel();
 
         private RelayCommand _openAddWindowCommand = null;
 
-        public ObservableCollection<string> Urls { get;private set; }
-
+        public ObservableCollection<UrlModel> UrlModels { get; } = new ObservableCollection<UrlModel>();
+        public ObservableCollection<string> Urls /*{ get;set; }*/
+        {
+            get { return _urls; }
+            set
+            {
+                _urls = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Urls)));
+            }
+        }
         public MainWindowViewModel()
         {
-            Urls= _urlModel.Urls;
+            UrlMode.Url = "test";
+            //Urls= _urlModel.Urls;
+           //UrlModels = UrlMode.Urls;
         }
 
 
@@ -36,15 +48,17 @@ namespace DownloadManager.ViewModels
             {
                 return _openAddWindowCommand ??= new RelayCommand(() =>
                 {
-                    AddUrlWindowViewModel viewModel = new (_urlModel);
+                    UrlModels.Add(UrlMode);
+                    AddUrlWindowViewModel viewModel = new (UrlMode/*_urlModel*/);
                     AddUrlWindow auw = new(viewModel);
                     auw.ShowDialog();
+                   var t = UrlMode.Url;
                 });
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        public void OnPropertyChanged(string prop = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));

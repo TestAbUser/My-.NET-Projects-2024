@@ -23,8 +23,8 @@ namespace DownloadManager.ViewModels
         // When OK button is clicked addUrlWindow is passed as a CommandParameter to this property.
         public RelayCommand<object> OkCommand => _okCommand ??= new RelayCommand<object>(obj =>
         {
-            _urlModel.Urls.Add(Url);
-
+            //_urlModel.Urls.Add(Url);
+            _urlModel.Url = Url;
             // Casting the argument to Window. 
             Window wnd = obj as Window;
             wnd?.Close();

@@ -1,23 +1,11 @@
 ﻿using System.Windows;
-using System.Runtime.InteropServices;
 using DownloadManager.Commands;
 using DownloadManager.Models;
-
-using System.Collections.ObjectModel;
 
 namespace DownloadManager.ViewModels
 {
     public class AddUrlWindowViewModel
     {
-        private const int GWL_STYLE = -16;
-        private const int WS_SYSMENU = 0x80000;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll")]
-        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
         private readonly UrlModel _urlModel;
         private RelayCommand<object> _okCommand;
 

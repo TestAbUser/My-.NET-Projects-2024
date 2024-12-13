@@ -9,6 +9,7 @@
         x:Name="addUrlWindow"
         WindowStartupLocation="CenterScreen"
         Background="AliceBlue"
+        WindowStyle="ToolWindow"
         FocusManager.FocusedElement="{Binding ElementName=addUrlTextBox}">
     <Grid>
         <Grid x:Name="popupGrid" Background="AliceBlue" >

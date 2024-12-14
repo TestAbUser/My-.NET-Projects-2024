@@ -29,27 +29,27 @@ namespace DownloadManager.ViewModels
 
         private async void DownloadPages(object sender, RoutedEventArgs e)
         {
-            string[] addresses = addWindowTextBox.Text.Split(',');
-            cts = new CancellationTokenSource();
-            CancellationToken token = cts.Token;
-            var t = Task.Run(async () => await Downloader.Download(addresses, token));
-            statBarText.Text = "Downloading...";
-            downloadBtn.IsEnabled = false;
-            cancelBtn.IsEnabled = true;
-            await t;
-            await Downloader.Download(addresses, token);
-            cancelBtn.IsEnabled = false;
-            downloadBtn.IsEnabled = true;
-            statBarText.Text = "Ready";
+            //string[] addresses = addWindowTextBox.Text.Split(',');
+            //cts = new CancellationTokenSource();
+            //CancellationToken token = cts.Token;
+            //var t = Task.Run(async () => await Downloader.Download(addresses, token));
+            //statBarText.Text = "Downloading...";
+            //downloadBtn.IsEnabled = false;
+            //cancelBtn.IsEnabled = true;
+            //await t;
+            //await Downloader.Download(addresses, token);
+            //cancelBtn.IsEnabled = false;
+            //downloadBtn.IsEnabled = true;
+            //statBarText.Text = "Ready";
         }
 
         private void CancelDownloading(object sender, RoutedEventArgs e)
         {
-            cts.Cancel();
-            cts.Dispose();
-            cancelBtn.IsEnabled = false;
-            downloadBtn.IsEnabled = true;
-            statBarText.Text = "Ready";
+            //cts.Cancel();
+            //cts.Dispose();
+            //cancelBtn.IsEnabled = false;
+            //downloadBtn.IsEnabled = true;
+            //statBarText.Text = "Ready";
         }
     }
 }

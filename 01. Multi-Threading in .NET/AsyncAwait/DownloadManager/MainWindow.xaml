@@ -8,6 +8,16 @@
         DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}"
         Title="MainWindow" Height="300" Width="800">
     <DockPanel Background="AliceBlue">
+        <Menu DockPanel.Dock ="Top" HorizontalAlignment="Left" Background="White"
+BorderBrush ="Black">
+            <MenuItem Header="_File">
+                <MenuItem Command ="ApplicationCommands.Open"/>
+                <MenuItem Command ="ApplicationCommands.Save"/>
+                <Separator/>
+                <MenuItem Header ="_Exit"/>
+                <!--MouseEnter ="MouseEnterExitArea" MouseLeave ="MouseLeaveArea"-->
+            </MenuItem>
+        </Menu>
         <Label DockPanel.Dock="Top" Name="lblDownloading" FontSize="14">
             Pages to download
         </Label>

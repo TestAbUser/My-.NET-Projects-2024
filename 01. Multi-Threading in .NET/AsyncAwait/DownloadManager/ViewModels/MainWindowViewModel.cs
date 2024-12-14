@@ -2,6 +2,8 @@
 using DownloadManager.Commands;
 using System.Collections.ObjectModel;
 using DownloadManager.Models;
+using Microsoft.Win32;
+using System.IO;
 
 namespace DownloadManager.ViewModels
 {
@@ -10,6 +12,7 @@ namespace DownloadManager.ViewModels
         CancellationTokenSource cts;
 
         private RelayCommand _openAddWindowCommand = null;
+        private RelayCommand _openCommand = null;
 
         public ObservableCollection<string> Urls { get; } = new();
 
@@ -24,6 +27,23 @@ namespace DownloadManager.ViewModels
                     AddUrlWindow auw = new(viewModel);
                     auw.ShowDialog();
                 });
+            }
+        }
+
+        public RelayCommand OpenCommand => 
+            _openCommand ??= new RelayCommand(OpenDialog, null);
+       
+        private void OpenDialog()
+        {
+            // Create an open file dialog box and only show text files.
+            var openDlg = new OpenFileDialog { Filter = "Text Files |*.txt" };
+            // Did they click on the OK button?
+            if (true == openDlg.ShowDialog())
+            {
+                // Load all text of selected file.
+                string dataFromFile = File.ReadAllText(openDlg.FileName);
+                // Show string in TextBox.
+                Urls.Add(dataFromFile);
             }
         }
 

@@ -11,7 +11,7 @@
         <Menu DockPanel.Dock ="Top" HorizontalAlignment="Left" Background="White"
 BorderBrush ="Black">
             <MenuItem Header="_File">
-                <MenuItem Command ="ApplicationCommands.Open"/>
+                <MenuItem Header="Open" Command ="{Binding OpenCommand}"/>
                 <MenuItem Command ="ApplicationCommands.Save"/>
                 <Separator/>
                 <MenuItem Header ="_Exit"/>

@@ -4,19 +4,44 @@ using System.Collections.ObjectModel;
 using DownloadManager.Models;
 using Microsoft.Win32;
 using System.IO;
+using System.ComponentModel;
 
 namespace DownloadManager.ViewModels
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel: INotifyPropertyChanged
     {
         CancellationTokenSource cts;
 
         private RelayCommand _openAddWindowCommand = null;
         private RelayCommand _openCommand = null;
         private RelayCommand _saveCommand = null;
-        private RelayCommand _downloadCommand = null;
+        private RelayCommand<object> _downloadCommand = null;
         private RelayCommand _cancelCommand = null;
+        private string _statusBarText;
+        private bool _isChanged;
+        public bool IsChanged
+        {
+            get => _isChanged;
+            set
+            {
+                if (value == _isChanged) return;
+                _isChanged = value;
+                OnPropertyChanged();
+            }
+        }
 
+        public string StatusBarText
+        {
+            get { return _statusBarText; }
+            set
+            {
+                if (value != _statusBarText)
+                {
+                    _statusBarText = value;
+                    OnPropertyChanged("Sample");
+                }
+            }
+        }
         public ObservableCollection<string> Urls { get; } = new();
 
         public RelayCommand OpenAddWindowCommand
@@ -80,19 +105,20 @@ namespace DownloadManager.ViewModels
             }
         }
 
-        public RelayCommand DownloadCommand =>
-         _downloadCommand ??= new RelayCommand(DownloadPages);
+        public RelayCommand<object> DownloadCommand =>
+         _downloadCommand ??= new RelayCommand<object>(DownloadPages);
 
-        private async void DownloadPages()
+        private async void DownloadPages(object obj)
         {
+            Window wnd = obj as Window;
             string[] addresses = Urls.Select(x=>x).ToArray();
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             var t = Task.Run(async () => await Downloader.Download(addresses, token));
-            //statBarText.Text = "Downloading...";
+        StatusBarText = "Downloading...";
             //downloadBtn.IsEnabled = false;
             //cancelBtn.IsEnabled = true;
-            await t;
+           // await t;
             await Downloader.Download(addresses, token);
             //cancelBtn.IsEnabled = false;
             //downloadBtn.IsEnabled = true;
@@ -108,6 +134,17 @@ namespace DownloadManager.ViewModels
             //cancelBtn.IsEnabled = false;
             //downloadBtn.IsEnabled = true;
             //statBarText.Text = "Ready";
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName = "")
+        {
+            if (propertyName != nameof(IsChanged))
+            {
+                IsChanged = true;
+            }
+            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
         }
     }
 }

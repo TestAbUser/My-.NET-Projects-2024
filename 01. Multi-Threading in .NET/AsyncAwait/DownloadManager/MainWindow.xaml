@@ -23,7 +23,7 @@ BorderBrush ="Black">
         </Label>
         <StatusBar DockPanel.Dock="Bottom" Background="Beige">
             <StatusBarItem>
-                <TextBlock Name="statBarText"  Text="{Binding StatusBarText }"/>
+                <TextBlock Name="statBarText"  Text="{Binding StatusBarText,TargetNullValue=Ready}"/>
             </StatusBarItem>
         </StatusBar>
         <Grid>

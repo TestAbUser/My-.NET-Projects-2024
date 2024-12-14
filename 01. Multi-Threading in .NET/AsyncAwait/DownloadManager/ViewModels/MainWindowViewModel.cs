@@ -15,6 +15,7 @@ namespace DownloadManager.ViewModels
         private RelayCommand _openCommand = null;
         private RelayCommand _saveCommand = null;
         private RelayCommand _downloadCommand = null;
+        private RelayCommand _cancelCommand = null;
 
         public ObservableCollection<string> Urls { get; } = new();
 
@@ -98,10 +99,12 @@ namespace DownloadManager.ViewModels
             //statBarText.Text = "Ready";
         }
 
-        private void CancelDownloading(object sender, RoutedEventArgs e)
+        public RelayCommand CancelCommand =>
+        _cancelCommand ??= new RelayCommand(CancelDownloading);
+        private void CancelDownloading()
         {
-            //cts.Cancel();
-            //cts.Dispose();
+            cts.Cancel();
+            cts.Dispose();
             //cancelBtn.IsEnabled = false;
             //downloadBtn.IsEnabled = true;
             //statBarText.Text = "Ready";

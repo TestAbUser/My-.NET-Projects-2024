@@ -38,14 +38,22 @@ namespace DownloadManager.ViewModels
         {
             // Create an open file dialog box and only show text files.
             var openDlg = new OpenFileDialog { Filter = "Text Files |*.txt" };
+
             // Did they click on the OK button?
             if (true == openDlg.ShowDialog())
             {
-                // Load all text of selected file.
-                string[] dataFromFile = File.ReadAllLines(openDlg.FileName);
+                try
+                {
+                    // Load all text of selected file.
+                    string[] dataFromFile = File.ReadAllLines(openDlg.FileName);
 
-                // Show Urls in DataGrid. 
-                foreach (var line in dataFromFile) { Urls.Add(line); }
+                    // Show Urls in DataGrid. 
+                    foreach (var line in dataFromFile) { Urls.Add(line); }
+                }
+                catch (IOException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
@@ -58,8 +66,15 @@ namespace DownloadManager.ViewModels
             // Did they click on the OK button?
             if (true == saveDlg.ShowDialog())
             {
-                // Save data in the DataGrid to the named file.
-                File.WriteAllLines(saveDlg.FileName, Urls.Select(x => x));
+                try
+                {
+                    // Save data in the DataGrid to the named file.
+                    File.WriteAllLines(saveDlg.FileName, Urls.Select(x => x));
+                }
+                catch (IOException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 

@@ -13,6 +13,7 @@ namespace DownloadManager.ViewModels
 
         private RelayCommand _openAddWindowCommand = null;
         private RelayCommand _openCommand = null;
+        private RelayCommand _saveCommand = null;
 
         public ObservableCollection<string> Urls { get; } = new();
 
@@ -30,9 +31,9 @@ namespace DownloadManager.ViewModels
             }
         }
 
-        public RelayCommand OpenCommand => 
-            _openCommand ??= new RelayCommand(OpenDialog, null);
-       
+        public RelayCommand OpenCommand =>
+            _openCommand ??= new RelayCommand(OpenDialog);
+
         private void OpenDialog()
         {
             // Create an open file dialog box and only show text files.
@@ -42,9 +43,23 @@ namespace DownloadManager.ViewModels
             {
                 // Load all text of selected file.
                 string[] dataFromFile = File.ReadAllLines(openDlg.FileName);
-                
+
                 // Show Urls in DataGrid. 
-                foreach(var line in dataFromFile) { Urls.Add(line); }
+                foreach (var line in dataFromFile) { Urls.Add(line); }
+            }
+        }
+
+        public RelayCommand SaveCommand =>
+           _saveCommand ??= new RelayCommand(SaveDialog);
+
+        private void SaveDialog()
+        {
+            var saveDlg = new SaveFileDialog { Filter = "Text Files |*.txt" };
+            // Did they click on the OK button?
+            if (true == saveDlg.ShowDialog())
+            {
+                // Save data in the DataGrid to the named file.
+                File.WriteAllLines(saveDlg.FileName, Urls.Select(x => x));
             }
         }
 

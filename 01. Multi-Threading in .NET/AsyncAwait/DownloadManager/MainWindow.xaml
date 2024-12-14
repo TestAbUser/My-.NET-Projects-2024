@@ -12,10 +12,9 @@
 BorderBrush ="Black">
             <MenuItem Header="_File">
                 <MenuItem Header="Open" Command ="{Binding OpenCommand}"/>
-                <MenuItem Command ="ApplicationCommands.Save"/>
+                <MenuItem Header="Save" Command ="{Binding SaveCommand}"/>
                 <Separator/>
                 <MenuItem Header ="_Exit"/>
-                <!--MouseEnter ="MouseEnterExitArea" MouseLeave ="MouseLeaveArea"-->
             </MenuItem>
         </Menu>
         <Label DockPanel.Dock="Top" Name="lblDownloading" FontSize="14">

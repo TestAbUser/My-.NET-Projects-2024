@@ -14,6 +14,7 @@ namespace DownloadManager.ViewModels
         private RelayCommand _openAddWindowCommand = null;
         private RelayCommand _openCommand = null;
         private RelayCommand _saveCommand = null;
+        private RelayCommand _downloadCommand = null;
 
         public ObservableCollection<string> Urls { get; } = new();
 
@@ -78,17 +79,20 @@ namespace DownloadManager.ViewModels
             }
         }
 
-        private async void DownloadPages(object sender, RoutedEventArgs e)
+        public RelayCommand DownloadCommand =>
+         _downloadCommand ??= new RelayCommand(DownloadPages);
+
+        private async void DownloadPages()
         {
-            //string[] addresses = addWindowTextBox.Text.Split(',');
-            //cts = new CancellationTokenSource();
-            //CancellationToken token = cts.Token;
-            //var t = Task.Run(async () => await Downloader.Download(addresses, token));
+            string[] addresses = Urls.Select(x=>x).ToArray();
+            cts = new CancellationTokenSource();
+            CancellationToken token = cts.Token;
+            var t = Task.Run(async () => await Downloader.Download(addresses, token));
             //statBarText.Text = "Downloading...";
             //downloadBtn.IsEnabled = false;
             //cancelBtn.IsEnabled = true;
-            //await t;
-            //await Downloader.Download(addresses, token);
+            await t;
+            await Downloader.Download(addresses, token);
             //cancelBtn.IsEnabled = false;
             //downloadBtn.IsEnabled = true;
             //statBarText.Text = "Ready";

@@ -38,7 +38,7 @@ BorderBrush ="Black">
 
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url" Width="5*"
-                                         Binding="{Binding}" />
+                                        Binding="{Binding}"/><!--Indicates that the collection itself is the item to be displayed in the column -->
                     <DataGridTemplateColumn Header="Progress" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -57,9 +57,16 @@ BorderBrush ="Black">
                               Height="30" 
                         Command="{Binding OpenAddWindowCommand}">
                 </Button>
-                <Button x:Name="downloadBtn" Content="Download" Margin="5,0,5,0" Padding="4, 2" Grid.Row="1" Height="30" 
-                        Command="{Binding }"/>
-                <Button x:Name="cancelBtn" Content="Cancel" IsEnabled="False" Margin="5,0,5,0" Padding="4, 2" Grid.Row="1" Height="30" 
+                <Button x:Name="downloadBtn" 
+                        Content="Download" 
+                        IsEnabled="{Binding Path=HasItems, ElementName=dataGrid}"
+                        Margin="5,0,5,0" Padding="4, 2" 
+                        Grid.Row="1" Height="30" 
+                        Command="{Binding DownloadCommand}"/>
+                <Button x:Name="cancelBtn" 
+                        Content="Cancel" 
+                        IsEnabled="False" 
+                        Margin="5,0,5,0" Padding="4, 2" Grid.Row="1" Height="30" 
                         />
             </StackPanel>
         </Grid>

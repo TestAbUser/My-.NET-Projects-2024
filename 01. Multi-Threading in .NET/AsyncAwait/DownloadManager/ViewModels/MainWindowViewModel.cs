@@ -41,9 +41,10 @@ namespace DownloadManager.ViewModels
             if (true == openDlg.ShowDialog())
             {
                 // Load all text of selected file.
-                string dataFromFile = File.ReadAllText(openDlg.FileName);
-                // Show string in TextBox.
-                Urls.Add(dataFromFile);
+                string[] dataFromFile = File.ReadAllLines(openDlg.FileName);
+                
+                // Show Urls in DataGrid. 
+                foreach(var line in dataFromFile) { Urls.Add(line); }
             }
         }
 

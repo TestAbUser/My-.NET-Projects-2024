@@ -62,12 +62,12 @@ namespace DownloadManager.ViewModels
 
 
         public RelayCommand OpenAddWindowCommand => _openAddWindowCommand ??= new RelayCommand(() =>
-                {
-                    // Pass the collection holding Urls to the other window's view model.
-                    AddUrlWindowViewModel viewModel = new(Urls);
-                    AddUrlWindow auw = new(viewModel);
-                    auw.ShowDialog();
-                });
+        {
+            // Pass the collection holding Urls to the other window's view model.
+            AddUrlWindowViewModel viewModel = new(Urls);
+            AddUrlWindow auw = new(viewModel);
+            auw.ShowDialog();
+        }, () => cts == null || cts.IsCancellationRequested);
 
 
 

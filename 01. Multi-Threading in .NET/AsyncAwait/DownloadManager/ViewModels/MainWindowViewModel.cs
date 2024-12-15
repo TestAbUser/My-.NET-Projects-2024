@@ -69,8 +69,6 @@ namespace DownloadManager.ViewModels
             auw.ShowDialog();
         }, () => cts == null || cts.IsCancellationRequested);
 
-
-
         public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(OpenDialog);
 
         private void OpenDialog()
@@ -145,7 +143,7 @@ namespace DownloadManager.ViewModels
             StatusBarText = null;
         }
 
-        // Cancel button is enabled 
+        // Cancel button is enabled only if download is in progress.
         private bool CanCancelDownload() => cts != null && !cts.IsCancellationRequested;
 
 

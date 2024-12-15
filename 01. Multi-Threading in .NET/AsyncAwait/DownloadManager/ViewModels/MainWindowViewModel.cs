@@ -142,7 +142,7 @@ namespace DownloadManager.ViewModels
         }
 
         // Download button is enabled if the urls are displayed and download process isn't in progress.
-        private bool CanDownloadPages() => Urls.Count > 0 && cts==null;
+        private bool CanDownloadPages() => Urls.Count > 0 && (cts==null ||cts.IsCancellationRequested);
 
 
         public RelayCommand CancelCommand => _cancelCommand ??= new (CancelDownloading, CanCancelDownload);

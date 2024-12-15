@@ -15,7 +15,7 @@ namespace DownloadManager.ViewModels
         private RelayCommand _openAddWindowCommand = null;
         private RelayCommand _openCommand = null;
         private RelayCommand _saveCommand = null;
-        private RelayCommand<object> _downloadCommand = null;
+        private RelayCommand _downloadCommand = null;
         private RelayCommand _cancelCommand = null;
         private string _statusBarText;
         private bool _isChanged;
@@ -38,11 +38,13 @@ namespace DownloadManager.ViewModels
                 if (value != _statusBarText)
                 {
                     _statusBarText = value;
-                    OnPropertyChanged("Sample");
+                    OnPropertyChanged(nameof(StatusBarText));
                 }
             }
         }
         public ObservableCollection<string> Urls { get; } = new();
+
+   
 
         public RelayCommand OpenAddWindowCommand
         {
@@ -105,12 +107,11 @@ namespace DownloadManager.ViewModels
             }
         }
 
-        public RelayCommand<object> DownloadCommand =>
-         _downloadCommand ??= new RelayCommand<object>(DownloadPages);
+        public RelayCommand DownloadCommand =>
+         _downloadCommand ??= new RelayCommand(DownloadPages);
 
-        private async void DownloadPages(object obj)
+        private async void DownloadPages()
         {
-            Window wnd = obj as Window;
             string[] addresses = Urls.Select(x=>x).ToArray();
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
@@ -133,7 +134,7 @@ namespace DownloadManager.ViewModels
             cts.Dispose();
             //cancelBtn.IsEnabled = false;
             //downloadBtn.IsEnabled = true;
-            //statBarText.Text = "Ready";
+            StatusBarText = null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

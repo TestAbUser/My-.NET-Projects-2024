@@ -61,19 +61,15 @@ namespace DownloadManager.ViewModels
 
 
 
-        public RelayCommand OpenAddWindowCommand
-        {
-            get
-            {
-                return _openAddWindowCommand ??= new RelayCommand(() =>
+        public RelayCommand OpenAddWindowCommand => _openAddWindowCommand ??= new RelayCommand(() =>
                 {
                     // Pass the collection holding Urls to the other window's view model.
                     AddUrlWindowViewModel viewModel = new(Urls);
                     AddUrlWindow auw = new(viewModel);
                     auw.ShowDialog();
                 });
-            }
-        }
+
+
 
         public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(OpenDialog);
 
@@ -130,33 +126,27 @@ namespace DownloadManager.ViewModels
             string[] addresses = Urls.Select(x => x).ToArray();
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
-            var t = Task.Run(async () => await Downloader.Download(addresses, token));
             StatusBarText = "Downloading...";
-            IsEnabled = false;
-            //cancelBtn.IsEnabled = true;
-            // await t;
+
             await Downloader.Download(addresses, token);
-            //cancelBtn.IsEnabled = false;
-            //downloadBtn.IsEnabled = true;
-            //statBarText.Text = "Ready";
+            cts = null;
+
         }
 
         // Download button is enabled if the urls are displayed and download process isn't in progress.
-        private bool CanDownloadPages() => Urls.Count > 0 && (cts==null ||cts.IsCancellationRequested);
+        private bool CanDownloadPages() => Urls.Count > 0 && (cts == null || cts.IsCancellationRequested);
 
 
-        public RelayCommand CancelCommand => _cancelCommand ??= new (CancelDownloading, CanCancelDownload);
+        public RelayCommand CancelCommand => _cancelCommand ??= new(CancelDownloading, CanCancelDownload);
         private void CancelDownloading()
         {
             cts.Cancel();
             cts.Dispose();
-            //cancelBtn.IsEnabled = false;
-            //downloadBtn.IsEnabled = true;
             StatusBarText = null;
         }
 
         // Cancel button is enabled 
-        private bool CanCancelDownload() => cts!=null && !cts.IsCancellationRequested;
+        private bool CanCancelDownload() => cts != null && !cts.IsCancellationRequested;
 
 
         protected virtual void OnPropertyChanged(string propertyName = "")

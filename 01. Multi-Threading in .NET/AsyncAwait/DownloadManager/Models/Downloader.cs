@@ -13,28 +13,41 @@ namespace DownloadManager.Models
     {
         public static HttpClient client = new HttpClient();
 
-        public static async Task Download(string[] addresses, CancellationToken ct)
+        public static async Task<int> Download(string[] addresses,IProgress<int> progress, CancellationToken ct)
         {
             string page;
-            await Task.Delay(10000);
-            try
+            int totalCount= addresses.Length;
+            int loadCount = await Task.Run<int>(async () =>
             {
-                foreach (string address in addresses)
+                int tempCount = 0;
+
+                //  await Task.Delay(10000);
+                try
                 {
-                    page = await client.GetStringAsync(address, ct);
+                    foreach (string address in addresses)
+                    {
+                        page = await client.GetStringAsync(address, ct);
+                        if (progress!=null)
+                        {
+                            progress.Report(tempCount * 100 / totalCount);
+                        }
+                        tempCount++;
+                    }
                 }
-            }
-            catch (OperationCanceledException ex)
-            {
-                MessageBox.Show("Download cancelled");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Something's wrong with the address!");
-            }
-            finally
-            {
-            }
+                catch (OperationCanceledException ex)
+                {
+                    MessageBox.Show("Download cancelled");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Something's wrong with the address!");
+                }
+                finally
+                {
+                }
+                return tempCount;
+            });
+            return loadCount;
         }
     }
 }

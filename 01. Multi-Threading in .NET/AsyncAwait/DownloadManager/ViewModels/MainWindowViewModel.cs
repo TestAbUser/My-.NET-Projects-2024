@@ -125,8 +125,8 @@ namespace DownloadManager.ViewModels
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             StatusBarText = "Downloading...";
-
-            await Downloader.Download(addresses, token);
+            var progressIndicator = new Progress<int>();
+            await Downloader.Download(addresses, progressIndicator, token);
             cts = null;
 
         }

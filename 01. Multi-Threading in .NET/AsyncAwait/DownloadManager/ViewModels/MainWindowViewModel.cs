@@ -18,7 +18,20 @@ namespace DownloadManager.ViewModels
         private RelayCommand _downloadCommand = null;
         private RelayCommand _cancelCommand = null;
         private string _statusBarText;
+        private bool _isEnabled;
         private bool _isChanged;
+
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set
+            {
+                if (value == _isEnabled) return;
+                _isChanged = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsChanged
         {
             get => _isChanged;
@@ -78,6 +91,7 @@ namespace DownloadManager.ViewModels
 
                     // Show Urls in DataGrid. 
                     foreach (var line in dataFromFile) { Urls.Add(line); }
+                   // IsEnabled = true;
                 }
                 catch (IOException ex)
                 {
@@ -108,7 +122,7 @@ namespace DownloadManager.ViewModels
         }
 
         public RelayCommand DownloadCommand =>
-         _downloadCommand ??= new RelayCommand(DownloadPages);
+         _downloadCommand ??= new RelayCommand(DownloadPages, DownloadButtonIsEnabled);
 
         private async void DownloadPages()
         {
@@ -117,7 +131,7 @@ namespace DownloadManager.ViewModels
             CancellationToken token = cts.Token;
             var t = Task.Run(async () => await Downloader.Download(addresses, token));
         StatusBarText = "Downloading...";
-            //downloadBtn.IsEnabled = false;
+            IsEnabled = false;
             //cancelBtn.IsEnabled = true;
            // await t;
             await Downloader.Download(addresses, token);
@@ -125,6 +139,10 @@ namespace DownloadManager.ViewModels
             //downloadBtn.IsEnabled = true;
             //statBarText.Text = "Ready";
         }
+
+        // Download button is enabled if the urls are displayed and download process isn't in progress.
+        private bool DownloadButtonIsEnabled()=>Urls.Count>0 && IsEnabled;
+     
 
         public RelayCommand CancelCommand =>
         _cancelCommand ??= new RelayCommand(CancelDownloading);

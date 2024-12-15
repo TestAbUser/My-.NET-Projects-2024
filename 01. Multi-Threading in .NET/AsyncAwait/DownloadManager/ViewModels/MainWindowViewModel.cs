@@ -18,21 +18,22 @@ namespace DownloadManager.ViewModels
         private RelayCommand _downloadCommand = null;
         private RelayCommand _cancelCommand = null;
         private string _statusBarText;
+        private int _progressReport;
        // private bool _isEnabled;
         private bool _isChanged;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        //public bool IsEnabled
-        //{
-        //    get => _isEnabled;
-        //    set
-        //    {
-        //        if (value == _isEnabled) return;
-        //        _isChanged = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
+        public int ProgressReport
+        {
+            get => _progressReport;
+            set
+            {
+                if (value == _progressReport) return;
+                _progressReport = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsChanged
         {
@@ -125,7 +126,7 @@ namespace DownloadManager.ViewModels
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             StatusBarText = "Downloading...";
-            var progressIndicator = new Progress<int>();
+            var progressIndicator = new Progress<int>(percent=> ProgressReport=percent);
             await Downloader.Download(addresses, progressIndicator, token);
             cts = null;
 
@@ -134,7 +135,7 @@ namespace DownloadManager.ViewModels
         // Download button is enabled if the urls are displayed and download process isn't in progress.
         private bool CanDownloadPages() => Urls.Count > 0 && (cts == null || cts.IsCancellationRequested);
 
-
+        
         public RelayCommand CancelCommand => _cancelCommand ??= new(CancelDownloading, CanCancelDownload);
         private void CancelDownloading()
         {

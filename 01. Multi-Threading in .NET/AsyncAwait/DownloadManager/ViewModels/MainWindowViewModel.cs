@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace DownloadManager.ViewModels
 {
-    public class MainWindowViewModel: INotifyPropertyChanged
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         CancellationTokenSource cts;
 
@@ -20,6 +20,8 @@ namespace DownloadManager.ViewModels
         private string _statusBarText;
         private bool _isEnabled;
         private bool _isChanged;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsEnabled
         {
@@ -57,7 +59,7 @@ namespace DownloadManager.ViewModels
         }
         public ObservableCollection<string> Urls { get; } = new();
 
-   
+
 
         public RelayCommand OpenAddWindowCommand
         {
@@ -73,8 +75,7 @@ namespace DownloadManager.ViewModels
             }
         }
 
-        public RelayCommand OpenCommand =>
-            _openCommand ??= new RelayCommand(OpenDialog);
+        public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(OpenDialog);
 
         private void OpenDialog()
         {
@@ -91,7 +92,7 @@ namespace DownloadManager.ViewModels
 
                     // Show Urls in DataGrid. 
                     foreach (var line in dataFromFile) { Urls.Add(line); }
-                   // IsEnabled = true;
+                    // IsEnabled = true;
                 }
                 catch (IOException ex)
                 {
@@ -122,18 +123,18 @@ namespace DownloadManager.ViewModels
         }
 
         public RelayCommand DownloadCommand =>
-         _downloadCommand ??= new RelayCommand(DownloadPages, DownloadButtonIsEnabled);
+         _downloadCommand ??= new RelayCommand(DownloadPages, CanDownloadPages);
 
         private async void DownloadPages()
         {
-            string[] addresses = Urls.Select(x=>x).ToArray();
+            string[] addresses = Urls.Select(x => x).ToArray();
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             var t = Task.Run(async () => await Downloader.Download(addresses, token));
-        StatusBarText = "Downloading...";
+            StatusBarText = "Downloading...";
             IsEnabled = false;
             //cancelBtn.IsEnabled = true;
-           // await t;
+            // await t;
             await Downloader.Download(addresses, token);
             //cancelBtn.IsEnabled = false;
             //downloadBtn.IsEnabled = true;
@@ -141,8 +142,8 @@ namespace DownloadManager.ViewModels
         }
 
         // Download button is enabled if the urls are displayed and download process isn't in progress.
-        private bool DownloadButtonIsEnabled()=>Urls.Count>0 && IsEnabled;
-     
+        private bool CanDownloadPages() => Urls.Count > 0 && IsEnabled;
+
 
         public RelayCommand CancelCommand =>
         _cancelCommand ??= new RelayCommand(CancelDownloading);
@@ -155,15 +156,19 @@ namespace DownloadManager.ViewModels
             StatusBarText = null;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+
         protected virtual void OnPropertyChanged(string propertyName = "")
         {
             if (propertyName != nameof(IsChanged))
             {
                 IsChanged = true;
             }
-            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            // The first parameter ("this") is the object instance that is raising the event.
+            // The PropertyChangedEventArgs constructor takes a string that indicates the property
+            // that was changed and needs to be updated. When String.Empty is used all of the bound
+            // properties of the instance are updated.
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

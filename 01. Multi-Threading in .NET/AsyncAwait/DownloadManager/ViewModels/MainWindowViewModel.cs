@@ -142,19 +142,21 @@ namespace DownloadManager.ViewModels
         }
 
         // Download button is enabled if the urls are displayed and download process isn't in progress.
-        private bool CanDownloadPages() => Urls.Count > 0 && IsEnabled;
+        private bool CanDownloadPages() => Urls.Count > 0 && cts==default;
 
 
-        public RelayCommand CancelCommand =>
-        _cancelCommand ??= new RelayCommand(CancelDownloading);
+        public RelayCommand CancelCommand => _cancelCommand ??= new (CancelDownloading, CanCancelDownload);
         private void CancelDownloading()
         {
             cts.Cancel();
             cts.Dispose();
             //cancelBtn.IsEnabled = false;
             //downloadBtn.IsEnabled = true;
-            StatusBarText = null;
+            StatusBarText = default;
         }
+
+        // Cancel button is enabled 
+        private bool CanCancelDownload() => cts!=default && !cts.IsCancellationRequested;
 
 
         protected virtual void OnPropertyChanged(string propertyName = "")

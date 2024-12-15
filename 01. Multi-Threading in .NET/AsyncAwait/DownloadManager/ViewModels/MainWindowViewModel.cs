@@ -18,21 +18,21 @@ namespace DownloadManager.ViewModels
         private RelayCommand _downloadCommand = null;
         private RelayCommand _cancelCommand = null;
         private string _statusBarText;
-        private bool _isEnabled;
+       // private bool _isEnabled;
         private bool _isChanged;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool IsEnabled
-        {
-            get => _isEnabled;
-            set
-            {
-                if (value == _isEnabled) return;
-                _isChanged = value;
-                OnPropertyChanged();
-            }
-        }
+        //public bool IsEnabled
+        //{
+        //    get => _isEnabled;
+        //    set
+        //    {
+        //        if (value == _isEnabled) return;
+        //        _isChanged = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         public bool IsChanged
         {

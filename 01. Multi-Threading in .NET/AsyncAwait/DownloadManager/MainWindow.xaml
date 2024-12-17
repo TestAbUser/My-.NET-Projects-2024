@@ -28,45 +28,14 @@ BorderBrush ="Black">
                 <TextBlock Name="statBarText"  Text="{Binding StatusBarText,TargetNullValue=Ready}"/>
             </StatusBarItem>
         </StatusBar>
-        <Grid >
-            <!--<Grid.Resources>
-                <DataTemplate x:Key="template">
-                    <ProgressBar x:Name="progressBar" 
-             Value="{Binding }"/>
-                </DataTemplate>-->
-            <!--</Grid.Resources>-->
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="150"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            <!--<ItemsControl
-                ItemsSource="{Binding Urls}">
-                --><!--<ItemsControl DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">--><!--
-                    <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="{Binding}"/>
-                            <ProgressBar Grid.Row="0" Grid.Column="1"
-                             Minimum="0" Maximum="100" 
-                            Value="{Binding Path=DataContext.ProgressReport, 
-                                RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                         />
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                
-            </ItemsControl>-->
-            
             <DataGrid x:Name="dataGrid"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch"
                       Grid.Row="0" 
                       ItemsSource="{Binding Urls}"
                       IsReadOnly="True"
@@ -74,17 +43,14 @@ BorderBrush ="Black">
 
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url" Width="5*"
-                                        Binding="{Binding}"
-                                        />
+                                        Binding="{Binding}"/>
                     <!--Indicates that the collection itself is the item to be displayed in the column--> 
                     <DataGridTemplateColumn Header="Progress" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate >
                                 <ProgressBar x:Name="progressBar" 
                            Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, 
-                                    Path=DataContext.ProgressReport}"
-                                             
-                                             />
+                                    Path=DataContext.ProgressReport}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

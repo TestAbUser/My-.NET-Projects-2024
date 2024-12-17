@@ -4,15 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DownloadManager" 
-        xmlns:src="clr-namespace:DownloadManager.ViewModels"
         mc:Ignorable="d"
         x:Name="mainWindow"
         Title="MainWindow" Height="300" Width="800"
         DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">
 
     <DockPanel Background="AliceBlue">
-        <Menu DockPanel.Dock ="Top" HorizontalAlignment="Left" Background="White"
-BorderBrush ="Black">
+        <Menu DockPanel.Dock ="Top" HorizontalAlignment="Left" Background="White" BorderBrush ="Black">
             <MenuItem Header="_File">
                 <MenuItem Header="Open" Command ="{Binding OpenCommand}"/>
                 <MenuItem Header="Save" Command ="{Binding SaveCommand}"/>
@@ -34,23 +32,18 @@ BorderBrush ="Black">
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <DataGrid x:Name="dataGrid"
-                      VerticalAlignment="Stretch"
-                      HorizontalAlignment="Stretch"
                       Grid.Row="0" 
                       ItemsSource="{Binding Urls}"
                       IsReadOnly="True"
                       AutoGenerateColumns="False">
-
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url" Width="5*"
-                                        Binding="{Binding}"/>
-                    <!--Indicates that the collection itself is the item to be displayed in the column--> 
+                                        Binding="{Binding}"/> <!--Indicates that the collection itself is the item to be displayed in the column-->
                     <DataGridTemplateColumn Header="Progress" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate >
                                 <ProgressBar x:Name="progressBar" 
-                           Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, 
-                                    Path=DataContext.ProgressReport}"/>
+                                             Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ProgressReport}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -59,23 +52,16 @@ BorderBrush ="Black">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0,5,0" Grid.Row="1">
                 <Button x:Name="addUrlBtn" 
                         Content="Add"
-                              Margin="5,0,5,0" 
-                              Grid.Row="1" 
-                              Padding="4, 2" 
-                              Height="30" 
+                        Margin="5,0,5,0" 
+                        Grid.Row="1" 
+                        Padding="4, 2" 
+                        Height="30" 
                         Command="{Binding OpenAddWindowCommand}">
                 </Button>
-                <!--IsEnabled="{Binding Path=HasItems, ElementName=dataGrid}"-->
-                <Button x:Name="downloadBtn" 
-                        Content="Download" 
-                        Margin="5,0,5,0" Padding="4, 2" 
-                        Grid.Row="1" Height="30" 
-                        Command="{Binding DownloadCommand}"/>
-                <!--IsEnabled="{Binding IsChanged}"-->
-                <Button x:Name="cancelBtn" 
-                        Content="Cancel" 
-                        Margin="5,0,5,0" Padding="4, 2" Grid.Row="1" Height="30" 
-                        Command="{Binding CancelCommand}">
+                <Button x:Name="downloadBtn" Content="Download" Margin="5,0,5,0" Padding="4, 2" 
+                        Grid.Row="1" Height="30" Command="{Binding DownloadCommand}"/>
+                <Button x:Name="cancelBtn" Content="Cancel" Margin="5,0,5,0" Padding="4, 2" 
+                        Grid.Row="1" Height="30" Command="{Binding CancelCommand}">
                 </Button>
             </StackPanel>
         </Grid>

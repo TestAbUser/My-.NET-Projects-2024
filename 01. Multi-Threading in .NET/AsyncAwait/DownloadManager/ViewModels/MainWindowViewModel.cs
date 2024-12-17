@@ -24,16 +24,16 @@ namespace DownloadManager.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ObservableCollection<int> ProgressReport { get; set; } = new();
-        //{
-        //    get => _progressReport;
-        //    set
-        //    {
-        //        if (value == _progressReport) return;
-        //        _progressReport = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
+        public int ProgressReport //{ get; set; } = new();
+        {
+            get => _progressReport;
+            set
+            {
+                if (value == _progressReport) return;
+                _progressReport = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsChanged
         {

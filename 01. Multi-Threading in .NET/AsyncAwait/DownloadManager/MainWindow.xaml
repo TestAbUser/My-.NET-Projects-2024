@@ -42,7 +42,8 @@
                     <DataGridTemplateColumn Header="Progress" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate >
-                                <ProgressBar x:Name="progressBar" 
+                                <!--RelativeSource allows binding to an ancestor element's property.-->
+                                    <ProgressBar x:Name="progressBar" 
                                              Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ProgressReport}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

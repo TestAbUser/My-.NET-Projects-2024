@@ -61,7 +61,6 @@ namespace DownloadManager.ViewModels
         public ObservableCollection<string> Urls { get; } = new();
 
 
-
         public RelayCommand OpenAddWindowCommand => _openAddWindowCommand ??= new RelayCommand(() =>
         {
             // Pass the collection holding Urls to the other window's view model.
@@ -126,10 +125,15 @@ namespace DownloadManager.ViewModels
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             StatusBarText = "Downloading...";
-            var progressIndicator = new Progress<int>(percent=> ProgressReport=percent);
-            await Downloader.Download(addresses, progressIndicator, token);
-            cts = null;
+            
+            foreach (var address in addresses)
+            {
+                var progressIndicator = new Progress<int>(percent => ProgressReport = percent);
+                await Downloader.Download(address, progressIndicator, token);
+            }
 
+            
+            cts = null;
         }
 
         // Download button is enabled if the urls are displayed and download process isn't in progress.

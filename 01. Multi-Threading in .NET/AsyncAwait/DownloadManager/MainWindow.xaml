@@ -9,9 +9,6 @@
         x:Name="mainWindow"
         Title="MainWindow" Height="300" Width="800"
         DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">
-    <Window.Resources>
-        <src:MainWindowViewModel x:Key="MyViewModel"/>
-    </Window.Resources>
 
     <DockPanel Background="AliceBlue">
         <Menu DockPanel.Dock ="Top" HorizontalAlignment="Left" Background="White"

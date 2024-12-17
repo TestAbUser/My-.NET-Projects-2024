@@ -128,7 +128,7 @@ namespace DownloadManager.ViewModels
             //string address = "http://frs24.ru/st/prisedaniya-so-shtangoj-normativ/";
             for (int i = 0;i< addresses.Length;i++) 
             {
-                var progressIndicator = new Progress<int>(percent => ProgressReport.Add(percent));
+                var progressIndicator = new Progress<int>(percent => ProgressReport=percent);
                  await Downloader.Download(addresses[i], progressIndicator, token);
                // await Downloader.Download(address, progressIndicator, token);
             }

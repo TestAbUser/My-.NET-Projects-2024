@@ -24,7 +24,7 @@ namespace DownloadManager.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ObservableCollection<int> ProgressReport { get; private set; } = new();
+        public ObservableCollection<int> ProgressReport { get; set; } = new();
         //{
         //    get => _progressReport;
         //    set
@@ -125,11 +125,12 @@ namespace DownloadManager.ViewModels
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             StatusBarText = "Downloading...";
-            
-            foreach (var address in addresses)
+            //string address = "http://frs24.ru/st/prisedaniya-so-shtangoj-normativ/";
+            for (int i = 0;i< addresses.Length;i++) 
             {
-                var progressIndicator = new Progress<int>(percent => ProgressReport = percent);
-                await Downloader.Download(address, progressIndicator, token);
+                var progressIndicator = new Progress<int>(percent => ProgressReport.Add(percent));
+                 await Downloader.Download(addresses[i], progressIndicator, token);
+               // await Downloader.Download(address, progressIndicator, token);
             }
 
             

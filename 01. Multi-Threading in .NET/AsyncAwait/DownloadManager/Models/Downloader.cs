@@ -16,9 +16,9 @@ namespace DownloadManager.Models
         public static async Task<int> Download(string/*[]*/ address, IProgress<int> progress, CancellationToken ct)
         {
             string page;
-            int totalCount = address.Length;
-            int loadCount = await Task.Run<int>(async () =>
-            {
+            // int totalCount = address.Length;
+            int loadCount = 0;//await Task.Run<int>(async () =>
+           // {
                 int tempCount = 0;
 
                 //  await Task.Delay(10000);
@@ -32,8 +32,9 @@ namespace DownloadManager.Models
                     {
                         // progress.Report(tempCount * 100 / totalCount);
                         progress.Report(100);
+                    loadCount++;
                     }
-                    tempCount++;
+                   // tempCount++;
                     //}
                 }
                 catch (OperationCanceledException ex)
@@ -48,8 +49,8 @@ namespace DownloadManager.Models
                 finally
                 {
                 }
-                return tempCount;
-            });
+              //  return tempCount;
+            //});
             return loadCount;
         }
     }

@@ -3,11 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DownloadManager"
+        xmlns:local="clr-namespace:DownloadManager" 
+        xmlns:src="clr-namespace:DownloadManager.ViewModels"
         mc:Ignorable="d"
-        Name="mainWindow"
-        DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}"
-        Title="MainWindow" Height="300" Width="800">
+        x:Name="mainWindow"
+        Title="MainWindow" Height="300" Width="800"
+        DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">
+    <Window.Resources>
+        <src:MainWindowViewModel x:Key="MyViewModel"/>
+    </Window.Resources>
+
     <DockPanel Background="AliceBlue">
         <Menu DockPanel.Dock ="Top" HorizontalAlignment="Left" Background="White"
 BorderBrush ="Black">
@@ -26,24 +31,63 @@ BorderBrush ="Black">
                 <TextBlock Name="statBarText"  Text="{Binding StatusBarText,TargetNullValue=Ready}"/>
             </StatusBarItem>
         </StatusBar>
-        <Grid>
+        <Grid >
+            <!--<Grid.Resources>
+                <DataTemplate x:Key="template">
+                    <ProgressBar x:Name="progressBar" 
+             Value="{Binding }"/>
+                </DataTemplate>-->
+            <!--</Grid.Resources>-->
             <Grid.RowDefinitions>
                 <RowDefinition Height="150"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            <!--<ItemsControl
+                ItemsSource="{Binding Urls}">
+                --><!--<ItemsControl DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">--><!--
+                    <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="{Binding}"/>
+                            <ProgressBar Grid.Row="0" Grid.Column="1"
+                             Minimum="0" Maximum="100" 
+                            Value="{Binding Path=DataContext.ProgressReport, 
+                                RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                         />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                
+            </ItemsControl>-->
+            
             <DataGrid x:Name="dataGrid"
                       Grid.Row="0" 
-                      ItemsSource="{Binding Urls, UpdateSourceTrigger= Explicit}"
+                      ItemsSource="{Binding Urls}"
                       IsReadOnly="True"
                       AutoGenerateColumns="False">
 
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url" Width="5*"
-                                        Binding="{Binding}"/><!--Indicates that the collection itself is the item to be displayed in the column -->
+                                        Binding="{Binding}"
+                                        />
+                    <!--Indicates that the collection itself is the item to be displayed in the column--> 
                     <DataGridTemplateColumn Header="Progress" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <ProgressBar/>
+                            <DataTemplate >
+                                <ProgressBar x:Name="progressBar" 
+                           Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, 
+                                    Path=DataContext.ProgressReport}"
+                                             
+                                             />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

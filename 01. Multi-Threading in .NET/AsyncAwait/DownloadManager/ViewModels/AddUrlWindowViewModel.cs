@@ -24,6 +24,7 @@ namespace DownloadManager.ViewModels
         public RelayCommand<object> OkCommand => _okCommand ??= new RelayCommand<object>(obj =>
         {
             Urls.Add(Url);
+
             // Casting the argument to Window. 
             Window wnd = obj as Window;
             wnd?.Close();

@@ -29,7 +29,7 @@
                      BorderBrush="Gray" 
                      Grid.Row="0" 
                      Height="30" 
-                     Text="{Binding Url, Mode=OneWayToSource}"
+                     Text="{Binding Url, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                      VerticalAlignment="Bottom"/>
             <!--StackPanel allows to group buttons in one line horizontally-->
             <StackPanel Orientation="Horizontal" 

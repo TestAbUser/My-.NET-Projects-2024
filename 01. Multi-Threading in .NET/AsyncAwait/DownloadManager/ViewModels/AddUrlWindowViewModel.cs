@@ -27,6 +27,6 @@ namespace DownloadManager.ViewModels
             // Casting the argument to Window. 
             Window wnd = obj as Window;
             wnd?.Close();
-        }, null);
+        });
     }
 }

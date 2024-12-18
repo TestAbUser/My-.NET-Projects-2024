@@ -50,7 +50,8 @@
                         IsEnabled="{Binding ElementName=addUrlTextBox, Path=Text.Length}" 
                         Margin="5,0,5,0" 
                         Padding="4, 2" 
-                        Height="30" />
+                        Height="30" 
+                        IsDefault="True"/>
             </StackPanel>
         </Grid>
     </Grid>

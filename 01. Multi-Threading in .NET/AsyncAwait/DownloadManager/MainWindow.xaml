@@ -22,8 +22,12 @@
             Pages to download
         </Label>
         <StatusBar DockPanel.Dock="Bottom" Background="Beige">
-            <StatusBarItem>
+            <!--<StatusBarItem>
                 <TextBlock Name="statBarText"  Text="{Binding StatusBarText,TargetNullValue=Ready}"/>
+            </StatusBarItem>-->
+            <StatusBarItem>
+                <ProgressBar x:Name="progressBar" 
+         Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ProgressReport}"/>
             </StatusBarItem>
         </StatusBar>
         <Grid>
@@ -39,15 +43,15 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url" Width="5*"
                                         Binding="{Binding}"/> <!--Indicates that the collection itself is the item to be displayed in the column-->
-                    <DataGridTemplateColumn Header="Progress" Width="*">
+                    <!--<DataGridTemplateColumn Header="Progress" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate >
-                                <!--RelativeSource allows binding to an ancestor element's property.-->
-                                    <ProgressBar x:Name="progressBar" 
-                                             Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ProgressReport}"/>
+                                --><!--RelativeSource allows binding to an ancestor element's property.-->
+                                    <!--<ProgressBar x:Name="progressBar" 
+                                             Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ProgressReport}"/>--><!--
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                    </DataGridTemplateColumn>-->
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0,5,0" Grid.Row="1">

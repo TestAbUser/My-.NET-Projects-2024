@@ -130,7 +130,7 @@ namespace DownloadManager.ViewModels
             {
                 var progressIndicator = new Progress<int>(percent => ProgressReport=percent);
                  await Downloader.Download(addresses[i], progressIndicator, token);
-               // await Downloader.Download(address, progressIndicator, token);
+                // await Downloader.Download(address, progressIndicator, token);
             }
 
             

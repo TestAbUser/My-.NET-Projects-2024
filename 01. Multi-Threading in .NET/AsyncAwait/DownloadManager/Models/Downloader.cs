@@ -13,29 +13,26 @@ namespace DownloadManager.Models
     {
         public static HttpClient client = new HttpClient();
 
-        public static async Task<int> Download(string/*[]*/ address, IProgress<int> progress, CancellationToken ct)
+        public static async Task<int> Download(string[] addresses, IProgress<int> progress, CancellationToken ct)
         {
             string page;
-            // int totalCount = address.Length;
-            int loadCount = 0;//await Task.Run<int>(async () =>
-           // {
+            int totalCount = addresses.Length;
+            int loadCount = await Task.Run<int>(async () =>
+            {
                 int tempCount = 0;
 
                 //  await Task.Delay(10000);
                 try
                 {
-                    //foreach (string address in addresses)
-                    //{
-                    /*page = */await client.GetStringAsync(address, ct);
-                    Task.Delay(100);
-                    if (progress != null)
+                    foreach (string address in addresses)
                     {
-                        // progress.Report(tempCount * 100 / totalCount);
-                        progress.Report(100);
-                    loadCount++;
+                        page = await client.GetStringAsync(address, ct);
+                        if (progress != null)
+                        {
+                            progress.Report(tempCount * 100 / totalCount);
+                        }
+                        tempCount++;
                     }
-                   // tempCount++;
-                    //}
                 }
                 catch (OperationCanceledException ex)
                 {
@@ -44,13 +41,12 @@ namespace DownloadManager.Models
                 catch (Exception ex)
                 {
                     MessageBox.Show("Something's wrong with the address!");
-                    progress.Report(0);
                 }
                 finally
                 {
                 }
-              //  return tempCount;
-            //});
+                return tempCount;
+            });
             return loadCount;
         }
     }

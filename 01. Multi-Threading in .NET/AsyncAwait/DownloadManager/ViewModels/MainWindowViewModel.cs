@@ -125,7 +125,6 @@ namespace DownloadManager.ViewModels
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             StatusBarText = "Downloading...";
-            //string address = "http://frs24.ru/st/prisedaniya-so-shtangoj-normativ/";
     
                 var progressIndicator = new Progress<int>(percent => ProgressReport=percent);
                  await Downloader.Download(addresses, progressIndicator, token);

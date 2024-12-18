@@ -22,11 +22,25 @@
             Pages to download
         </Label>
         <StatusBar DockPanel.Dock="Bottom" Background="Beige">
-            <!--<StatusBarItem>
-                <TextBlock Name="statBarText"  Text="{Binding StatusBarText,TargetNullValue=Ready}"/>
-            </StatusBarItem>-->
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
             <StatusBarItem>
-                <ProgressBar x:Name="progressBar" 
+                <TextBlock Name="statBarText"  Text="{Binding StatusBarText,TargetNullValue=Ready}"/>
+            </StatusBarItem>
+            <StatusBarItem x:Name="container" Grid.Column="1" HorizontalContentAlignment="Right">
+                <ProgressBar x:Name="progressBar" Height="10" Width="{Binding ElementName=container, Path=ActualWidth}" 
          Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ProgressReport}"/>
             </StatusBarItem>
         </StatusBar>

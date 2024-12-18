@@ -19,9 +19,9 @@ namespace DownloadManager.Models
             int totalCount = addresses.Length;
             int loadCount = await Task.Run<int>(async () =>
             {
-                int tempCount = 0;
+                int tempCount = 1;
 
-                //  await Task.Delay(10000);
+                 // await Task.Delay(1000);
                 try
                 {
                     foreach (string address in addresses)

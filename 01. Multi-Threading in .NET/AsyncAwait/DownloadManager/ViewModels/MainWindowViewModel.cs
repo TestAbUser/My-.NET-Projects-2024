@@ -133,14 +133,13 @@ namespace DownloadManager.ViewModels
                 var progressIndicator = new Progress<int>(percent => ProgressReport = percent);
                 await Downloader.DownloadAsync(addresses, progressIndicator, token);
             }
-
             catch (OperationCanceledException ex)
             {
-                MessageBox.Show("DownloadAsync cancelled");
+                MessageBox.Show(ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Something's wrong with the address!");
+                MessageBox.Show(ex.Message);
             }
             finally
             {

@@ -9,9 +9,9 @@ using System.Windows;
 
 namespace DownloadManager.Models
 {
-    public class Downloader//: INotifyPropertyChanged
+    public class Downloader
     {
-        public static HttpClient client = new HttpClient();
+        private static readonly HttpClient s_client = new ();
 
         public static async Task<int> DownloadAsync(string[] addresses, IProgress<int> progress, CancellationToken ct)
         {
@@ -20,31 +20,15 @@ namespace DownloadManager.Models
             int loadCount = await Task.Run<int>(async () =>
             {
                 int tempCount = 1;
-
-                 // await Task.Delay(1000);
-                //try
-                //{
                     foreach (string address in addresses)
                     {
-                        page = await client.GetStringAsync(address, ct).ConfigureAwait(false);
+                        page = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
                         if (progress != null)
                         {
                             progress.Report(tempCount * 100 / totalCount);
                         }
                         tempCount++;
                     }
-                //}
-                //catch (OperationCanceledException ex)
-                //{
-                //    MessageBox.Show("DownloadAsync cancelled");
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show("Something's wrong with the address!");
-                //}
-                //finally
-                //{
-                //}
                 return tempCount;
             });
             return loadCount;

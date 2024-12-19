@@ -131,7 +131,7 @@ namespace DownloadManager.ViewModels
             try
             {
                 var progressIndicator = new Progress<int>(percent => ProgressReport = percent);
-                await Downloader.Download(addresses, progressIndicator, token);
+                await Downloader.Download(addresses, progressIndicator, token).ConfigureAwait(false);
             }
 
             catch (OperationCanceledException ex)
@@ -145,10 +145,10 @@ namespace DownloadManager.ViewModels
 
             cts = null;
             StatusBarText = null;
-            DownloadCommand.RaiseCanExecuteChanged();
-            OpenAddWindowCommand.RaiseCanExecuteChanged();
-            CancelCommand.RaiseCanExecuteChanged();
-            OpenCommand.RaiseCanExecuteChanged();
+            //DownloadCommand.RaiseCanExecuteChanged();
+            //OpenAddWindowCommand.RaiseCanExecuteChanged();
+            //CancelCommand.RaiseCanExecuteChanged();
+            //OpenCommand.RaiseCanExecuteChanged();
         }
 
         // Download button is enabled if the urls are displayed and download process isn't in progress.

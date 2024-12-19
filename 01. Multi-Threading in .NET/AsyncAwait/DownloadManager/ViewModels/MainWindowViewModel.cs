@@ -19,7 +19,7 @@ namespace DownloadManager.ViewModels
         private RelayCommand _cancelCommand = null;
         private string _statusBarText;
         private int _progressReport;
-       // private bool _isEnabled;
+        // private bool _isEnabled;
         private bool _isChanged;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -69,7 +69,7 @@ namespace DownloadManager.ViewModels
             auw.ShowDialog();
         }, CanOpenAddWindowCommand);
 
-        private bool CanOpenAddWindowCommand() =>  cts == null || cts.IsCancellationRequested;
+        private bool CanOpenAddWindowCommand() => cts == null || cts.IsCancellationRequested;
 
         public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(OpenDialog, CanOpenAddWindowCommand);
 
@@ -128,10 +128,20 @@ namespace DownloadManager.ViewModels
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             StatusBarText = "Downloading...";
-    
-                var progressIndicator = new Progress<int>(percent => ProgressReport=percent);
-                 await Downloader.Download(addresses, progressIndicator, token);
-                // await Downloader.Download(address, progressIndicator, token);
+            try
+            {
+                var progressIndicator = new Progress<int>(percent => ProgressReport = percent);
+                await Downloader.Download(addresses, progressIndicator, token);
+            }
+
+            catch (OperationCanceledException ex)
+            {
+                MessageBox.Show("Download cancelled");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Something's wrong with the address!");
+            }
 
             cts = null;
             StatusBarText = null;
@@ -144,7 +154,7 @@ namespace DownloadManager.ViewModels
         // Download button is enabled if the urls are displayed and download process isn't in progress.
         private bool CanDownloadPages() => Urls.Count > 0 && (cts == null || cts.IsCancellationRequested);
 
-        
+
         public RelayCommand CancelCommand => _cancelCommand ??= new(CancelDownloading, CanCancelDownload);
         private void CancelDownloading()
         {

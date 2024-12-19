@@ -22,8 +22,8 @@ namespace DownloadManager.Models
                 int tempCount = 1;
 
                  // await Task.Delay(1000);
-                try
-                {
+                //try
+                //{
                     foreach (string address in addresses)
                     {
                         page = await client.GetStringAsync(address, ct);
@@ -33,18 +33,18 @@ namespace DownloadManager.Models
                         }
                         tempCount++;
                     }
-                }
-                catch (OperationCanceledException ex)
-                {
-                    MessageBox.Show("Download cancelled");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Something's wrong with the address!");
-                }
-                finally
-                {
-                }
+                //}
+                //catch (OperationCanceledException ex)
+                //{
+                //    MessageBox.Show("Download cancelled");
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show("Something's wrong with the address!");
+                //}
+                //finally
+                //{
+                //}
                 return tempCount;
             });
             return loadCount;

@@ -120,7 +120,7 @@ namespace DownloadManager.ViewModels
         }
 
         public RelayCommand DownloadCommand =>
-         _downloadCommand ??= new RelayCommand(DownloadPages, CanDownloadPages);
+         _downloadCommand ??= new RelayCommand(DownloadPagesAsync, CanDownloadPages);
 
         private async void DownloadPagesAsync()
         {

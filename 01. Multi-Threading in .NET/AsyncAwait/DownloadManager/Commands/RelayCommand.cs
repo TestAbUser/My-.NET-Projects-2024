@@ -15,9 +15,6 @@ namespace DownloadManager.Commands
             remove => CommandManager.RequerySuggested -= value;
         }
 
-        // public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        // private void CommandManager_RequerySuggested(object sender, EventArgs e) => RaiseCanExecuteChanged();
-
         public void RaiseCanExecuteChanged()
         {
             CommandManager.InvalidateRequerySuggested();
@@ -31,7 +28,6 @@ namespace DownloadManager.Commands
             _execute = execute
             ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
-         //   CommandManager.RequerySuggested += CommandManager_RequerySuggested;
         }
 
         // Is marked virtual to allow its modification in a derived class.

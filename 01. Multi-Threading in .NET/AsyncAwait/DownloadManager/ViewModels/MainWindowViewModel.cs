@@ -147,14 +147,8 @@ namespace DownloadManager.ViewModels
                 cts.Dispose();
                 cts = null;
                 StatusBarText = null;
+               DownloadCommand.RaiseCanExecuteChanged();
             }
-
-            
-            
-            //DownloadCommand.RaiseCanExecuteChanged();
-            //OpenAddWindowCommand.RaiseCanExecuteChanged();
-            //CancelCommand.RaiseCanExecuteChanged();
-            //OpenCommand.RaiseCanExecuteChanged();
         }
 
         // DownloadAsync button is enabled if the urls are displayed and download process isn't in progress.

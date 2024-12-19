@@ -15,9 +15,13 @@ namespace DownloadManager.Commands
         //    remove => CommandManager.RequerySuggested -= value;
         //}
 
-        protected void RaiseCanExecuteChanged()=> CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+         public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         private void CommandManager_RequerySuggested(object sender, EventArgs e) => RaiseCanExecuteChanged();
-       
+
+        //public void RaiseCanExecuteChanged()
+        //{
+        //    CommandManager.InvalidateRequerySuggested();
+        //}
         // Is needed by the RelayCommand<T>.
         public RelayCommand() { }
         public RelayCommand(Action execute) : this(execute, null) { }

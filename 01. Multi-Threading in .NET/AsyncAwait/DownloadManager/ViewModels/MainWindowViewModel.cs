@@ -67,9 +67,12 @@ namespace DownloadManager.ViewModels
             AddUrlWindowViewModel viewModel = new(Urls);
             AddUrlWindow auw = new(viewModel);
             auw.ShowDialog();
-        }, () => cts == null || cts.IsCancellationRequested);
+        }, CanOpenAddWindowCommand);
 
-        public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(OpenDialog);
+        private bool CanOpenAddWindowCommand() =>  cts == null || cts.IsCancellationRequested;
+
+        public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(OpenDialog, CanOpenAddWindowCommand);
+
 
         private void OpenDialog()
         {
@@ -130,8 +133,12 @@ namespace DownloadManager.ViewModels
                  await Downloader.Download(addresses, progressIndicator, token);
                 // await Downloader.Download(address, progressIndicator, token);
 
-            
             cts = null;
+            StatusBarText = null;
+            DownloadCommand.RaiseCanExecuteChanged();
+            OpenAddWindowCommand.RaiseCanExecuteChanged();
+            CancelCommand.RaiseCanExecuteChanged();
+            OpenCommand.RaiseCanExecuteChanged();
         }
 
         // Download button is enabled if the urls are displayed and download process isn't in progress.

@@ -122,7 +122,7 @@ namespace DownloadManager.ViewModels
         public RelayCommand DownloadCommand =>
          _downloadCommand ??= new RelayCommand(DownloadPages, CanDownloadPages);
 
-        private async void DownloadPages()
+        private async void DownloadPagesAsync()
         {
             string[] addresses = Urls.Select(x => x).ToArray();
             cts = new CancellationTokenSource();
@@ -131,7 +131,7 @@ namespace DownloadManager.ViewModels
             try
             {
                 var progressIndicator = new Progress<int>(percent => ProgressReport = percent);
-                await Downloader.Download(addresses, progressIndicator, token).ConfigureAwait(false);
+                await Downloader.Download(addresses, progressIndicator, token);
             }
 
             catch (OperationCanceledException ex)
@@ -142,9 +142,15 @@ namespace DownloadManager.ViewModels
             {
                 MessageBox.Show("Something's wrong with the address!");
             }
+            finally
+            {
+                cts.Dispose();
+                cts = null;
+                StatusBarText = null;
+            }
 
-            cts = null;
-            StatusBarText = null;
+            
+            
             //DownloadCommand.RaiseCanExecuteChanged();
             //OpenAddWindowCommand.RaiseCanExecuteChanged();
             //CancelCommand.RaiseCanExecuteChanged();

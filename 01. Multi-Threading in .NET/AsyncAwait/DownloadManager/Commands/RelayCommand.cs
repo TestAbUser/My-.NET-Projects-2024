@@ -9,12 +9,15 @@ namespace DownloadManager.Commands
         private readonly Func<bool> _canExecute;
 
         // Occurs when changes occur that affect whether or not the command should execute.
-        public event EventHandler? CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
-        }
+        public event EventHandler? CanExecuteChanged;
+        //{
+        //    add => CommandManager.RequerySuggested += value;
+        //    remove => CommandManager.RequerySuggested -= value;
+        //}
 
+        protected void RaiseCanExecuteChanged()=> CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        private void CommandManager_RequerySuggested(object sender, EventArgs e) => RaiseCanExecuteChanged();
+       
         // Is needed by the RelayCommand<T>.
         public RelayCommand() { }
         public RelayCommand(Action execute) : this(execute, null) { }
@@ -23,6 +26,7 @@ namespace DownloadManager.Commands
             _execute = execute
             ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
+            CommandManager.RequerySuggested += CommandManager_RequerySuggested;
         }
 
         // Is marked virtual to allow its modification in a derived class.

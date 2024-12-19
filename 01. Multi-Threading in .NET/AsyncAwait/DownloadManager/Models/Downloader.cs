@@ -26,7 +26,7 @@ namespace DownloadManager.Models
                 //{
                     foreach (string address in addresses)
                     {
-                        page = await client.GetStringAsync(address, ct);
+                        page = await client.GetStringAsync(address, ct).ConfigureAwait(false);
                         if (progress != null)
                         {
                             progress.Report(tempCount * 100 / totalCount);

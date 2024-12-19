@@ -131,12 +131,12 @@ namespace DownloadManager.ViewModels
             try
             {
                 var progressIndicator = new Progress<int>(percent => ProgressReport = percent);
-                await Downloader.Download(addresses, progressIndicator, token);
+                await Downloader.DownloadAsync(addresses, progressIndicator, token);
             }
 
             catch (OperationCanceledException ex)
             {
-                MessageBox.Show("Download cancelled");
+                MessageBox.Show("DownloadAsync cancelled");
             }
             catch (Exception ex)
             {
@@ -157,7 +157,7 @@ namespace DownloadManager.ViewModels
             //OpenCommand.RaiseCanExecuteChanged();
         }
 
-        // Download button is enabled if the urls are displayed and download process isn't in progress.
+        // DownloadAsync button is enabled if the urls are displayed and download process isn't in progress.
         private bool CanDownloadPages() => Urls.Count > 0 && (cts == null || cts.IsCancellationRequested);
 
 

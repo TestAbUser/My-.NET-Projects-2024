@@ -13,7 +13,7 @@ namespace DownloadManager.Models
     {
         public static HttpClient client = new HttpClient();
 
-        public static async Task<int> Download(string[] addresses, IProgress<int> progress, CancellationToken ct)
+        public static async Task<int> DownloadAsync(string[] addresses, IProgress<int> progress, CancellationToken ct)
         {
             string page;
             int totalCount = addresses.Length;
@@ -36,7 +36,7 @@ namespace DownloadManager.Models
                 //}
                 //catch (OperationCanceledException ex)
                 //{
-                //    MessageBox.Show("Download cancelled");
+                //    MessageBox.Show("DownloadAsync cancelled");
                 //}
                 //catch (Exception ex)
                 //{

@@ -30,7 +30,7 @@ namespace DownloadManager.Models
                         tempCount++;
                     }
                 return tempCount;
-            });
+            }, ct);
             return loadCount;
         }
     }

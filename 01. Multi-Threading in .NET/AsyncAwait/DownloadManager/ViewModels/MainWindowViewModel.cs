@@ -19,6 +19,7 @@ namespace DownloadManager.ViewModels
         private RelayCommand _cancelCommand = null;
         private string _statusBarText;
         private int _progressReport;
+       // private string _downloadStatus;
 
         // private bool _isEnabled;
         private bool _isChanged;
@@ -60,6 +61,7 @@ namespace DownloadManager.ViewModels
             }
         }
         public ObservableCollection<string> Urls { get; } = new();
+        public ObservableCollection<string> DownloadStatuses { get; } = new();
 
 
         public RelayCommand OpenAddWindowCommand => _openAddWindowCommand ??= new RelayCommand(() =>
@@ -131,23 +133,19 @@ namespace DownloadManager.ViewModels
             StatusBarText = "Downloading...";
             try
             {
-                var progressIndicator = new Progress<int>(percent => ProgressReport = percent);
+                var progressIndicator = new Progress<int>(percent =>
+                {
+                    ProgressReport = percent;
+                    DownloadStatuses.Add(ProgressReport.ToString());
+                });
                 await Downloader.DownloadAsync(addresses, progressIndicator, token);
-            }
-            catch (OperationCanceledException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
             }
             finally
             {
-                cts.Dispose();
-                cts = null;
-                StatusBarText = null;
-               DownloadCommand.RaiseCanExecuteChanged();
+            cts.Dispose();
+            cts = null;
+            StatusBarText = null;
+            DownloadCommand.RaiseCanExecuteChanged();
             }
         }
 

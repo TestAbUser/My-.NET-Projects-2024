@@ -61,14 +61,15 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url" Width="5*" IsReadOnly="True"
                                         Binding="{Binding}"/> <!--Indicates that the collection itself is the item to be displayed in the column-->
-                    <DataGridTemplateColumn Header="Progress" Width="*" IsReadOnly="True">
+                    <!--<DataGridTemplateColumn Header="Progress" Width="*" IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate >
-                                    <TextBlock x:Name="text" 
-                                             Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ProgressReport}"/>
-                            </DataTemplate>
+                            <DataTemplate >-->
+                    <DataGridTextColumn
+                         Binding="{Binding Path=DataContext.DownloadStatuses}"/>
+                                             <!--Binding="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}"/>-->
+                            <!--</DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                    </DataGridTemplateColumn>-->
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0,5,0" Grid.Row="1">

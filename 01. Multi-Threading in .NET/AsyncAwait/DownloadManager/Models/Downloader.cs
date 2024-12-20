@@ -22,8 +22,18 @@ namespace DownloadManager.Models
                 int tempCount = 1;
                     foreach (string address in addresses)
                     {
+                    try
+                    {
                         page = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
-                        if (progress != null)
+                    } catch (OperationCanceledException ex) 
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                         MessageBox.Show(ex.Message);
+                    }
+                    if (progress != null)
                         {
                             progress.Report(tempCount * 100 / totalCount);
                         }

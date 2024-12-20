@@ -17,8 +17,10 @@ namespace DownloadManager.ViewModels
         private RelayCommand _saveCommand = null;
         private RelayCommand _downloadCommand = null;
         private RelayCommand _cancelCommand = null;
+        private string _selectedCustomer;
         private string _statusBarText;
         private int _progressReport;
+
         // private bool _isEnabled;
         private bool _isChanged;
 
@@ -31,6 +33,17 @@ namespace DownloadManager.ViewModels
             {
                 if (value == _progressReport) return;
                 _progressReport = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SelectedCustomer
+        {
+            get => _selectedCustomer;
+            set
+            {
+                if (value == _selectedCustomer) return;
+                _selectedCustomer = value;
                 OnPropertyChanged();
             }
         }

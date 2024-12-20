@@ -56,7 +56,6 @@
             <DataGrid x:Name="dataGrid"
                       Grid.Row="0" 
                       ItemsSource="{Binding Path= Urls}"
-                      SelectedItem="{Binding Path=SelectedCustomer}"
                       IsReadOnly="False"
                       AutoGenerateColumns="False">
                 <DataGrid.Columns>

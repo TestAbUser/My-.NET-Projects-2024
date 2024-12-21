@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using DownloadManager.Commands;
+using DownloadManager.Models;
 
 namespace DownloadManager.ViewModels
 {
@@ -9,13 +10,13 @@ namespace DownloadManager.ViewModels
         private RelayCommand<object> _okCommand;
 
         // Url property is bound to the Text property of the TextBox.
-        public string Url { get; set; }
+        public UrlModel Url { get; set; }
 
-        public ObservableCollection<string> Urls { get; } = new();
+        public ObservableCollection<UrlModel> Urls { get; } = new();
         public AddUrlWindowViewModel()
         {
         }
-        public AddUrlWindowViewModel(ObservableCollection<string> Urls)
+        public AddUrlWindowViewModel(ObservableCollection<UrlModel> Urls)
         {
             this.Urls = Urls;
         }

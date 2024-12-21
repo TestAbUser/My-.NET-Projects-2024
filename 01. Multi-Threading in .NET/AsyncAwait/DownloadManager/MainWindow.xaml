@@ -60,14 +60,15 @@
                       AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url" Width="5*" IsReadOnly="True"
-                                        Binding="{Binding}"/> <!--Indicates that the collection itself is the item to be displayed in the column-->
+                                        Binding="{Binding Url}"/>
+                    <!--Indicates that the collection itself is the item to be displayed in the column-->
                     <!--<DataGridTemplateColumn Header="Progress" Width="*" IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate >-->
                     <DataGridTextColumn
-                         Binding="{Binding Path=DataContext.DownloadStatuses}"/>
-                                             <!--Binding="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}"/>-->
-                            <!--</DataTemplate>
+                        
+                              Binding="{Binding Status}"/>
+                <!--</DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>-->
                 </DataGrid.Columns>

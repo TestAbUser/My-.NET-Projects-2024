@@ -6,6 +6,7 @@ namespace DownloadManager.Models
 {
     public class UrlModel: INotifyPropertyChanged
     {
+        private string _status;
         private string _url;
         public string Url
         {
@@ -17,7 +18,15 @@ namespace DownloadManager.Models
             }
         }
         private readonly ObservableCollection<string> _urls = new();
-        // public ObservableCollection<string> Urls;
+
+        public string Status
+        {
+            get => _status;
+            set
+            {
+                _status = value;
+            }
+        }
 
         private bool _isChanged;
         public bool IsChanged

@@ -60,8 +60,7 @@ namespace DownloadManager.ViewModels
                 }
             }
         }
-        public ObservableCollection<string> Urls { get; } = new();
-        public ObservableCollection<string> DownloadStatuses { get; } = new();
+        public ObservableCollection<UrlModel> Urls { get; } = new();
 
 
         public RelayCommand OpenAddWindowCommand => _openAddWindowCommand ??= new RelayCommand(() =>
@@ -91,7 +90,7 @@ namespace DownloadManager.ViewModels
                     string[] dataFromFile = File.ReadAllLines(openDlg.FileName);
 
                     // Show Urls in DataGrid. 
-                    foreach (var line in dataFromFile) { Urls.Add(line); }
+                    foreach (var line in dataFromFile) { Urls.Add(new UrlModel { Url=line, Status="Ready"}); }
                     // IsEnabled = true;
                 }
                 catch (IOException ex)
@@ -113,7 +112,7 @@ namespace DownloadManager.ViewModels
                 try
                 {
                     // Save data in the DataGrid to the named file.
-                    File.WriteAllLines(saveDlg.FileName, Urls.Select(x => x));
+                    File.WriteAllLines(saveDlg.FileName, Urls.Select(x => x.Url));
                 }
                 catch (IOException ex)
                 {
@@ -127,16 +126,23 @@ namespace DownloadManager.ViewModels
 
         private async void DownloadPagesAsync()
         {
-            string[] addresses = Urls.Select(x => x).ToArray();
+            string[] addresses = Urls.Select(x => x.Url).ToArray();
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
+            var count=0;
             StatusBarText = "Downloading...";
             try
             {
                 var progressIndicator = new Progress<int>(percent =>
                 {
                     ProgressReport = percent;
-                    DownloadStatuses.Add(ProgressReport.ToString());
+                    
+                    if (percent!=0)
+                    {
+                        Urls.ElementAt(count).Status = ProgressReport.ToString();
+                    }
+                    count++;
+
                 });
                 await Downloader.DownloadAsync(addresses, progressIndicator, token);
             }

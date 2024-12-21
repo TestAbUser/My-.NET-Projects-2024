@@ -8,7 +8,9 @@
         x:Name="mainWindow"
         Title="MainWindow" Height="300" Width="800"
         DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">
-
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
     <DockPanel Background="AliceBlue">
         <Menu DockPanel.Dock ="Top" HorizontalAlignment="Left" Background="White" BorderBrush ="Black">
             <MenuItem Header="_File">
@@ -44,7 +46,9 @@
                              Height="10" 
                              Width="{Binding ElementName=container, Path=ActualWidth}" 
                              Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, 
-                                     Path=DataContext.ProgressReport}"/>
+                                     Path=DataContext.ProgressReport}"
+                             Visibility="{Binding ElementName=cancelBtn,Path=IsEnabled, 
+                    Converter={StaticResource BoolToVis}}"/>
                 <!--RelativeSource allows binding to an ancestor element's property.-->
             </StatusBarItem>
         </StatusBar>

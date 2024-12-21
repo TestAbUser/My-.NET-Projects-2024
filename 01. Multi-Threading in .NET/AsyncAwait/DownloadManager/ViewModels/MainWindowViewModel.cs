@@ -144,7 +144,7 @@ namespace DownloadManager.ViewModels
                     count++;
 
                 });
-                await Downloader.DownloadAsync(addresses, progressIndicator, token);
+                await Downloader.DownloadAsync(addresses, token, progressIndicator);
             }
             finally
             {

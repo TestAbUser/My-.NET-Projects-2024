@@ -13,7 +13,7 @@ namespace DownloadManager.Models
     {
         private static readonly HttpClient s_client = new ();
 
-        public static async Task<int> DownloadAsync(string[] addresses, IProgress<int> progress, CancellationToken ct)
+        public static async Task<int> DownloadAsync(string[] addresses, CancellationToken ct, IProgress<int> progress=null)
         {
             string page;
             int totalCount = addresses.Length;
@@ -35,7 +35,7 @@ namespace DownloadManager.Models
                     }
                     if (progress != null)
                         {
-                            progress.Report(tempCount * 100 / totalCount);
+                            progress?.Report(tempCount * 100 / totalCount);
                         }
                         tempCount++;
                     }

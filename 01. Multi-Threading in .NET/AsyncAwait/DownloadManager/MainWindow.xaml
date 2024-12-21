@@ -68,8 +68,10 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url"
                                         IsReadOnly="True"
+                                        Width="*"
                                         Binding="{Binding Url}"/>
                     <DataGridTextColumn Header="Status"
+                                        Width="Auto"
                                         IsReadOnly="True"
                                         Binding="{Binding Status}"/>
                 </DataGrid.Columns>

@@ -59,18 +59,14 @@
                       IsReadOnly="False"
                       AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Url" Width="5*" IsReadOnly="True"
+                    <DataGridTextColumn Header="Url" 
+                                        Width="5*" 
+                                        IsReadOnly="True"
                                         Binding="{Binding Url}"/>
-                    <!--Indicates that the collection itself is the item to be displayed in the column-->
-                    <!--<DataGridTemplateColumn Header="Progress" Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate >-->
-                    <DataGridTextColumn
-                        
-                              Binding="{Binding Status}"/>
-                <!--</DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>-->
+                    <DataGridTextColumn Header="Status"
+                                        Width="Auto" 
+                                        IsReadOnly="True"
+                                        Binding="{Binding Status}"/>
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0,5,0" Grid.Row="1">

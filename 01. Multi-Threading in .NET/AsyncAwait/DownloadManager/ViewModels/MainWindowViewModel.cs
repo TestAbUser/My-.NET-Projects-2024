@@ -60,7 +60,7 @@ namespace DownloadManager.ViewModels
                 }
             }
         }
-        public ObservableCollection<UrlModel> Urls { get; } = new();
+        public ObservableCollection<UrlModel> Urls { get; } = [];
 
 
         public RelayCommand OpenAddWindowCommand => _openAddWindowCommand ??= new RelayCommand(() =>
@@ -145,6 +145,10 @@ namespace DownloadManager.ViewModels
 
                 });
                 await Downloader.DownloadAsync(addresses, token, progressIndicator);
+            }
+            catch(Exception ex)
+            {
+                Urls.ElementAt(count).Status = ex.Message;
             }
             finally
             {

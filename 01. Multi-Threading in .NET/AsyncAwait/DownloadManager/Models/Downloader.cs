@@ -27,11 +27,11 @@ namespace DownloadManager.Models
                         page = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
                     } catch (OperationCanceledException ex) 
                     {
-                        MessageBox.Show(ex.Message);
+                        throw;//MessageBox.Show(ex.Message);
                     }
                     catch (Exception ex)
                     {
-                         MessageBox.Show(ex.Message);
+                        throw;// MessageBox.Show(ex.Message);
                     }
                     if (progress != null)
                         {

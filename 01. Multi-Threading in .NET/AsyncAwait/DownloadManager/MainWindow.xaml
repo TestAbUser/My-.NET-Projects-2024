@@ -58,17 +58,18 @@
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <DataGrid x:Name="dataGrid"
+                      HorizontalGridLinesBrush="CadetBlue"
+                      VerticalGridLinesBrush="CadetBlue"
                       Grid.Row="0" 
-                      ItemsSource="{Binding Path= Urls}"
+                      ItemsSource="{Binding Urls}"
                       IsReadOnly="False"
+                      CanUserAddRows="False"
                       AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Url" 
-                                        Width="5*" 
+                    <DataGridTextColumn Header="Url"
                                         IsReadOnly="True"
                                         Binding="{Binding Url}"/>
                     <DataGridTextColumn Header="Status"
-                                        Width="Auto" 
                                         IsReadOnly="True"
                                         Binding="{Binding Status}"/>
                 </DataGrid.Columns>

@@ -139,10 +139,9 @@ namespace DownloadManager.ViewModels
                     
                     if (percent!=0)
                     {
-                        Urls.ElementAt(count).Status = ProgressReport.ToString();
+                        Urls.ElementAt(count).Status = "Completed";
                     }
                     count++;
-
                 });
                 await Downloader.DownloadAsync(addresses, token, progressIndicator);
             }
@@ -152,7 +151,7 @@ namespace DownloadManager.ViewModels
             }
             finally
             {
-            cts.Dispose();
+                cts.Dispose();
             cts = null;
             StatusBarText = null;
             DownloadCommand.RaiseCanExecuteChanged();

@@ -25,7 +25,9 @@ namespace DownloadManager.Models
             set
             {
                 _status = value;
+                OnPropertyChanged();
             }
+
         }
 
         private bool _isChanged;

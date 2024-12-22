@@ -147,7 +147,12 @@ namespace DownloadManager.ViewModels
             }
             catch(Exception ex)
             {
-                Urls.ElementAt(count).Status = ex.Message;
+                if (ex is OperationCanceledException)
+                {
+                    for (int i = count; i < addresses.Length; i++)
+                        Urls.ElementAt(i).Status = "Canceled";
+
+                }
             }
             finally
             {

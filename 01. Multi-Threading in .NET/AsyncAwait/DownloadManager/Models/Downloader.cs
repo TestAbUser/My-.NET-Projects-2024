@@ -25,19 +25,20 @@ namespace DownloadManager.Models
                     try
                     {
                         page = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
-                    } catch (OperationCanceledException ex) 
-                    {
-                        throw;//MessageBox.Show(ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw;// MessageBox.Show(ex.Message);
-                    }
-                    if (progress != null)
+                        if (progress != null)
                         {
                             progress?.Report(tempCount * 100 / totalCount);
                         }
                         tempCount++;
+                    } catch (OperationCanceledException ex) 
+                    {
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                  
                     }
                 return tempCount;
             }, ct);

@@ -63,7 +63,7 @@
                       Grid.Row="0" 
                       ItemsSource="{Binding Urls}"
                       IsReadOnly="False"
-                      CanUserAddRows="False"
+                      CanUserAddRows="True"
                       AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url"
@@ -73,7 +73,23 @@
                     <DataGridTextColumn Header="Status"
                                         Width="Auto"
                                         IsReadOnly="True"
-                                        Binding="{Binding Status}"/>
+                                        Binding="{Binding Status}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Style.Triggers>
+                                    <Trigger Property="Text" Value="Completed">
+                                        <Setter Property="Background" Value="LightGreen"/>
+                                    </Trigger>
+                                    <Trigger Property="Text" Value="Failed">
+                                        <Setter Property="Background" Value="PaleVioletRed"/>
+                                    </Trigger>
+                                    <Trigger Property="Text" Value="Canceled">
+                                        <Setter Property="Background" Value="LightYellow"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0,5,0" Grid.Row="1">

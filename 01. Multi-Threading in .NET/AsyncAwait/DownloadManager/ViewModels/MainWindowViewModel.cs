@@ -137,26 +137,22 @@ namespace DownloadManager.ViewModels
                 {
                     ProgressReport = percent;
 
-                    if (percent != 0)
+                    if (percent > 0)
                     {
                         Urls.ElementAt(count).Status = "Completed";
                     }
-                    else
+                    else if (percent == 0)
                     {
                         Urls.ElementAt(count).Status = "Failed";
+                    }
+                    else if (percent==-1)
+                    {
+                        for (int i = count; i < addresses.Length; i++)
+                            Urls.ElementAt(i).Status = "Canceled";
                     }
                     count++;
                 });
                 await Downloader.DownloadAsync(addresses, token, progressIndicator);
-            }
-            catch(Exception ex)
-            {
-                if (ex is OperationCanceledException)
-                {
-                    for (int i = count; i < addresses.Length; i++)
-                        Urls.ElementAt(i).Status = "Canceled";
-
-                }
             }
             finally
             {

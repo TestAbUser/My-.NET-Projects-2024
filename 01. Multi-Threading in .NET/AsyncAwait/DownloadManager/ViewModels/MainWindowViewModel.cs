@@ -136,10 +136,14 @@ namespace DownloadManager.ViewModels
                 var progressIndicator = new Progress<int>(percent =>
                 {
                     ProgressReport = percent;
-                    
-                    if (percent!=0)
+
+                    if (percent != 0)
                     {
                         Urls.ElementAt(count).Status = "Completed";
+                    }
+                    else
+                    {
+                        Urls.ElementAt(count).Status = "Failed";
                     }
                     count++;
                 });

@@ -36,6 +36,7 @@ namespace DownloadManager.Models
                     }
                     catch (Exception ex)
                     {
+                        progress?.Report(0);
                         MessageBox.Show(ex.Message);
                     }
                   

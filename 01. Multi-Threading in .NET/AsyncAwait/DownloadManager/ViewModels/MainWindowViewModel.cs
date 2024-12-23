@@ -130,24 +130,12 @@ namespace DownloadManager.ViewModels
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             var count=0;
-            int temp = 0;
             StatusBarText = "Downloading...";
             try
             {
                 var progressIndicator = new Progress<int>(percent =>
                 {
                     ProgressReport = percent;
-
-                    //if(percent<=temp)
-                    //{
-                    //        Urls.ElementAt(count).Status = "Failed";
-                    //    temp = percent;
-                    //}
-                    //else
-                    //{
-                    //    Urls.ElementAt(count).Status = "Completed";
-                    //    temp = percent;
-                    //}
 
                     if (percent > 0)
                     {
@@ -166,10 +154,6 @@ namespace DownloadManager.ViewModels
                 });
                 await Downloader.DownloadAsync(addresses, token, progressIndicator);
             }
-            //catch (Exception ex)
-            //{
-            //    Urls.ElementAt(count).Status = "Failed";
-            //}
             finally
             {
                 cts.Dispose();

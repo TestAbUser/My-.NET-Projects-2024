@@ -24,27 +24,50 @@ namespace DownloadManager.Models
                 {
                     try
                     {
+
                         page = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
-                        if (progress != null)
-                        {
-                            progress?.Report(tempCount * 100 / totalCount);
-                        }
-                        tempCount++;
+                    if (progress != null)
+                    {
+                        //if (!ct.IsCancellationRequested)
+                        //{
+
+                        //    if (page == null)
+                        //    {
+                        //        progress?.Report(0);
+                        //    }
+                        //    else
+                        //    {
+                                progress?.Report(tempCount * 100 / totalCount);
+                        //    }
+
+                        //}
+                        //else
+                        //{
+                        //    progress?.Report(-1);
+                        //}
+
+
+                    }
+                    tempCount++;
                     }
                     catch (Exception ex)
                     {
                         if (ct.IsCancellationRequested)
                         {
                             progress?.Report(-1);
+                            break;
                         }
                         else
+                        if (!ct.IsCancellationRequested)
                         {
                             progress?.Report(0);
                         }
+                        
                     }
+
                 }
                 return tempCount;
-            }, ct);
+            }, ct).ConfigureAwait(false);
             return loadCount;
         }
     }

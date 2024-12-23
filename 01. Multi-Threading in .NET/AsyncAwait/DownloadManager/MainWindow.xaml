@@ -63,7 +63,7 @@
                       Grid.Row="0" 
                       ItemsSource="{Binding Urls}"
                       IsReadOnly="False"
-                      CanUserAddRows="True"
+                      CanUserAddRows="False"
                       AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Url"

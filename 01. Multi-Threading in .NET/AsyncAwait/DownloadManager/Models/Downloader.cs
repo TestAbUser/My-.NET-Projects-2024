@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,31 +21,40 @@ namespace DownloadManager.Models
             int loadCount = await Task.Run<int>(async () =>
             {
                 int tempCount = 1;
-                foreach (string address in addresses)
+                using (var throttler = new SemaphoreSlim(4))
                 {
-                    try
-                    {
-                        page = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
-                    if (progress != null)
-                    {
-                                progress?.Report(tempCount * 100 / totalCount);
-                    }
-                    tempCount++;
-                    }
-                    catch (Exception ex)
-                    {
-                        if (ct.IsCancellationRequested)
-                        {
-                            progress?.Report(-1);
-                            break;
-                        }
-                        else
-                        if (!ct.IsCancellationRequested)
-                        {
-                            progress?.Report(0);
-                        }
-                    }
+                    IEnumerable<Task<string>> downloadPages = addresses.Select(address => Task.Run(async () =>
+                         {
+                             await throttler.WaitAsync(ct);
+                             try
+                             {
+                                 var res = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
+                                 progress?.Report(tempCount * 100 / totalCount);
+                                 return res;
+                             }
+               
+                             finally
+                             {
+                                 if (ct.IsCancellationRequested)
+                                 {
+                                     progress?.Report(-1);
+                                 }
+
+                                 tempCount++;
+                                 throttler.Release();
+                                 // return res;
+                             }
+
+                         }));
+                    //try
+                    //{
+                    string?[] pages = await Task.WhenAll(downloadPages).ConfigureAwait(false);
                 }
+                //}
+                //catch (Exception ex)
+                //{
+
+                //}
                 return tempCount;
             }, ct).ConfigureAwait(false);
             return loadCount;

@@ -137,11 +137,11 @@ namespace DownloadManager.ViewModels
                 {
                     ProgressReport = percent;
 
-                    if (percent > 0)
+                    if (percent >= 0)
                     {
                         Urls.ElementAt(count).Status = "Completed";
                     }
-                    else if (percent == 0)
+                    else if (percent == -2)
                     {
                         Urls.ElementAt(count).Status = "Failed";
                     }

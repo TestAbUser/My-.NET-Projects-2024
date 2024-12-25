@@ -21,17 +21,25 @@ namespace DownloadManager.Models
             string res=null;
             int loadCount = await Task.Run<int>(async () =>
             {
+               // ct.ThrowIfCancellationRequested();
                 int tempCount = 1;
                 using (var throttler = new SemaphoreSlim(1))
                 {
-                    IEnumerable<Task<string>> downloadPages = addresses.Select(address => Task.Run(async () =>
+                   
+                    IEnumerable<Task<string?>> downloadPages = addresses.Select(address => Task.Run(async () =>
                          {
-                             await throttler.WaitAsync();
+                            // ct.ThrowIfCancellationRequested();
+                             await throttler.WaitAsync(ct).ConfigureAwait(false);
                              try
                              {
                                   res = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
                                  progress?.Report(tempCount * 100 / totalCount);
                                  return res;
+                             }
+                             catch (OperationCanceledException ex)
+                             {
+                                 return res;
+                                 throw;
                              }
                              finally
                              {
@@ -53,9 +61,9 @@ namespace DownloadManager.Models
                     {
                         string?[] pages = await Task.WhenAll(downloadPages).ConfigureAwait(false);
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) when(ex is not OperationCanceledException)
                     {
-
+                        
                     }
                 }
 

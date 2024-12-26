@@ -132,7 +132,7 @@ namespace DownloadManager.ViewModels
             var count=0;
             StatusBarText = "Downloading...";
             try
-            {
+             {
                 var progressIndicator = new Progress<int>(percent =>
                 {
                     ProgressReport = percent;
@@ -147,12 +147,12 @@ namespace DownloadManager.ViewModels
                     }
                     else if (percent == -1)
                     {
-                        for (int i = count; i < addresses.Length; i++)
-                            Urls.ElementAt(i).Status = "Canceled";
+                        // for (int i = count; i < addresses.Length; i++)
+                        Urls.ElementAt(count).Status = "Canceled";
                     }
                     count++;
                 });
-                await Downloader.DownloadAsync(addresses, token, progressIndicator);
+                await  Downloader.DownloadAsync(addresses, token, progressIndicator);
             }
             finally
             {
@@ -170,8 +170,8 @@ namespace DownloadManager.ViewModels
         public RelayCommand CancelCommand => _cancelCommand ??= new(CancelDownloading, CanCancelDownload);
         private void CancelDownloading()
         {
-            cts.Cancel();
-            cts.Dispose();
+            cts?.Cancel();
+            cts?.Dispose();
             StatusBarText = null;
         }
 

@@ -18,28 +18,30 @@ namespace DownloadManager.Models
         {
             string page;
             int totalCount = addresses.Length;
-            string res=null;
+            string res = null;
             int loadCount = await Task.Run<int>(async () =>
             {
                // ct.ThrowIfCancellationRequested();
                 int tempCount = 1;
-                using (var throttler = new SemaphoreSlim(1))
+                using (var throttler = new SemaphoreSlim(5))
                 {
-                   
-                    IEnumerable<Task<string?>> downloadPages = addresses.Select(address => Task.Run(async () =>
+
+                    IEnumerable<Task<string?>> downloadPages = addresses.Select(async (address) => 
+                   // Task.Run(async () =>
                          {
                             // ct.ThrowIfCancellationRequested();
-                             await throttler.WaitAsync(ct).ConfigureAwait(false);
+                             await throttler.WaitAsync().ConfigureAwait(false);
                              try
                              {
-                                  res = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
-                                 progress?.Report(tempCount * 100 / totalCount);
+                                 res = await s_client.GetStringAsync(address).ConfigureAwait(false);
+                                 if (!ct.IsCancellationRequested)
+                                     progress?.Report(tempCount * 100 / totalCount);
                                  return res;
                              }
-                             catch (OperationCanceledException ex)
+                             catch (HttpRequestException ex)
                              {
                                  return res;
-                                 throw;
+                                 //throw;
                              }
                              finally
                              {
@@ -47,28 +49,29 @@ namespace DownloadManager.Models
                                  {
                                      progress?.Report(-1);
                                  }
-                                 else if (res==null && !ct.IsCancellationRequested)
+                                 else if (res == null && !ct.IsCancellationRequested)
                                  {
                                      progress?.Report(-2);
                                  }
-                                 res=null;
+                                 res = null;
                                  tempCount++;
                                  throttler.Release();
                                  // return res;
                              }
-                         }));
+                         }).ToArray();
                     try
                     {
+                        // var tasks= new Task[] {downloadPages}
                         string?[] pages = await Task.WhenAll(downloadPages).ConfigureAwait(false);
                     }
-                    catch (Exception ex) when(ex is not OperationCanceledException)
+                    catch (OperationCanceledException ex)//(Exception ex) when(ex is not OperationCanceledException)
                     {
-                        
+
                     }
                 }
 
                 return tempCount;
-            }, ct).ConfigureAwait(false);
+            }).ConfigureAwait(false);
             return loadCount;
         }
     }

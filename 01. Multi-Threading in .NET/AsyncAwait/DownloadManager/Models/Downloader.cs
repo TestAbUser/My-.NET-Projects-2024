@@ -26,7 +26,7 @@ namespace DownloadManager.Models
                 using (var throttler = new SemaphoreSlim(1))
                 {
 
-                    IEnumerable<Task<string?>> downloadPages = addresses.Select(async (address, ct) =>
+                    List<Task<string?>> downloadPages = addresses.Select(async (address, ct) =>
                     // Task.Run(async () =>
                          {
                              // ct.ThrowIfCancellationRequested();
@@ -35,13 +35,13 @@ namespace DownloadManager.Models
                              {
                                  res = await s_client.GetStringAsync(address).ConfigureAwait(false);
                                  //if (!ct.IsCancellationRequested)
-                                 progress?.Report(tempCount * 100 / totalCount);
-                                 return res;
+                                // progress?.Report(tempCount * 100 / totalCount);
+                                  return res;
                              }
-                             catch (Exception ex) when(ex is not OperationCanceledException)
+                             catch (Exception ex) when (ex is not OperationCanceledException)
                              {
                                  progress?.Report(-2);
-                                 return res;
+                                  return res;
                                  //throw;
                              }
                              finally
@@ -59,22 +59,33 @@ namespace DownloadManager.Models
                                  throttler.Release();
                                  // return res;
                              }
-                         }).ToArray();
-                    try
+                         }).ToList();
+                    while(downloadPages.Count()>0)
                     {
-                        // var tasks= new Task[] {downloadPages}
-                        /*string?[]*/
-                        var task = await Task.WhenAll(downloadPages).ConfigureAwait(false);
-                        //var st = task.Status;
-                        // pages = await task;
+                        try
+                        {
+
+                            var task = await Task.WhenAny(downloadPages);
+                            downloadPages.Remove(task);
+                            await task;
+                        }
+                        catch { }
                     }
-                    catch (Exception ex)//(Exception ex) when(ex is not OperationCanceledException)
-                    {
-                    //    //foreach (Task faulted in downloadPages.Where(t => t.IsFaulted))
-                    //    //{
-                    //    //   // progress?.Report(-2);
-                    //    //}
-                    }
+                    //try
+                    //{
+                    //    // var tasks= new Task[] {downloadPages}
+                    //    /*string?[]*/
+                    //    //var task = await Task.WhenAll(downloadPages).ConfigureAwait(false);
+                    //    //var st = task.Status;
+                    //    // pages = await task;
+                    //}
+                    //catch (Exception ex)//(Exception ex) when(ex is not OperationCanceledException)
+                    //{
+                    ////    //foreach (Task faulted in downloadPages.Where(t => t.IsFaulted))
+                    ////    //{
+                    ////    //   // progress?.Report(-2);
+                    ////    //}
+                    //}
                 }
 
                 return tempCount;

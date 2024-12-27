@@ -26,39 +26,40 @@ namespace DownloadManager.Models
                 using (var throttler = new SemaphoreSlim(5))
                 {
 
-                    IEnumerable<Task<string?>> downloadPages = addresses.Select(async (address) => 
-                   // Task.Run(async () =>
+                    IEnumerable<Task<string>> downloadPages = addresses.Select(async (address) =>
+                    // Task.Run(async () =>
                          {
-                            // ct.ThrowIfCancellationRequested();
+                             // ct.ThrowIfCancellationRequested();
                              await throttler.WaitAsync().ConfigureAwait(false);
                              try
                              {
-                                 res = await s_client.GetStringAsync(address).ConfigureAwait(false);
-                                 if (!ct.IsCancellationRequested)
-                                     progress?.Report(tempCount * 100 / totalCount);
-                                 return res;
+                                 /*res = await*/
+                                 return await s_client.GetStringAsync(address).ConfigureAwait(false);
+                                 //if (!ct.IsCancellationRequested)
+                                 //    progress?.Report(tempCount * 100 / totalCount);
+                                 //return res;
                              }
-                             catch (HttpRequestException ex)
-                             {
-                                 return res;
-                                 //throw;
-                             }
+                             //catch (HttpRequestException ex)
+                             //{
+                             //   // return res;
+                             //    //throw;
+                             //}
                              finally
                              {
-                                 if (ct.IsCancellationRequested)
-                                 {
-                                     progress?.Report(-1);
-                                 }
-                                 else if (res == null && !ct.IsCancellationRequested)
-                                 {
-                                     progress?.Report(-2);
-                                 }
-                                 res = null;
-                                 tempCount++;
+                                 //if (ct.IsCancellationRequested)
+                                 //{
+                                 //    progress?.Report(-1);
+                                 //}
+                                 //else if (res == null && !ct.IsCancellationRequested)
+                                 //{
+                                 //    progress?.Report(-2);
+                                 //}
+                                 //res = null;
+                                 //tempCount++;
                                  throttler.Release();
                                  // return res;
                              }
-                         }).ToArray();
+                         });//.ToArray();
                     try
                     {
                         // var tasks= new Task[] {downloadPages}

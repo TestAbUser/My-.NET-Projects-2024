@@ -23,8 +23,8 @@ namespace DownloadManager.Models
             {
                // ct.ThrowIfCancellationRequested();
                 int tempCount = 1;
-                using (var throttler = new SemaphoreSlim(1))
-                {
+                using var throttler = new SemaphoreSlim(1);
+                //{
 
                     List<Task<string?>> downloadPages = addresses.Select(async (address, ct) =>
                     // Task.Run(async () =>
@@ -33,12 +33,14 @@ namespace DownloadManager.Models
                              await throttler.WaitAsync().ConfigureAwait(false);
                              try
                              {
+                                 if(Uri.IsWellFormedUriString(address,UriKind.Absolute))
                                  res = await s_client.GetStringAsync(address).ConfigureAwait(false);
+                                else progress?.Report(-2);
                                  //if (!ct.IsCancellationRequested)
-                                // progress?.Report(tempCount * 100 / totalCount);
-                                  return res;
+                                 // progress?.Report(tempCount * 100 / totalCount);
+                                 return res;
                              }
-                             catch (Exception ex) when (ex is not OperationCanceledException)
+                             catch (HttpRequestException ex) //when (ex is not OperationCanceledException)
                              {
                                  progress?.Report(-2);
                                   return res;
@@ -86,7 +88,7 @@ namespace DownloadManager.Models
                     ////    //   // progress?.Report(-2);
                     ////    //}
                     //}
-                }
+                //}
 
                 return tempCount;
             }).ConfigureAwait(false);

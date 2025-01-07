@@ -19,15 +19,11 @@ namespace DownloadManager.Models
             string page;
             int totalCount = addresses.Length;
             string res = null;
-            int loadCount = await Task.Run<int>(async () =>
-            {
-               // ct.ThrowIfCancellationRequested();
+
                 int tempCount = 1;
                 using var throttler = new SemaphoreSlim(1);
-                //{
 
                     List<Task<string?>> downloadPages = addresses.Select(async (address, ct) =>
-                    // Task.Run(async () =>
                          {
                              // ct.ThrowIfCancellationRequested();
                              await throttler.WaitAsync().ConfigureAwait(false);
@@ -91,8 +87,7 @@ namespace DownloadManager.Models
                 //}
 
                 return tempCount;
-            }).ConfigureAwait(false);
-            return loadCount;
+
         }
     }
 }

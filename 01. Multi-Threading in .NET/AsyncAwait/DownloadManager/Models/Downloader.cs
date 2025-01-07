@@ -30,10 +30,13 @@ namespace DownloadManager.Models
                              try
                              {
                                  if(Uri.IsWellFormedUriString(address,UriKind.Absolute))
-                                 res = await s_client.GetStringAsync(address).ConfigureAwait(false);
-                                else progress?.Report(-2);
+                                 {
+                                     res = await s_client.GetStringAsync(address).ConfigureAwait(false);
+                                     progress?.Report(tempCount * 100 / totalCount);
+                                 }
+                                 else progress?.Report(-2);
                                  //if (!ct.IsCancellationRequested)
-                                 // progress?.Report(tempCount * 100 / totalCount);
+                                 
                                  return res;
                              }
                              catch (HttpRequestException ex) //when (ex is not OperationCanceledException)
@@ -58,34 +61,15 @@ namespace DownloadManager.Models
                                  // return res;
                              }
                          }).ToList();
-                    while(downloadPages.Count()>0)
+                    try
                     {
-                        try
-                        {
 
-                            var task = await Task.WhenAny(downloadPages);
-                            downloadPages.Remove(task);
-                            await task;
-                        }
-                        catch { }
+                    var task = await Task.WhenAll(downloadPages).ConfigureAwait(false);
+
                     }
-                    //try
-                    //{
-                    //    // var tasks= new Task[] {downloadPages}
-                    //    /*string?[]*/
-                    //    //var task = await Task.WhenAll(downloadPages).ConfigureAwait(false);
-                    //    //var st = task.Status;
-                    //    // pages = await task;
-                    //}
-                    //catch (Exception ex)//(Exception ex) when(ex is not OperationCanceledException)
-                    //{
-                    ////    //foreach (Task faulted in downloadPages.Where(t => t.IsFaulted))
-                    ////    //{
-                    ////    //   // progress?.Report(-2);
-                    ////    //}
-                    //}
-                //}
-
+                    catch (Exception ex) when(ex is not OperationCanceledException)
+                    {
+                    }
                 return tempCount;
 
         }

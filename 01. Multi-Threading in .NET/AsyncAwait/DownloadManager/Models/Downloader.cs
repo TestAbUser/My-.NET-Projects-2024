@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Net.Http;
+using System.Windows.Documents;
+
 
 namespace DownloadManager.Models
 {
@@ -14,64 +8,55 @@ namespace DownloadManager.Models
     {
         private static readonly HttpClient s_client = new();
 
-        public static async Task<int> DownloadAsync(string[] addresses, CancellationToken ct, IProgress<int> progress = null)
+        public static async Task<List<string>> DownloadAsync(string[] addresses, CancellationToken ct, IProgress<int> progress = null)
         {
-            string page;
+            List<string> pages = [];
             int totalCount = addresses.Length;
-            string res = null;
+            string res = string.Empty;
 
-                int tempCount = 1;
-                using var throttler = new SemaphoreSlim(1);
+            int tempCount = 1;
+            using var throttler = new SemaphoreSlim(1);
 
-                    List<Task<string?>> downloadPages = addresses.Select(async (address, ct) =>
+            IEnumerable<Task<string>> downloadPages = addresses.Select(async address =>
+                 {
+                     await throttler.WaitAsync().ConfigureAwait(false);
+                     try
+                     {
+                         if (!ct.IsCancellationRequested)
                          {
-                             // ct.ThrowIfCancellationRequested();
-                             await throttler.WaitAsync().ConfigureAwait(false);
-                             try
+                             if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
                              {
-                                 if(Uri.IsWellFormedUriString(address,UriKind.Absolute))
-                                 {
-                                     res = await s_client.GetStringAsync(address).ConfigureAwait(false);
-                                     progress?.Report(tempCount * 100 / totalCount);
-                                 }
-                                 else progress?.Report(-2);
-                                 //if (!ct.IsCancellationRequested)
-                                 
-                                 return res;
+                                 res = await s_client.GetStringAsync(address).ConfigureAwait(false);
+                                 progress?.Report(tempCount * 100 / totalCount);
                              }
-                             catch (HttpRequestException ex) //when (ex is not OperationCanceledException)
-                             {
-                                 progress?.Report(-2);
-                                  return res;
-                                 //throw;
-                             }
-                             finally
-                             {
-                                 //if (ct.IsCancellationRequested)
-                                 //{
-                                 //    progress?.Report(-1);
-                                 //}
-                                 //else if (res == null && !ct.IsCancellationRequested)
-                                 //{
-                                 //    progress?.Report(-2);
-                                 //}
-                                 //res = null;
-                                 tempCount++;
-                                 throttler.Release();
-                                 // return res;
-                             }
-                         }).ToList();
-                    try
-                    {
+                             else progress?.Report(-2);
+                             //if (!ct.IsCancellationRequested)
+                             // return res;
+                         }
+                         else
+                         {
+                             progress?.Report(-1);
+                         }
+                         return res;
+                     }
+                     catch (HttpRequestException ex)
+                     {
+                         progress?.Report(-2);
+                         return res;
+                         throw;
+                     }
 
-                    var task = await Task.WhenAll(downloadPages).ConfigureAwait(false);
+                     finally
+                     {
+                         tempCount++;
+                         throttler.Release();
+                         res = string.Empty;
+                     }
+                 });
 
-                    }
-                    catch (Exception ex) when(ex is not OperationCanceledException)
-                    {
-                    }
-                return tempCount;
+            pages = (await Task.WhenAll(downloadPages).ConfigureAwait(false)).ToList();
 
+            return pages;
         }
     }
 }

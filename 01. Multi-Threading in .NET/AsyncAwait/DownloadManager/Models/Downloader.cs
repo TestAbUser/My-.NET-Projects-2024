@@ -1,6 +1,4 @@
 ﻿using System.Net.Http;
-using System.Windows.Documents;
-
 
 namespace DownloadManager.Models
 {
@@ -17,26 +15,18 @@ namespace DownloadManager.Models
             int tempCount = 1;
             using var throttler = new SemaphoreSlim(1);
 
-            IEnumerable<Task<string>> downloadPages = addresses.Select(async address =>
+            Task<string>[] downloadPages = addresses.Select(async address =>
                  {
                      await throttler.WaitAsync().ConfigureAwait(false);
                      try
                      {
-                         if (!ct.IsCancellationRequested)
+                         if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
                          {
-                             if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
-                             {
-                                 res = await s_client.GetStringAsync(address).ConfigureAwait(false);
-                                 progress?.Report(tempCount * 100 / totalCount);
-                             }
-                             else progress?.Report(-2);
-                             //if (!ct.IsCancellationRequested)
-                             // return res;
+                             res = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
+                             progress?.Report(tempCount * 100 / totalCount);
                          }
-                         else
-                         {
-                             progress?.Report(-1);
-                         }
+                         else progress?.Report(-2);
+
                          return res;
                      }
                      catch (HttpRequestException ex)
@@ -45,18 +35,34 @@ namespace DownloadManager.Models
                          return res;
                          throw;
                      }
-
                      finally
                      {
                          tempCount++;
                          throttler.Release();
                          res = string.Empty;
                      }
-                 });
-
-            pages = (await Task.WhenAll(downloadPages).ConfigureAwait(false)).ToList();
-
+                 }).ToArray();
+            try
+            {
+                pages = (await WhenAllOrError<string>(downloadPages)).ToList();
+            }
+            catch (OperationCanceledException) { progress?.Report(-1); }
             return pages;
+        }
+        static async Task<TResult[]> WhenAllOrError<TResult>(params Task<TResult>[] tasks)
+        {
+            var killJoy = new TaskCompletionSource<TResult[]>();
+            foreach (var task in tasks)
+            {
+                _ = task.ContinueWith(ant =>
+                {
+                    if (ant.IsCanceled)
+                        killJoy.TrySetCanceled();
+                    else if (ant.IsFaulted)
+                        killJoy.TrySetException(ant.Exception.InnerExceptions);
+                });
+            }
+            return await await Task.WhenAny(killJoy.Task, Task.WhenAll(tasks)).ConfigureAwait(false);
         }
     }
 }

@@ -5,12 +5,13 @@ using DownloadManager.Models;
 using Microsoft.Win32;
 using System.IO;
 using System.ComponentModel;
+using System.Security.Policy;
 
 namespace DownloadManager.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        CancellationTokenSource cts;
+        CancellationTokenSource? cts;
 
         private RelayCommand _openAddWindowCommand = null;
         private RelayCommand _openCommand = null;
@@ -19,7 +20,7 @@ namespace DownloadManager.ViewModels
         private RelayCommand _cancelCommand = null;
         private string _statusBarText;
         private double _progressReport;
-       // private string _downloadStatus;
+        // private string _downloadStatus;
 
         // private bool _isEnabled;
         private bool _isChanged;
@@ -48,7 +49,7 @@ namespace DownloadManager.ViewModels
             }
         }
 
-        public string StatusBarText
+        public string? StatusBarText
         {
             get { return _statusBarText; }
             set
@@ -90,7 +91,7 @@ namespace DownloadManager.ViewModels
                     string[] dataFromFile = File.ReadAllLines(openDlg.FileName);
 
                     // Show Urls in DataGrid. 
-                    foreach (var line in dataFromFile) { Urls.Add(new UrlModel { Url=line, Status="Ready"}); }
+                    foreach (var line in dataFromFile) { Urls.Add(new UrlModel { Url = line }); }
                     // IsEnabled = true;
                 }
                 catch (IOException ex)
@@ -127,20 +128,21 @@ namespace DownloadManager.ViewModels
         private async void DownloadPagesAsync()
         {
             string[] addresses = Urls.Select(x => x.Url).ToArray();
+            foreach (var url in Urls)
+                url.Status = "Ready";
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
-            var count=0;
-            double temp = 0;
+            var count = 0;
             StatusBarText = "Downloading...";
             try
-             {
-                var progressIndicator = new Progress<ValueTuple<double,string>>(percent =>
+            {
+                var progressIndicator = new Progress<ValueTuple<double, string>>(percent =>
                 {
                     ProgressReport = percent.Item1;
                     Urls.ElementAt(count).Status = percent.Item2;
                     count++;
                 });
-                await  Downloader.DownloadAsync(addresses, token, progressIndicator);
+                await Downloader.DownloadAsync(addresses, token, progressIndicator);
             }
             finally
             {

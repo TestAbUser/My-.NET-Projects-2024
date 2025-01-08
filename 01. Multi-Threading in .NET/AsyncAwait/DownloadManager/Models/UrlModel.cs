@@ -6,8 +6,8 @@ namespace DownloadManager.Models
 {
     public class UrlModel: INotifyPropertyChanged
     {
-        private string _status;
-        private string _url;
+        private string _status=string.Empty;
+        private string _url =string.Empty;
         public string Url
         {
             get => _url;
@@ -42,11 +42,6 @@ namespace DownloadManager.Models
             }
         }
 
-        public UrlModel()
-        {
-            //Urls = new ObservableCollection<string>(_urls);
-        }
-
         public void AddUrl(string url)
         { 
             _urls.Add(url);
@@ -54,14 +49,13 @@ namespace DownloadManager.Models
 
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName = "")
         {
             if (propertyName != nameof(IsChanged))
             {
                 IsChanged = true;
             }
-            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
         }
     }

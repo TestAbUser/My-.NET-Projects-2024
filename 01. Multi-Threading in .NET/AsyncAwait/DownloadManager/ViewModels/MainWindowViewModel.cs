@@ -13,19 +13,19 @@ namespace DownloadManager.ViewModels
     {
         CancellationTokenSource? cts;
 
-        private RelayCommand _openAddWindowCommand = null;
-        private RelayCommand _openCommand = null;
-        private RelayCommand _saveCommand = null;
-        private RelayCommand _downloadCommand = null;
-        private RelayCommand _cancelCommand = null;
-        private string _statusBarText;
+        private RelayCommand? _openAddWindowCommand;
+        private RelayCommand? _openCommand;
+        private RelayCommand? _saveCommand;
+        private RelayCommand? _downloadCommand;
+        private RelayCommand? _cancelCommand;
+        private string? _statusBarText;
         private double _progressReport;
         // private string _downloadStatus;
 
         // private bool _isEnabled;
         private bool _isChanged;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public double ProgressReport //{ get; set; } = new();
         {
@@ -91,7 +91,7 @@ namespace DownloadManager.ViewModels
                     string[] dataFromFile = File.ReadAllLines(openDlg.FileName);
 
                     // Show Urls in DataGrid. 
-                    foreach (var line in dataFromFile) { Urls.Add(new UrlModel { Url = line }); }
+                    foreach (var line in dataFromFile) { Urls.Add(new UrlModel { Url = line, Status="Ready" }); }
                     // IsEnabled = true;
                 }
                 catch (IOException ex)

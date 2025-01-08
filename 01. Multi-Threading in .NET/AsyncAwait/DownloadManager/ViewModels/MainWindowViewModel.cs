@@ -1,11 +1,11 @@
-﻿using System.Windows;
-using DownloadManager.Commands;
-using System.Collections.ObjectModel;
-using DownloadManager.Models;
-using Microsoft.Win32;
-using System.IO;
+﻿using System.IO;
 using System.ComponentModel;
-using System.Security.Policy;
+using System.Windows;
+using System.Collections.ObjectModel;
+using DownloadManager.Commands;
+using DownloadManager.Models;
+using DownloadManager.Helpers;
+using Microsoft.Win32;
 
 namespace DownloadManager.ViewModels
 {
@@ -91,7 +91,7 @@ namespace DownloadManager.ViewModels
                     string[] dataFromFile = File.ReadAllLines(openDlg.FileName);
 
                     // Show Urls in DataGrid. 
-                    foreach (var line in dataFromFile) { Urls.Add(new UrlModel { Url = line, Status="Ready" }); }
+                    foreach (var line in dataFromFile) { Urls.Add(new UrlModel { Url = line, Status = "Ready" }); }
                     // IsEnabled = true;
                 }
                 catch (IOException ex)
@@ -142,7 +142,7 @@ namespace DownloadManager.ViewModels
                     Urls.ElementAt(count).Status = percent.Item2;
                     count++;
                 });
-                await Downloader.DownloadAsync(addresses, token, progressIndicator);
+                List<string> results = await Downloader.DownloadAsync(addresses, token, progressIndicator);
             }
             finally
             {

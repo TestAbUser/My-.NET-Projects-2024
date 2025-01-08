@@ -18,7 +18,7 @@ namespace DownloadManager.ViewModels
         private RelayCommand _downloadCommand = null;
         private RelayCommand _cancelCommand = null;
         private string _statusBarText;
-        private int _progressReport;
+        private double _progressReport;
        // private string _downloadStatus;
 
         // private bool _isEnabled;
@@ -26,7 +26,7 @@ namespace DownloadManager.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public int ProgressReport //{ get; set; } = new();
+        public double ProgressReport //{ get; set; } = new();
         {
             get => _progressReport;
             set
@@ -130,26 +130,26 @@ namespace DownloadManager.ViewModels
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
             var count=0;
+            double temp = 0;
             StatusBarText = "Downloading...";
             try
              {
-                var progressIndicator = new Progress<int>(percent =>
+                var progressIndicator = new Progress<double>(percent =>
                 {
                     ProgressReport = percent;
-
-                    if (percent >= 0)
+                    if (percent >temp)
                     {
                         Urls.ElementAt(count).Status = "Completed";
                     }
-                    else if (percent == -2)
+                    else if (percent <= temp)
                     {
                         Urls.ElementAt(count).Status = "Failed";
                     }
                     else if (percent == -1)
                     {
-                        // for (int i = count; i < addresses.Length; i++)
                         Urls.ElementAt(count).Status = "Canceled";
                     }
+                    temp = percent;
                     count++;
                 });
                 await  Downloader.DownloadAsync(addresses, token, progressIndicator);

@@ -6,47 +6,44 @@ namespace DownloadManager.Models
     {
         private static readonly HttpClient s_client = new();
 
-        public static async Task<List<string>> DownloadAsync(string[] addresses, CancellationToken ct, IProgress<int> progress = null)
+        public static async Task<List<string>> DownloadAsync(string[] addresses, CancellationToken ct, IProgress<double>? progress = null)
         {
             List<string> pages = [];
             int totalCount = addresses.Length;
             string res = string.Empty;
 
-            int tempCount = 1;
+            int tempCount = 0;
             using var throttler = new SemaphoreSlim(1);
 
             Task<string>[] downloadPages = addresses.Select(async address =>
-                 {
-                     await throttler.WaitAsync().ConfigureAwait(false);
-                     try
-                     {
-                         if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
-                         {
-                             res = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
-                             progress?.Report(tempCount * 100 / totalCount);
-                         }
-                         else progress?.Report(-2);
-
-                         return res;
-                     }
-                     catch (HttpRequestException ex)
-                     {
-                         progress?.Report(-2);
-                         return res;
-                         throw;
-                     }
-                     finally
-                     {
-                         tempCount++;
-                         throttler.Release();
-                         res = string.Empty;
-                     }
-                 }).ToArray();
+            {
+                await throttler.WaitAsync().ConfigureAwait(false);
+                try
+                {
+                    if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
+                    {
+                        res = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
+                        tempCount++;
+                    }
+                    return res;
+                }
+                catch (HttpRequestException)
+                {
+                    return res;
+                    throw;
+                }
+                finally
+                {
+                    progress?.Report((double)tempCount * 100 / totalCount);
+                    throttler.Release();
+                    res = string.Empty;
+                }
+            }).ToArray();
             try
             {
                 pages = (await WhenAllOrError<string>(downloadPages)).ToList();
             }
-            catch (OperationCanceledException) { progress?.Report(-1); }
+            catch (OperationCanceledException) { /*progress?.Report(-1);*/ }
             return pages;
         }
         static async Task<TResult[]> WhenAllOrError<TResult>(params Task<TResult>[] tasks)

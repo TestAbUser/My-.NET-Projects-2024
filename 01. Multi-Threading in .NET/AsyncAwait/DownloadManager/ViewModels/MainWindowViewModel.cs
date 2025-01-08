@@ -146,6 +146,7 @@ namespace DownloadManager.ViewModels
             }
             finally
             {
+                ProgressReport = 0;
                 cts.Dispose();
                 cts = null;
                 StatusBarText = null;

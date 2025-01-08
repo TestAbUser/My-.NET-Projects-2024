@@ -13,7 +13,7 @@ namespace DownloadManager.Models
             int totalCount = addresses.Length;
             string res = string.Empty;
 
-            int tempCount = 0;
+            int tempCount = 1;
             using var throttler = new SemaphoreSlim(1);
 
             Task<string>[] downloadPages = addresses.Select(async address =>

@@ -6,7 +6,8 @@ namespace DownloadManager.Models
     {
         private static readonly HttpClient s_client = new();
 
-        public static async Task<List<string>> DownloadAsync(string[] addresses, CancellationToken ct, IProgress<double>? progress = null)
+        public static async Task<List<string>> DownloadAsync(string[] addresses,
+            CancellationToken ct, IProgress<ValueTuple<double, string>>? progress = null)
         {
             List<string> pages = [];
             int totalCount = addresses.Length;
@@ -23,27 +24,31 @@ namespace DownloadManager.Models
                     if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
                     {
                         res = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
+                        progress?.Report(((double)tempCount * 100 / totalCount, "Completed"));
                         tempCount++;
+                    }
+                    else
+                    {
+                        progress?.Report(((double)tempCount * 100 / totalCount, "Failed"));
                     }
                     return res;
                 }
                 catch (HttpRequestException)
                 {
+                    progress?.Report(((double)tempCount * 100 / totalCount, "Failed"));
                     return res;
-                    throw;
                 }
                 finally
                 {
-                    progress?.Report((double)tempCount * 100 / totalCount);
-                    throttler.Release();
                     res = string.Empty;
+                    throttler.Release();
                 }
             }).ToArray();
             try
             {
                 pages = (await WhenAllOrError<string>(downloadPages)).ToList();
             }
-            catch (OperationCanceledException) { /*progress?.Report(-1);*/ }
+            catch (OperationCanceledException) { progress?.Report((0, "Canceled")); }
             return pages;
         }
         static async Task<TResult[]> WhenAllOrError<TResult>(params Task<TResult>[] tasks)

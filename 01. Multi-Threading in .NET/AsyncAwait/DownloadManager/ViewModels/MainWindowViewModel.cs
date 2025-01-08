@@ -134,22 +134,10 @@ namespace DownloadManager.ViewModels
             StatusBarText = "Downloading...";
             try
              {
-                var progressIndicator = new Progress<double>(percent =>
+                var progressIndicator = new Progress<ValueTuple<double,string>>(percent =>
                 {
-                    ProgressReport = percent;
-                    if (percent >temp)
-                    {
-                        Urls.ElementAt(count).Status = "Completed";
-                    }
-                    else if (percent <= temp)
-                    {
-                        Urls.ElementAt(count).Status = "Failed";
-                    }
-                    else if (percent == -1)
-                    {
-                        Urls.ElementAt(count).Status = "Canceled";
-                    }
-                    temp = percent;
+                    ProgressReport = percent.Item1;
+                    Urls.ElementAt(count).Status = percent.Item2;
                     count++;
                 });
                 await  Downloader.DownloadAsync(addresses, token, progressIndicator);

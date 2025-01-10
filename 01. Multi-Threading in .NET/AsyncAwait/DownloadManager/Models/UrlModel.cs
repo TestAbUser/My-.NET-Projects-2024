@@ -27,35 +27,17 @@ namespace DownloadManager.Models
                 _status = value;
                 OnPropertyChanged();
             }
-
-        }
-
-        private bool _isChanged;
-        public bool IsChanged
-        {
-            get => _isChanged;
-            set
-            {
-                if (value == _isChanged) return;
-                _isChanged = value;
-                OnPropertyChanged();
-            }
         }
 
         public void AddUrl(string url)
         { 
             _urls.Add(url);
             OnPropertyChanged(nameof(AddUrl));
-
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName = "")
         {
-            if (propertyName != nameof(IsChanged))
-            {
-                IsChanged = true;
-            }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
         }
     }

@@ -21,8 +21,6 @@ namespace DownloadManager.ViewModels
         private string? _statusBarText;
         private double _progressReport;
 
-        private bool _isChanged;
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public double ProgressReport 
@@ -32,17 +30,6 @@ namespace DownloadManager.ViewModels
             {
                 if (value == _progressReport) return;
                 _progressReport = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsChanged
-        {
-            get => _isChanged;
-            set
-            {
-                if (value == _isChanged) return;
-                _isChanged = value;
                 OnPropertyChanged();
             }
         }
@@ -172,10 +159,6 @@ namespace DownloadManager.ViewModels
 
         protected virtual void OnPropertyChanged(string propertyName = "")
         {
-            //if (propertyName != nameof(IsChanged))
-            //{
-            //    IsChanged = true;
-            //}
             // The first parameter ("this") is the object instance that is raising the event.
             // The PropertyChangedEventArgs constructor takes a string that indicates the property
             // that was changed and needs to be updated. When String.Empty is used all of the bound

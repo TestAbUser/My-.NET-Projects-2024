@@ -23,7 +23,7 @@ namespace DownloadManager.ViewModels
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public double ProgressReport 
+        public double ProgressReport
         {
             get => _progressReport;
             set
@@ -50,7 +50,7 @@ namespace DownloadManager.ViewModels
         // ObservableCollection type notifies about changes in the collection.
         public ObservableCollection<UrlModel> Urls { get; } = [];
 
-
+        // Opens AddWindow using dependency injection.
         public RelayCommand OpenAddWindowCommand => _openAddWindowCommand ??= new RelayCommand(() =>
         {
             // Pass the collection holding Urls to the other window's view model.
@@ -61,8 +61,8 @@ namespace DownloadManager.ViewModels
 
         private bool CanOpenAddWindowCommand() => cts == null || cts.IsCancellationRequested;
 
+        // Opens Dialog window to load a file.
         public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(OpenDialog, CanOpenAddWindowCommand);
-
 
         private void OpenDialog()
         {
@@ -88,8 +88,7 @@ namespace DownloadManager.ViewModels
             }
         }
 
-        public RelayCommand SaveCommand =>
-           _saveCommand ??= new RelayCommand(SaveDialog);
+        public RelayCommand SaveCommand => _saveCommand ??= new RelayCommand(SaveDialog);
 
         private void SaveDialog()
         {
@@ -144,7 +143,6 @@ namespace DownloadManager.ViewModels
         // Download button is enabled if the urls are displayed and download process isn't in progress.
         private bool CanDownloadPages() => Urls.Count > 0 && (cts == null || cts.IsCancellationRequested);
 
-
         public RelayCommand CancelCommand => _cancelCommand ??= new(CancelDownloading, CanCancelDownload);
         private void CancelDownloading()
         {
@@ -155,7 +153,6 @@ namespace DownloadManager.ViewModels
 
         // Cancel button is enabled only if download is in progress.
         private bool CanCancelDownload() => cts != null && !cts.IsCancellationRequested;
-
 
         protected virtual void OnPropertyChanged(string propertyName = "")
         {

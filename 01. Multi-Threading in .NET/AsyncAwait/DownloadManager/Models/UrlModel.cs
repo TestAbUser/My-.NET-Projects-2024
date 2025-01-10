@@ -3,10 +3,10 @@ using System.ComponentModel;
 
 namespace DownloadManager.Models
 {
-    public class UrlModel: INotifyPropertyChanged
+    public class UrlModel : INotifyPropertyChanged
     {
-        private string _status=string.Empty;
-        private string _url =string.Empty;
+        private string _status = string.Empty;
+        private string _url = string.Empty;
 
         public string Url
         {
@@ -27,12 +27,6 @@ namespace DownloadManager.Models
                 _status = value;
                 OnPropertyChanged(nameof(Status));
             }
-        }
-
-        public void AddUrl(string url)
-        { 
-            _urls.Add(url);
-            OnPropertyChanged(nameof(AddUrl));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

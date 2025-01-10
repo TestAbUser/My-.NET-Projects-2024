@@ -6,9 +6,11 @@
         private readonly Action<T> _execute;
         private readonly Func<T, bool>? _canExecute;
 
+        // Allows to define a command.
         public RelayCommand(Action<T> execute) : this(execute, null) { }
-        public RelayCommand(
-        Action<T> execute, Func<T, bool>? canExecute)
+
+        // Allows to define a command and conditions when it's available.
+        public RelayCommand(Action<T> execute, Func<T, bool>? canExecute)
         {
             _execute = execute
             ?? throw new ArgumentNullException(nameof(execute));

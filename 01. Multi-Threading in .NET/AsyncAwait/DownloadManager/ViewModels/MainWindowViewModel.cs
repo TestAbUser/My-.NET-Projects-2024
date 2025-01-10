@@ -20,14 +20,12 @@ namespace DownloadManager.ViewModels
         private RelayCommand? _cancelCommand;
         private string? _statusBarText;
         private double _progressReport;
-        // private string _downloadStatus;
 
-        // private bool _isEnabled;
         private bool _isChanged;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public double ProgressReport //{ get; set; } = new();
+        public double ProgressReport 
         {
             get => _progressReport;
             set
@@ -61,6 +59,8 @@ namespace DownloadManager.ViewModels
                 }
             }
         }
+
+        // ObservableCollection type notifies about changes in the collection.
         public ObservableCollection<UrlModel> Urls { get; } = [];
 
 
@@ -136,10 +136,10 @@ namespace DownloadManager.ViewModels
             StatusBarText = "Downloading...";
             try
             {
-                var progressIndicator = new Progress<ValueTuple<double, string>>(percent =>
+                var progressIndicator = new Progress<ValueTuple<double, string>>(progress =>
                 {
-                    ProgressReport = percent.Item1;
-                    Urls.ElementAt(count).Status = percent.Item2;
+                    ProgressReport = progress.Item1; // updates progress bar
+                    Urls.ElementAt(count).Status = progress.Item2; // updates status values
                     count++;
                 });
                 List<string> results = await Downloader.DownloadAsync(addresses, token, progressIndicator);
@@ -154,7 +154,7 @@ namespace DownloadManager.ViewModels
             }
         }
 
-        // DownloadAsync button is enabled if the urls are displayed and download process isn't in progress.
+        // Download button is enabled if the urls are displayed and download process isn't in progress.
         private bool CanDownloadPages() => Urls.Count > 0 && (cts == null || cts.IsCancellationRequested);
 
 
@@ -172,10 +172,10 @@ namespace DownloadManager.ViewModels
 
         protected virtual void OnPropertyChanged(string propertyName = "")
         {
-            if (propertyName != nameof(IsChanged))
-            {
-                IsChanged = true;
-            }
+            //if (propertyName != nameof(IsChanged))
+            //{
+            //    IsChanged = true;
+            //}
             // The first parameter ("this") is the object instance that is raising the event.
             // The PropertyChangedEventArgs constructor takes a string that indicates the property
             // that was changed and needs to be updated. When String.Empty is used all of the bound

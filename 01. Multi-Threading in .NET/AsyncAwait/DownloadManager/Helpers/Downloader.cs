@@ -6,24 +6,29 @@ namespace DownloadManager.Helpers
     {
         private static readonly HttpClient s_client = new();
 
+        // Downloads pages as strings, allowing for cancellation and progress report.
         public static async Task<List<string>> DownloadAsync(string[] addresses,
             CancellationToken ct, IProgress<ValueTuple<double, string>>? progress = null)
         {
             List<string> pages = [];
             int totalCount = addresses.Length;
-            string res = string.Empty;
+            string page = string.Empty;
 
             int tempCount = 1;
+
+            // Configure semaphor to hold only one thread to guarantee the order of downloading. 
             using var throttler = new SemaphoreSlim(1);
 
+            // Using Select allows to launch all tasks concurrently (or would allow if more threads were involved).
             Task<string>[] downloadPages = addresses.Select(async address =>
             {
                 await throttler.WaitAsync().ConfigureAwait(false);
                 try
                 {
+                    // Using condition to check whether the url is valid, otherwise set its status as Failed. 
                     if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
                     {
-                        res = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
+                        page = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
                         progress?.Report(((double)tempCount * 100 / totalCount, "Completed"));
                         tempCount++;
                     }
@@ -31,16 +36,17 @@ namespace DownloadManager.Helpers
                     {
                         progress?.Report(((double)tempCount * 100 / totalCount, "Failed"));
                     }
-                    return res;
+                    return page;
                 }
+                // Failed request isn't a reason to stop downloading the rest of the pages.
                 catch (HttpRequestException)
                 {
                     progress?.Report(((double)tempCount * 100 / totalCount, "Failed"));
-                    return res;
+                    return page;
                 }
                 finally
                 {
-                    res = string.Empty;
+                    page = string.Empty;
                     throttler.Release();
                 }
             }).ToArray();
@@ -48,9 +54,16 @@ namespace DownloadManager.Helpers
             {
                 pages = (await WhenAllOrError<string>(downloadPages)).ToList();
             }
+            // All tasks will be cancelled, even completed.
             catch (OperationCanceledException) { progress?.Report((0, "Canceled")); }
             return pages;
         }
+        /// <summary>
+        /// Stops WhenAll task if there is an error in one of its tasks.
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="tasks"></param>
+        /// <returns>An array</returns>
         private static async Task<TResult[]> WhenAllOrError<TResult>(params Task<TResult>[] tasks)
         {
             var killJoy = new TaskCompletionSource<TResult[]>();

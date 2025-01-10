@@ -15,6 +15,7 @@ namespace DownloadManager.Commands
             remove => CommandManager.RequerySuggested -= value;
         }
 
+        // Forces the Command to raise the CanExecuteChanged event.
         public void RaiseCanExecuteChanged()
         {
             CommandManager.InvalidateRequerySuggested();
@@ -22,7 +23,11 @@ namespace DownloadManager.Commands
 
         // Is needed by the RelayCommand<T>.
         public RelayCommand() { }
+
+        // Allows to define a command.
         public RelayCommand(Action execute) : this(execute, null) { }
+
+        // Allows to define a command and conditions when it's available.
         public RelayCommand(Action execute, Func<bool>? canExecute)
         {
             _execute = execute

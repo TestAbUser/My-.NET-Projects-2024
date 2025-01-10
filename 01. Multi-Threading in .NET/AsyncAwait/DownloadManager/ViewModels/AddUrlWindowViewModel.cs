@@ -5,6 +5,7 @@ using DownloadManager.Models;
 
 namespace DownloadManager.ViewModels
 {
+    // A view model for Add pop-up.
     public class AddUrlWindowViewModel
     {
         private RelayCommand<object>? _okCommand;
@@ -12,6 +13,7 @@ namespace DownloadManager.ViewModels
         // Url property is bound to the Text property of the TextBox.
         public string Url { get; set; } = string.Empty;
 
+        // ObservableCollection type notifies about changes in the collection.
         public ObservableCollection<UrlModel> Urls { get; } = new();
         public AddUrlWindowViewModel()
         {

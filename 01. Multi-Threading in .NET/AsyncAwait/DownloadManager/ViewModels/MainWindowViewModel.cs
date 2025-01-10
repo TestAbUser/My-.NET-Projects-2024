@@ -30,7 +30,7 @@ namespace DownloadManager.ViewModels
             {
                 if (value == _progressReport) return;
                 _progressReport = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(ProgressReport));
             }
         }
 
@@ -163,8 +163,7 @@ namespace DownloadManager.ViewModels
             // The PropertyChangedEventArgs constructor takes a string that indicates the property
             // that was changed and needs to be updated. When String.Empty is used all of the bound
             // properties of the instance are updated.
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
-            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

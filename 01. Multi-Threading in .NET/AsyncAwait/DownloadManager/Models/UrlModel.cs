@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace DownloadManager.Models
 {
@@ -8,13 +7,14 @@ namespace DownloadManager.Models
     {
         private string _status=string.Empty;
         private string _url =string.Empty;
+
         public string Url
         {
             get => _url;
             set
             {
                 _url = value;
-               // PropertyChanged(this, new PropertyChangedEventArgs(nameof(Url)));
+                OnPropertyChanged(nameof(Url));
             }
         }
         private readonly ObservableCollection<string> _urls = new();
@@ -25,7 +25,7 @@ namespace DownloadManager.Models
             set
             {
                 _status = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Status));
             }
         }
 
@@ -38,7 +38,7 @@ namespace DownloadManager.Models
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

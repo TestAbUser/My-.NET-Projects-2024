@@ -17,7 +17,6 @@ namespace DownloadManager.Models
                 OnPropertyChanged(nameof(Url));
             }
         }
-        private readonly ObservableCollection<string> _urls = new();
 
         public string Status
         {

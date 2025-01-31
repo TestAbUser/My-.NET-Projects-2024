@@ -62,30 +62,39 @@ namespace DownloadManager.ViewModels
         private bool CanOpenAddWindowCommand() => cts == null || cts.IsCancellationRequested;
 
         // Opens Dialog window to load a file.
-        public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(OpenDialog, CanOpenAddWindowCommand);
+        public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(()=>
+        {
+            var dataFromFile = LoadFileContent();
 
-        private void OpenDialog()
+            if (dataFromFile != null)
+            {
+                // Show Urls in DataGrid. 
+                foreach (var line in dataFromFile)
+                {
+                    Urls.Add(new UrlModel { Url = line, Status = "Ready" });
+                }
+            }
+        }, CanOpenAddWindowCommand);
+
+        private string[]? LoadFileContent()
         {
             // Create an open file dialog box and only show text files.
             var openDlg = new OpenFileDialog { Filter = "Text Files |*.txt" };
-
+            string[]? dataFromFile=null;
             // Did they click on the OK button?
             if (true == openDlg.ShowDialog())
             {
                 try
                 {
                     // Load all text of selected file.
-                    string[] dataFromFile = File.ReadAllLines(openDlg.FileName);
-
-                    // Show Urls in DataGrid. 
-                    foreach (var line in dataFromFile) { Urls.Add(new UrlModel { Url = line, Status = "Ready" }); }
-                    // IsEnabled = true;
+                    dataFromFile = File.ReadAllLines(openDlg.FileName);
                 }
                 catch (IOException ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
             }
+            return dataFromFile;
         }
 
         public RelayCommand SaveCommand => _saveCommand ??= new RelayCommand(SaveDialog);

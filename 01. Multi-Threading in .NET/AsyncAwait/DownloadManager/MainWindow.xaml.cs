@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using DownloadManager.Helpers;
 using DownloadManager.ViewModels;
 
 namespace DownloadManager
@@ -8,7 +9,7 @@ namespace DownloadManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindowViewModel ViewModel { get; set; } = new MainWindowViewModel();
+        public MainWindowViewModel ViewModel { get; set; } = new MainWindowViewModel(new FileSystem());
         public MainWindow()
         {
             InitializeComponent();

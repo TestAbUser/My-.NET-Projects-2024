@@ -9,8 +9,10 @@ using Microsoft.Win32;
 
 namespace DownloadManager.ViewModels
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : INotifyPropertyChanged//, IFileSystem
     {
+        private readonly IFileSystem _fileSystem;
+
         CancellationTokenSource? cts;
 
         private RelayCommand? _openAddWindowCommand;
@@ -20,6 +22,15 @@ namespace DownloadManager.ViewModels
         private RelayCommand? _cancelCommand;
         private string? _statusBarText;
         private double _progressReport;
+
+        public MainWindowViewModel()
+        {
+        }
+
+        public MainWindowViewModel(IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -62,9 +73,9 @@ namespace DownloadManager.ViewModels
         private bool CanOpenAddWindowCommand() => cts == null || cts.IsCancellationRequested;
 
         // Opens Dialog window to load a file.
-        public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(()=>
+        public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(() =>
         {
-            var dataFromFile = LoadFileContent();
+            var dataFromFile = _fileSystem.LoadFileContent();
 
             if (dataFromFile != null)
             {
@@ -75,48 +86,14 @@ namespace DownloadManager.ViewModels
                 }
             }
         }, CanOpenAddWindowCommand);
-
-        private string[]? LoadFileContent()
+       
+        public RelayCommand SaveCommand => _saveCommand ??= new RelayCommand(() =>
         {
-            // Create an open file dialog box and only show text files.
-            var openDlg = new OpenFileDialog { Filter = "Text Files |*.txt" };
-            string[]? dataFromFile=null;
-            // Did they click on the OK button?
-            if (true == openDlg.ShowDialog())
-            {
-                try
-                {
-                    // Load all text of selected file.
-                    dataFromFile = File.ReadAllLines(openDlg.FileName);
-                }
-                catch (IOException ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-            return dataFromFile;
-        }
+            var listOfUrls = Urls.Select(x => x.Url);
+            _fileSystem.SaveDialog(listOfUrls);
+        });
 
-        public RelayCommand SaveCommand => _saveCommand ??= new RelayCommand(SaveDialog);
-
-        private void SaveDialog()
-        {
-            var saveDlg = new SaveFileDialog { Filter = "Text Files |*.txt" };
-            // Did they click on the OK button?
-            if (true == saveDlg.ShowDialog())
-            {
-                try
-                {
-                    // Save data in the DataGrid to the named file.
-                    File.WriteAllLines(saveDlg.FileName, Urls.Select(x => x.Url));
-                }
-                catch (IOException ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-        }
-
+       
         public RelayCommand DownloadCommand =>
          _downloadCommand ??= new RelayCommand(DownloadPagesAsync, CanDownloadPages);
 

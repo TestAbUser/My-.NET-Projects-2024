@@ -99,6 +99,8 @@ namespace DownloadManager.ViewModels
 
         private async void DownloadPagesAsync()
         {
+            StringDownloader stringDownloader = new StringDownloader();
+            Downloader downloader = new Downloader(stringDownloader);
             string[] addresses = Urls.Select(x => x.Url).ToArray();
             foreach (var url in Urls)
                 url.Status = "Ready";
@@ -114,7 +116,7 @@ namespace DownloadManager.ViewModels
                     Urls.ElementAt(count).Status = progress.Item2; // updates status values
                     count++;
                 });
-                List<string> results = await Downloader.DownloadAsync(addresses, token, progressIndicator);
+                List<string> results = await downloader.DownloadAsync(addresses, token, progressIndicator);
             }
             finally
             {

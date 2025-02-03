@@ -2,12 +2,16 @@
 
 namespace DownloadManager.Helpers
 {
-    public static class Downloader
+    public class Downloader
     {
-        private static readonly HttpClient s_client = new();
+        private readonly IStringDownloader _strDownloader;
+        public Downloader(IStringDownloader strDownloader)
+        {
+            _strDownloader = strDownloader;
+        }
 
         // Downloads pages as strings, allowing for cancellation and progress report.
-        public static async Task<List<string>> DownloadAsync(string[] addresses,
+        public async Task<List<string>> DownloadAsync(string[] addresses,
             CancellationToken ct, IProgress<ValueTuple<double, string>>? progress = null)
         {
             List<string> pages = [];
@@ -28,7 +32,7 @@ namespace DownloadManager.Helpers
                     // Using condition to check whether the url is valid, otherwise set its status as Failed. 
                     if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
                     {
-                        page = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
+                        page = await _strDownloader.DownloadPageAsStringAsync(address,ct).ConfigureAwait(false);
                         progress?.Report(((double)tempCount * 100 / totalCount, "Completed"));
                         tempCount++;
                     }

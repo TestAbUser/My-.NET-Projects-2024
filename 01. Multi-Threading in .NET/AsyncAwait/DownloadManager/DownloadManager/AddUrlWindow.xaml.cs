@@ -8,13 +8,11 @@ namespace DownloadManager
     /// </summary>
     public partial class AddUrlWindow : Window
     {
-        public AddUrlWindow()
+        public AddUrlWindow(AddUrlWindowViewModel viewModel) 
         {
-            InitializeComponent();
-        }
+            if (viewModel == null) throw new ArgumentNullException(nameof(viewModel));
 
-        public AddUrlWindow(AddUrlWindowViewModel viewModel) : this()
-        {
+            InitializeComponent();
             DataContext = viewModel;
         }
     }

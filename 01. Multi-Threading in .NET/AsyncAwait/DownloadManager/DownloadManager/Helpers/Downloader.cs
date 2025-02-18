@@ -32,7 +32,7 @@ namespace DownloadManager.Helpers
                     // Using condition to check whether the url is valid, otherwise set its status as Failed. 
                     if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
                     {
-                        page = await _strDownloader.DownloadPageAsStringAsync(address,ct).ConfigureAwait(false);
+                        page = await _strDownloader.DownloadPageAsStringAsync(address, ct).ConfigureAwait(false);
                         progress?.Report(((double)tempCount * 100 / totalCount, "Completed"));
                         tempCount++;
                     }

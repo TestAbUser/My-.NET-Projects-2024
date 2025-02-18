@@ -33,5 +33,26 @@ namespace DownloadManager.Tests.Unit
         {
             
         }
+
+        [Fact]
+        public async Task Download_a_page_as_a_string()
+        {
+            string[] addresses = { "https://testing" };
+            CancellationToken ct = CancellationToken.None;
+            var downloaderMock = new Mock<IStringDownloader>();
+            //downloaderMock.Setup(x => x.DownloadPageAsStringAsync("", ct))
+            //    .Returns(()=>Task.FromResult("test"));
+            downloaderMock.Setup(x => x.DownloadPageAsStringAsync("", ct))
+               .Returns(async () =>
+               {
+                   await Task.Yield();
+                   return "test";
+               });
+            var sut = new Downloader(downloaderMock.Object);
+
+            var downloadedPages = await sut.DownloadAsync(addresses, ct);
+
+            Assert.Equal("test", downloadedPages.ElementAt(0));
+        }
     }
 }

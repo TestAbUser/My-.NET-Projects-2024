@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DownloadManager", "Download
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DownloadManager.Tests.Unit", "DownloadManager.Tests.Unit\DownloadManager.Tests.Unit.csproj", "{C4A857F3-FF41-49D0-99D2-879D2B189E6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DownloadManager.PresentationLogic", "DownloadManager.PresentationLogic\DownloadManager.PresentationLogic.csproj", "{475311C0-4B29-4E1B-95C3-CBE1F6B006F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C4A857F3-FF41-49D0-99D2-879D2B189E6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4A857F3-FF41-49D0-99D2-879D2B189E6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4A857F3-FF41-49D0-99D2-879D2B189E6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{475311C0-4B29-4E1B-95C3-CBE1F6B006F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{475311C0-4B29-4E1B-95C3-CBE1F6B006F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{475311C0-4B29-4E1B-95C3-CBE1F6B006F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{475311C0-4B29-4E1B-95C3-CBE1F6B006F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

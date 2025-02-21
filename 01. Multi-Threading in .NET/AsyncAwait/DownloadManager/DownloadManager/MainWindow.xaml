@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:DownloadManager" 
         mc:Ignorable="d"
         x:Name="mainWindow"
-        Title="MainWindow" Height="300" Width="800"
-        DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">
+        Title="MainWindow" Height="300" Width="800">
+    <!--DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}">-->
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>

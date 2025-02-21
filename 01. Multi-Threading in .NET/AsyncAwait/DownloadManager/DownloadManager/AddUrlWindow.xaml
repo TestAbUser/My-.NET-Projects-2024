@@ -1,6 +1,7 @@
 ﻿<Window x:Class="DownloadManager.AddUrlWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:pm="clr-namespace:DownloadManager.PresentationLogic;assembly=DownloadManager.PresentationLogic"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DownloadManager"
@@ -45,7 +46,7 @@
 
                 <Button x:Name="okBtn"  
                         Content="OK" 
-                        Command="{Binding OkCommand}"
+                        Command="{x:Static pm:PresentationCommands.Accept}"
                         CommandParameter="{Binding ElementName=addUrlWindow, Mode=OneWay}"
                         IsEnabled="{Binding ElementName=addUrlTextBox, Path=Text.Length}" 
                         Margin="5,0,5,0" 

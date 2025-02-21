@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DownloadManager.Helpers
+namespace DownloadManager.Domain
 {
     public interface IStringDownloader
     {

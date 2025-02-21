@@ -2,35 +2,59 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Collections.ObjectModel;
-using DownloadManager.Commands;
-using DownloadManager.Models;
-using DownloadManager.Helpers;
+using DownloadManager.PresentationLogic.Commands;
+using DownloadManager.PresentationLogic.ViewModels;
+using DownloadManager.Domain;
+using System.Windows.Input;
+using DownloadManager;
 using Microsoft.Win32;
 
-namespace DownloadManager.ViewModels
+namespace DownloadManager.PresentationLogic.ViewModels
 {
-    public class MainWindowViewModel : INotifyPropertyChanged//, IFileSystem
+    public class MainViewModel : IViewModel, INotifyPropertyChanged
     {
-        private readonly IFileSystem _fileSystem;
+        private IWindow _window;
+        private readonly IUrlRepository _urlRepo;
+        private readonly IPageRepository _pageRepo;
 
         CancellationTokenSource? cts;
 
         private RelayCommand? _openAddWindowCommand;
-        private RelayCommand? _openCommand;
+        private RelayCommand? _openFileCommand;
         private RelayCommand? _saveCommand;
-        private RelayCommand? _downloadCommand;
+        private RelayCommand? _downloadPageCommand;
         private RelayCommand? _cancelCommand;
         private string? _statusBarText;
         private double _progressReport;
 
-        public MainWindowViewModel()
+
+        public MainViewModel(//IUrlRepository urlRepo,
+           // IPageRepository pageRepo,
+            IWindow window)
         {
+           // if (urlRepo == null) throw new ArgumentNullException(nameof(urlRepo));
+           // if (pageRepo == null) throw new ArgumentNullException(nameof(pageRepo));
+            if (window == null) throw new ArgumentNullException(nameof(window));
+
+            _window = window;
+            //_urlRepo = urlRepo;
+            //_pageRepo = pageRepo;
         }
 
-        public MainWindowViewModel(IFileSystem fileSystem)
-        {
-            _fileSystem = fileSystem;
-        }
+        public ICommand DownloadCommand =>
+            _downloadPageCommand ??= new RelayCommand(DownloadPagesAsync, CanDownloadPages);
+
+        public ICommand CancelCommand =>
+            _cancelCommand ??= new RelayCommand(CancelDownloading, CanCancelDownload);
+
+        public ICommand OpenAddWindowCommand =>
+            _openAddWindowCommand ??= new RelayCommand(AddUrl, CanOpenAddWindowCommand);
+
+        public ICommand OpenFileCommand =>
+            _openFileCommand ??= new RelayCommand(OpenFileWithUrls, CanOpenAddWindowCommand);
+        public ICommand SaveCommand =>
+            _saveCommand ??= new RelayCommand(SaveUrls);
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -61,21 +85,28 @@ namespace DownloadManager.ViewModels
         // ObservableCollection type notifies about changes in the collection.
         public ObservableCollection<UrlModel> Urls { get; } = [];
 
+        public void Initialize(Action? action, object? model)
+        {
+            
+        }
+
         // Opens AddWindow using dependency injection.
-        public RelayCommand OpenAddWindowCommand => _openAddWindowCommand ??= new RelayCommand(() =>
+        private void AddUrl()
         {
             // Pass the collection holding Urls to the other window's view model.
-            AddUrlWindowViewModel viewModel = new(Urls);
-            AddUrlWindow auw = new(viewModel);
-            auw.ShowDialog();
-        }, CanOpenAddWindowCommand);
+            AddUrlViewModel viewModel = new(Urls);
+            if (_window.CreateChild(viewModel).ShowDialogue() ?? false)
+            {
 
-        private bool CanOpenAddWindowCommand() => cts == null || cts.IsCancellationRequested;
+            }
+           // AddUrlWindow auw = new(viewModel);
+           // auw.ShowDialog();
+        }
 
         // Opens Dialog window to load a file.
-        public RelayCommand OpenCommand => _openCommand ??= new RelayCommand(() =>
+        private void OpenFileWithUrls()
         {
-            var dataFromFile = _fileSystem.LoadFileContent();
+            var dataFromFile = _urlRepo.LoadFileContent();
 
             if (dataFromFile != null)
             {
@@ -85,22 +116,19 @@ namespace DownloadManager.ViewModels
                     Urls.Add(new UrlModel { Url = line, Status = "Ready" });
                 }
             }
-        }, CanOpenAddWindowCommand);
-       
-        public RelayCommand SaveCommand => _saveCommand ??= new RelayCommand(() =>
+        }
+
+
+        private void SaveUrls()
         {
             var listOfUrls = Urls.Select(x => x.Url);
-            _fileSystem.SaveDialog(listOfUrls);
-        });
+            _urlRepo.SaveDialog(listOfUrls);
+        }
 
-       
-        public RelayCommand DownloadCommand =>
-         _downloadCommand ??= new RelayCommand(DownloadPagesAsync, CanDownloadPages);
 
         private async void DownloadPagesAsync()
         {
-            StringDownloader stringDownloader = new StringDownloader();
-            Downloader downloader = new Downloader(stringDownloader);
+            //StringDownloader stringDownloader = new StringDownloader();
             string[] addresses = Urls.Select(x => x.Url).ToArray();
             foreach (var url in Urls)
                 url.Status = "Ready";
@@ -116,7 +144,7 @@ namespace DownloadManager.ViewModels
                     Urls.ElementAt(count).Status = progress.Item2; // updates status values
                     count++;
                 });
-                List<string> results = await downloader.DownloadAsync(addresses, token, progressIndicator);
+                List<string> results = await _pageRepo.DownloadAsync(addresses, token, progressIndicator);
             }
             finally
             {
@@ -124,20 +152,21 @@ namespace DownloadManager.ViewModels
                 cts.Dispose();
                 cts = null;
                 StatusBarText = null;
-                DownloadCommand.RaiseCanExecuteChanged();
+                ((RelayCommand)DownloadCommand).RaiseCanExecuteChanged();
             }
         }
 
-        // Download button is enabled if the urls are displayed and download process isn't in progress.
-        private bool CanDownloadPages() => Urls.Count > 0 && (cts == null || cts.IsCancellationRequested);
-
-        public RelayCommand CancelCommand => _cancelCommand ??= new(CancelDownloading, CanCancelDownload);
         private void CancelDownloading()
         {
             cts?.Cancel();
             cts?.Dispose();
             StatusBarText = null;
         }
+
+        private bool CanOpenAddWindowCommand() => cts == null || cts.IsCancellationRequested;
+
+        // Download button is enabled if the urls are displayed and download process isn't in progress.
+        private bool CanDownloadPages() => Urls.Count > 0 && (cts == null || cts.IsCancellationRequested);
 
         // Cancel button is enabled only if download is in progress.
         private bool CanCancelDownload() => cts != null && !cts.IsCancellationRequested;

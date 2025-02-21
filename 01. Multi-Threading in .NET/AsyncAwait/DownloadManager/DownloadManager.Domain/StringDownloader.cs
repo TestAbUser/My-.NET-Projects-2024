@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DownloadManager.Helpers
+namespace DownloadManager.Domain
 {
     internal class StringDownloader: IStringDownloader
     {

@@ -1,5 +1,4 @@
-﻿using DownloadManager.ViewModels;
-using System.Windows;
+﻿using System.Windows;
 
 namespace DownloadManager
 {
@@ -8,12 +7,9 @@ namespace DownloadManager
     /// </summary>
     public partial class AddUrlWindow : Window
     {
-        public AddUrlWindow(AddUrlWindowViewModel viewModel) 
+        public AddUrlWindow()
         {
-            if (viewModel == null) throw new ArgumentNullException(nameof(viewModel));
-
             InitializeComponent();
-            DataContext = viewModel;
         }
     }
 }

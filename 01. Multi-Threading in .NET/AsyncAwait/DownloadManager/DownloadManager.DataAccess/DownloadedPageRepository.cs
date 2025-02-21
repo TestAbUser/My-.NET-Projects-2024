@@ -1,11 +1,16 @@
-﻿using System.Net.Http;
+using DownloadManager.Domain;
+using System.Net.Http;
 
-namespace DownloadManager.Helpers
+namespace DownloadManager.DataAccess
 {
-    public class Downloader
+    public class DownloadedPageRepository: IPageRepository
     {
         private readonly IStringDownloader _strDownloader;
-        public Downloader(IStringDownloader strDownloader)
+
+        public DownloadedPageRepository()
+        {
+        }
+        public DownloadedPageRepository(IStringDownloader strDownloader)
         {
             _strDownloader = strDownloader;
         }
@@ -84,4 +89,5 @@ namespace DownloadManager.Helpers
             return await await Task.WhenAny(killJoy.Task, Task.WhenAll(tasks)).ConfigureAwait(false);
         }
     }
+
 }

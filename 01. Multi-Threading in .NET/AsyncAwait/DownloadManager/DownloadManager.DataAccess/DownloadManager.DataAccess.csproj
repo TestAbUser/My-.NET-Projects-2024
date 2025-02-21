@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DownloadManager.Domain\DownloadManager.Domain.csproj" />
+    <ProjectReference Include="..\DownloadManager.PresentationLogic\DownloadManager.PresentationLogic.csproj" />
   </ItemGroup>
 
 </Project>

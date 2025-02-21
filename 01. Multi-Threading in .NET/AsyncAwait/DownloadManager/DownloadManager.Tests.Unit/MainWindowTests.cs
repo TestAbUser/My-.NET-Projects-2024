@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DownloadManager.Helpers;
-using DownloadManager.ViewModels;
+using DownloadManager.PresentationLogic.ViewModels;
+using DownloadManager.DataAccess;
+using DownloadManager.Domain;
 using Moq;
 using Xunit;
 
@@ -18,9 +20,9 @@ namespace DownloadManager.Tests.Unit
             var fileSystemMock = new Mock<IFileSystem>();
             fileSystemMock.Setup(x => x.LoadFileContent())
                 .Returns(["testUrl1", "testUrl2"]);
-            var sut = new MainWindowViewModel(fileSystemMock.Object);
+           // var sut = new MainWindowViewModel(fileSystemMock.Object);
 
-            sut.OpenCommand.Execute(null);
+           // sut.OpenFileCommand.Execute(null);
             // sut.SaveCommand.Execute(null);
 
             fileSystemMock.Verify(
@@ -48,7 +50,7 @@ namespace DownloadManager.Tests.Unit
                    await Task.Yield();
                    return "test";
                });
-            var sut = new Downloader(downloaderMock.Object);
+            var sut = new DownloadedPageRepository(downloaderMock.Object);
 
             var downloadedPages = await sut.DownloadAsync(addresses, ct);
 

@@ -13,9 +13,11 @@ namespace DownloadManager
     {
         public IWindow ResolveWindow()
         {
-            IUrlManagementAgent agent = new UrlManagementAgent();
+           // IUrlManagementAgent agent = new FileContent();
+           Persister persister = new Persister();
+           // IEnumerable<string> urls = persister.LoadUrls() ?? throw new ArgumentNullException();
 
-            IMainViewModelFactory vmFactory = new MainViewModelFactory(agent);
+            IMainViewModelFactory vmFactory = new MainViewModelFactory(persister);//(agent);
 
             Window mainWindow = new MainWindow();
             IWindow window = new MainWindowAdapter(mainWindow, vmFactory);

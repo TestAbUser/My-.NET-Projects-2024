@@ -7,7 +7,7 @@ using System.Windows.Input;
 namespace DownloadManager.PresentationLogic.ViewModels
 {
     // A view model for Add pop-up.
-    public class AddUrlViewModel : IViewModel
+    public class AddUrlViewModel //: IViewModel
     {
        // private RelayCommand<object>? _okCommand;
 
@@ -21,21 +21,8 @@ namespace DownloadManager.PresentationLogic.ViewModels
         {
             this.Urls = Urls;
         }
-        //public ICommand OkCommand =>
-        //    _okCommand ??= new RelayCommand<object>(OkClicked);
 
-        // When OK button is clicked addUrlWindow is passed as a CommandParameter to this property.
-        //public RelayCommand<object> OkCommand => 
-        //    _okCommand ??= new RelayCommand<object>(obj =>
-        //             {
-        //            Urls?.Add(new UrlModel { Url = Url, Status = "Ready" });
-
-        //            // Casting the argument to Window. 
-        //            Window? wnd = obj as Window;
-        //    wnd?.Close();
-        //});
-
-        private void OkClicked(object param)
+    public void OkClicked()
         {
             Urls?.Add(new UrlModel { Url = Url, Status = "Ready" });
 
@@ -44,9 +31,5 @@ namespace DownloadManager.PresentationLogic.ViewModels
            // wnd?.Close();
         }
 
-        public void Initialize(Action? action, object? model)
-        {
-
-        }
     }
 }

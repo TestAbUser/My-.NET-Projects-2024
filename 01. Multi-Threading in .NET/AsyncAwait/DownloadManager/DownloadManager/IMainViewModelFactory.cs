@@ -1,4 +1,5 @@
-﻿using DownloadManager.PresentationLogic;
+﻿using DownloadManager.DataAccess;
+using DownloadManager.PresentationLogic;
 using DownloadManager.PresentationLogic.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace DownloadManager
 {
     public interface IMainViewModelFactory
     {
-        MainViewModel Create(IWindow window);
+        MainWindowViewModel Create(IWindow window);
     }
 }

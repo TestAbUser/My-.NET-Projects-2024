@@ -16,8 +16,8 @@ namespace DownloadManager.Tests.Unit
             //var sut = new MainWindowViewModel();// { Urls {"test", "Ready" } };
             //sut.Urls.Add(new UrlModel { Url ="test",Status ="Ready" });
 
-            //sut.OpenAddWindowCommand.CanExecute(true);
-            //sut.OpenAddWindowCommand.Execute(null);
+            //sut.AddUrlCommand.CanExecute(true);
+            //sut.AddUrlCommand.Execute(null);
 
            // Assert.Equal();
         }

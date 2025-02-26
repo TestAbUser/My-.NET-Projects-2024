@@ -22,7 +22,7 @@ namespace DownloadManager.Tests.Unit
                 .Returns(["testUrl1", "testUrl2"]);
            // var sut = new MainWindowViewModel(fileSystemMock.Object);
 
-           // sut.OpenFileCommand.Execute(null);
+           // sut.LoadUrlsCommand.Execute(null);
             // sut.SaveCommand.Execute(null);
 
             fileSystemMock.Verify(

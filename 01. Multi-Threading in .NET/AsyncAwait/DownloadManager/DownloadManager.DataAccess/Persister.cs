@@ -10,9 +10,9 @@ using System.Windows;
 
 namespace DownloadManager.DataAccess
 {
-    public class UrlRepository: IUrlRepository
+    public class Persister//: IUrlManagementAgent
     {
-        public void SaveDialog(IEnumerable<string> lines)
+        public void SaveUrls(IEnumerable<string> lines)
         {
             var saveDlg = new SaveFileDialog { Filter = "Text Files |*.txt" };
             // Did they click on the OK button?
@@ -30,7 +30,7 @@ namespace DownloadManager.DataAccess
             }
         }
 
-        public string[]? LoadFileContent()
+        public string[]? LoadUrls()
         {
             // Create an open file dialog box and only show text files.
             var openDlg = new OpenFileDialog { Filter = "Text Files |*.txt" };

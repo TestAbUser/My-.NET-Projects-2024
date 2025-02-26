@@ -8,6 +8,7 @@ namespace DownloadManager.PresentationLogic
 {
     public interface IUrlManagementAgent
     {
-        void AddUrl();
+        string[]? LoadUrls();
+        void SaveUrls(IEnumerable<string> contents);
     }
 }

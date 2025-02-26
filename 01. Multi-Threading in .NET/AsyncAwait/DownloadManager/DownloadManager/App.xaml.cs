@@ -20,7 +20,6 @@ namespace DownloadManager
 
             var container = new DownloadManagerContainer();
             container.ResolveWindow().Show();
-            
         }
 
         //public void NavigateTo<TViewModel>(Action? whenDone = null, object? model = null)
@@ -34,9 +33,9 @@ namespace DownloadManager
 
         //private Window CreateWindow(Type viewModelType)
         //{
-        //    if (viewModelType == typeof(MainViewModel))
+        //    if (viewModelType == typeof(MainWindowViewModel))
         //    {
-        //        return new MainWindow(new MainViewModel(
+        //        return new MainWindow(new MainWindowViewModel(
         //            _urlRepo,
         //            _pageRepository,
         //            _navigationService));

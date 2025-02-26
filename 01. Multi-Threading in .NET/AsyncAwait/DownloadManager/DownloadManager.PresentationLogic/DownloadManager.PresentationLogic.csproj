@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DownloadManager.DataAccess\DownloadManager.DataAccess.csproj" />
     <ProjectReference Include="..\DownloadManager.Domain\DownloadManager.Domain.csproj" />
   </ItemGroup>
 

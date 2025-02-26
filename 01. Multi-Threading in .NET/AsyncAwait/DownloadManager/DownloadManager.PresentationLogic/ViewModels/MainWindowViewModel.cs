@@ -5,21 +5,22 @@ using System.Collections.ObjectModel;
 using DownloadManager.PresentationLogic.Commands;
 using DownloadManager.PresentationLogic.ViewModels;
 using DownloadManager.Domain;
+using DownloadManager.DataAccess;
 using System.Windows.Input;
 using DownloadManager;
 using Microsoft.Win32;
 
 namespace DownloadManager.PresentationLogic.ViewModels
 {
-    public class MainViewModel : IViewModel, INotifyPropertyChanged
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         private IWindow _window;
-        private readonly IUrlRepository _urlRepo;
-        private readonly IPageRepository _pageRepo;
+       // private readonly IEnumerable<string> _urls;
+        private readonly Persister _persister;
 
         CancellationTokenSource? cts;
 
-        private RelayCommand? _openAddWindowCommand;
+        private RelayCommand? _addUrlCommand;
         private RelayCommand? _openFileCommand;
         private RelayCommand? _saveCommand;
         private RelayCommand? _downloadPageCommand;
@@ -28,17 +29,17 @@ namespace DownloadManager.PresentationLogic.ViewModels
         private double _progressReport;
 
 
-        public MainViewModel(//IUrlRepository urlRepo,
-           // IPageRepository pageRepo,
+        public MainWindowViewModel(//IEnumerable<string> urls,
+            Persister persister,
             IWindow window)
         {
-           // if (urlRepo == null) throw new ArgumentNullException(nameof(urlRepo));
-           // if (pageRepo == null) throw new ArgumentNullException(nameof(pageRepo));
+           // if (urls == null) throw new ArgumentNullException(nameof(urls));
+            if (persister == null) throw new ArgumentNullException(nameof(persister));
             if (window == null) throw new ArgumentNullException(nameof(window));
 
             _window = window;
-            //_urlRepo = urlRepo;
-            //_pageRepo = pageRepo;
+           // _urls = urls;
+            _persister = persister;
         }
 
         public ICommand DownloadCommand =>
@@ -47,11 +48,11 @@ namespace DownloadManager.PresentationLogic.ViewModels
         public ICommand CancelCommand =>
             _cancelCommand ??= new RelayCommand(CancelDownloading, CanCancelDownload);
 
-        public ICommand OpenAddWindowCommand =>
-            _openAddWindowCommand ??= new RelayCommand(AddUrl, CanOpenAddWindowCommand);
+        public ICommand AddUrlCommand =>
+            _addUrlCommand ??= new RelayCommand(AddUrl, CanOpenAddWindowCommand);
 
-        public ICommand OpenFileCommand =>
-            _openFileCommand ??= new RelayCommand(OpenFileWithUrls, CanOpenAddWindowCommand);
+        public ICommand LoadUrlsCommand =>
+            _openFileCommand ??= new RelayCommand(LoadUrls, CanOpenAddWindowCommand);
         public ICommand SaveCommand =>
             _saveCommand ??= new RelayCommand(SaveUrls);
 
@@ -85,10 +86,6 @@ namespace DownloadManager.PresentationLogic.ViewModels
         // ObservableCollection type notifies about changes in the collection.
         public ObservableCollection<UrlModel> Urls { get; } = [];
 
-        public void Initialize(Action? action, object? model)
-        {
-            
-        }
 
         // Opens AddWindow using dependency injection.
         private void AddUrl()
@@ -97,32 +94,31 @@ namespace DownloadManager.PresentationLogic.ViewModels
             AddUrlViewModel viewModel = new(Urls);
             if (_window.CreateChild(viewModel).ShowDialogue() ?? false)
             {
-
+                viewModel.OkClicked();
             }
            // AddUrlWindow auw = new(viewModel);
            // auw.ShowDialog();
         }
 
         // Opens Dialog window to load a file.
-        private void OpenFileWithUrls()
+        private void LoadUrls()
         {
-            var dataFromFile = _urlRepo.LoadFileContent();
+            var urls = _persister.LoadUrls();
 
-            if (dataFromFile != null)
-            {
+           // if (dataFromFile != null)
+           // {
                 // Show Urls in DataGrid. 
-                foreach (var line in dataFromFile)
+                foreach (var line in urls)
                 {
                     Urls.Add(new UrlModel { Url = line, Status = "Ready" });
                 }
-            }
+           // }
         }
-
 
         private void SaveUrls()
         {
             var listOfUrls = Urls.Select(x => x.Url);
-            _urlRepo.SaveDialog(listOfUrls);
+            _persister.SaveUrls(listOfUrls);
         }
 
 
@@ -144,7 +140,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
                     Urls.ElementAt(count).Status = progress.Item2; // updates status values
                     count++;
                 });
-                List<string> results = await _pageRepo.DownloadAsync(addresses, token, progressIndicator);
+                List<string> results = new List<string>();//await _pageRepo.DownloadAsync(addresses, token, progressIndicator);
             }
             finally
             {

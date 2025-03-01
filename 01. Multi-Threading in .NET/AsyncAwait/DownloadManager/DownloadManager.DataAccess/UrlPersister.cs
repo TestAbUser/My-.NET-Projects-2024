@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace DownloadManager.DataAccess
 {
-    public class Persister//: IUrlManagementAgent
+    public class UrlPersister:IUrlPersister
     {
         public void SaveUrls(IEnumerable<string> lines)
         {
@@ -30,6 +30,7 @@ namespace DownloadManager.DataAccess
             }
         }
 
+        // Opens Dialog window to load a file.
         public string[]? LoadUrls()
         {
             // Create an open file dialog box and only show text files.

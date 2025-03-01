@@ -7,9 +7,6 @@ namespace DownloadManager.DataAccess
     {
         private readonly IStringDownloader _strDownloader;
 
-        public DownloadedPageRepository()
-        {
-        }
         public DownloadedPageRepository(IStringDownloader strDownloader)
         {
             _strDownloader = strDownloader;

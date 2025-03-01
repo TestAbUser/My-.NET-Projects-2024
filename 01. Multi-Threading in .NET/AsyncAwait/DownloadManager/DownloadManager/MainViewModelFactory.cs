@@ -1,4 +1,5 @@
 ﻿using DownloadManager.DataAccess;
+using DownloadManager.Domain;
 using DownloadManager.PresentationLogic;
 using DownloadManager.PresentationLogic.ViewModels;
 using System;
@@ -12,14 +13,14 @@ namespace DownloadManager
     public class MainViewModelFactory: IMainViewModelFactory
     {
        // private readonly IUrlManagementAgent _agent;
-      // private readonly IEnumerable<string> _urls;
-        private readonly Persister _persister;
+       private readonly IPageRepository _repo;
+        private readonly IUrlPersister _persister;
 
-        public MainViewModelFactory(Persister persister)//IUrlManagementAgent agent)
+        public MainViewModelFactory(IPageRepository repo, IUrlPersister persister)
         {
-            //ArgumentNullException.ThrowIfNull(urls,nameof(urls));
+            ArgumentNullException.ThrowIfNull(repo,nameof(repo));
             ArgumentNullException.ThrowIfNull(persister,nameof(persister));
-           // _urls = urls;
+            _repo = repo;
             _persister = persister;
             // _agent = agent ?? throw new ArgumentNullException(nameof(agent));
         }
@@ -28,7 +29,7 @@ namespace DownloadManager
         {
             ArgumentNullException.ThrowIfNull(window,nameof(window));
 
-            return new MainWindowViewModel(_persister,window);
+            return new MainWindowViewModel(_repo, _persister, window);
         }
     }
 }

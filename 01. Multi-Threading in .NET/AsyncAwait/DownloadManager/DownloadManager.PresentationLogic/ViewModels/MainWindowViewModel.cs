@@ -15,8 +15,8 @@ namespace DownloadManager.PresentationLogic.ViewModels
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         private IWindow _window;
-       // private readonly IEnumerable<string> _urls;
-        private readonly Persister _persister;
+        private readonly IPageRepository _pageRepo;
+        private readonly IUrlPersister _persister;
 
         CancellationTokenSource? cts;
 
@@ -28,17 +28,16 @@ namespace DownloadManager.PresentationLogic.ViewModels
         private string? _statusBarText;
         private double _progressReport;
 
-
-        public MainWindowViewModel(//IEnumerable<string> urls,
-            Persister persister,
+        public MainWindowViewModel(IPageRepository repo,
+            IUrlPersister persister,
             IWindow window)
         {
-           // if (urls == null) throw new ArgumentNullException(nameof(urls));
+            if (repo == null) throw new ArgumentNullException(nameof(repo));
             if (persister == null) throw new ArgumentNullException(nameof(persister));
             if (window == null) throw new ArgumentNullException(nameof(window));
 
+            _pageRepo = repo;
             _window = window;
-           // _urls = urls;
             _persister = persister;
         }
 
@@ -96,23 +95,21 @@ namespace DownloadManager.PresentationLogic.ViewModels
             {
                 viewModel.OkClicked();
             }
-           // AddUrlWindow auw = new(viewModel);
-           // auw.ShowDialog();
         }
 
-        // Opens Dialog window to load a file.
+        
         private void LoadUrls()
         {
             var urls = _persister.LoadUrls();
 
-           // if (dataFromFile != null)
-           // {
-                // Show Urls in DataGrid. 
+            if (urls != null)
+            {
+                //Show Urls in DataGrid.
                 foreach (var line in urls)
                 {
                     Urls.Add(new UrlModel { Url = line, Status = "Ready" });
                 }
-           // }
+            }
         }
 
         private void SaveUrls()
@@ -135,12 +132,12 @@ namespace DownloadManager.PresentationLogic.ViewModels
             try
             {
                 var progressIndicator = new Progress<ValueTuple<double, string>>(progress =>
-                {
+                { 
                     ProgressReport = progress.Item1; // updates progress bar
                     Urls.ElementAt(count).Status = progress.Item2; // updates status values
                     count++;
                 });
-                List<string> results = new List<string>();//await _pageRepo.DownloadAsync(addresses, token, progressIndicator);
+                List<string> results = await _pageRepo.DownloadAsync(addresses, token, progressIndicator);
             }
             finally
             {

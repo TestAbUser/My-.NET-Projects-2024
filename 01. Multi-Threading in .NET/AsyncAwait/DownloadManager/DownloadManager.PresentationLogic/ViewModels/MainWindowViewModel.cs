@@ -97,7 +97,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
             }
         }
 
-        
+
         private void LoadUrls()
         {
             var urls = _persister.LoadUrls();
@@ -127,16 +127,11 @@ namespace DownloadManager.PresentationLogic.ViewModels
                 url.Status = "Ready";
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
-            var count = 0;
+            int count = 0;
             StatusBarText = "Downloading...";
             try
             {
-                var progressIndicator = new Progress<ValueTuple<double, string>>(progress =>
-                { 
-                    ProgressReport = progress.Item1; // updates progress bar
-                    Urls.ElementAt(count).Status = progress.Item2; // updates status values
-                    count++;
-                });
+                var progressIndicator = DisplayProgressBarAndUrlStatus(count);
                 List<string> results = await _pageRepo.DownloadAsync(addresses, token, progressIndicator);
             }
             finally
@@ -147,6 +142,17 @@ namespace DownloadManager.PresentationLogic.ViewModels
                 StatusBarText = null;
                 ((RelayCommand)DownloadCommand).RaiseCanExecuteChanged();
             }
+        }
+
+        private Progress<ValueTuple<double, string>> DisplayProgressBarAndUrlStatus(int count)
+        {
+            var progressIndicator = new Progress<ValueTuple<double, string>>(progress =>
+            {
+                ProgressReport = progress.Item1; // updates progress bar
+                Urls.ElementAt(count).Status = progress.Item2; // updates status values
+                count++;
+            });
+            return progressIndicator;
         }
 
         private void CancelDownloading()

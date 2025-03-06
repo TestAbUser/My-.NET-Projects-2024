@@ -1,4 +1,5 @@
 
+using DownloadManager.DataAccess;
 using DownloadManager.Domain;
 using DownloadManager.PresentationLogic.ViewModels;
 using System.Collections.ObjectModel;
@@ -11,15 +12,18 @@ namespace DownloadManager.Tests.Unit
     {
 
         [Fact]
-        public void Open_window_for_adding_urls()
+        public void Add_url_via_modal_window()
         {
-            //var sut = new MainWindowViewModel();// { Urls {"test", "Ready" } };
-            //sut.Urls.Add(new UrlModel { Url ="test",Status ="Ready" });
+            IUrlPersister persister = new UrlPersister();
+            IStringDownloader strDownloader = new StringDownloader();
+            IPageRepository pageRepo = new DownloadedPageRepository(strDownloader);
+            var sut = new MainWindowViewModel(pageRepo, persister, null);
+            sut.Urls.Add(new UrlModel { Url = "test", Status = "Ready" });
 
-            //sut.AddUrlCommand.CanExecute(true);
-            //sut.AddUrlCommand.Execute(null);
+            sut.AddUrlCommand.CanExecute(true);
+            sut.AddUrlCommand.Execute(null);
 
-           // Assert.Equal();
+            Assert.Equal();
         }
 
         [Fact]

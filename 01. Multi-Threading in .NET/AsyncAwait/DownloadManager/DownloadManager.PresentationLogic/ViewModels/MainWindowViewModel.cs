@@ -15,7 +15,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         private IWindow _window;
-        private readonly IPageRepository _pageRepo;
+        private readonly IPageRepository _pageRepository;
         private readonly IUrlPersister _persister;
 
         CancellationTokenSource? cts;
@@ -36,7 +36,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
             if (persister == null) throw new ArgumentNullException(nameof(persister));
             if (window == null) throw new ArgumentNullException(nameof(window));
 
-            _pageRepo = repo;
+            _pageRepository = repo;
             _window = window;
             _persister = persister;
         }
@@ -86,14 +86,14 @@ namespace DownloadManager.PresentationLogic.ViewModels
         public ObservableCollection<UrlModel> Urls { get; } = [];
 
 
-        // Opens AddWindow using dependency injection.
+        // Adds url via a modal window.
         private void AddUrl()
         {
             // Pass the collection holding Urls to the other window's view model.
             AddUrlViewModel viewModel = new(Urls);
             if (_window.CreateChild(viewModel).ShowDialogue() ?? false)
             {
-                viewModel.OkClicked();
+                viewModel.ClickOk();
             }
         }
 
@@ -121,7 +121,6 @@ namespace DownloadManager.PresentationLogic.ViewModels
 
         private async void DownloadPagesAsync()
         {
-            //StringDownloader stringDownloader = new StringDownloader();
             string[] addresses = Urls.Select(x => x.Url).ToArray();
             foreach (var url in Urls)
                 url.Status = "Ready";
@@ -131,8 +130,8 @@ namespace DownloadManager.PresentationLogic.ViewModels
             StatusBarText = "Downloading...";
             try
             {
-                var progressIndicator = DisplayProgressBarAndUrlStatus(count);
-                List<string> results = await _pageRepo.DownloadAsync(addresses, token, progressIndicator);
+                var progressIndicator = DisplayProgressBarAndUrlStatus();
+                List<string> results = await _pageRepository.DownloadAsync(addresses, token, progressIndicator);
             }
             finally
             {
@@ -142,18 +141,20 @@ namespace DownloadManager.PresentationLogic.ViewModels
                 StatusBarText = null;
                 ((RelayCommand)DownloadCommand).RaiseCanExecuteChanged();
             }
+
+            Progress<ValueTuple<double, string>> DisplayProgressBarAndUrlStatus()
+            {
+                var progressIndicator = new Progress<ValueTuple<double, string>>(progress =>
+                {
+                    ProgressReport = progress.Item1; // updates progress bar
+                    Urls.ElementAt(count).Status = progress.Item2; // updates status values
+                    count++;
+                });
+                return progressIndicator;
+            }
         }
 
-        private Progress<ValueTuple<double, string>> DisplayProgressBarAndUrlStatus(int count)
-        {
-            var progressIndicator = new Progress<ValueTuple<double, string>>(progress =>
-            {
-                ProgressReport = progress.Item1; // updates progress bar
-                Urls.ElementAt(count).Status = progress.Item2; // updates status values
-                count++;
-            });
-            return progressIndicator;
-        }
+
 
         private void CancelDownloading()
         {

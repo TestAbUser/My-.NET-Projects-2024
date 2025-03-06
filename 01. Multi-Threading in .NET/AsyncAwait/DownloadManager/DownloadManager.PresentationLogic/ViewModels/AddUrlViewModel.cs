@@ -22,7 +22,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
             this.Urls = Urls;
         }
 
-        public void OkClicked()
+        public void ClickOk()
         {
             Urls?.Add(new UrlModel { Url = Url, Status = "Ready" });
         }

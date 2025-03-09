@@ -9,11 +9,11 @@ namespace DownloadManager
     {
         public IWindow ResolveWindow()
         {
-            IUrlPersister persister = new UrlPersister();
+            IFileSystem fileSystem = new UrlPersister();
             IStringDownloader strDownloader = new StringDownloader();
             IPageRepository pageRepo = new DownloadedPageRepository(strDownloader);
 
-            IMainViewModelFactory vmFactory = new MainViewModelFactory(pageRepo, persister);
+            IMainViewModelFactory vmFactory = new MainViewModelFactory(pageRepo, fileSystem);
 
             Window mainWindow = new MainWindow();
             IWindow window = new MainWindowAdapter(mainWindow, vmFactory);

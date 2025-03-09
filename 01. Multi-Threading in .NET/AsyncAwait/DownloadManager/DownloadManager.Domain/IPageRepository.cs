@@ -8,8 +8,9 @@ namespace DownloadManager.Domain
 {
     public interface IPageRepository
     {
-        Task<List<string>> DownloadAsync(string[] addresses,
-           CancellationToken ct,
-           IProgress<ValueTuple<double, string>>? progress = null);
+        Task<List<string>> DownloadAsync(
+            string[] addresses,
+            CancellationToken ct,
+            IProgress<ValueTuple<double, string>>? progress = null);
     }
 }

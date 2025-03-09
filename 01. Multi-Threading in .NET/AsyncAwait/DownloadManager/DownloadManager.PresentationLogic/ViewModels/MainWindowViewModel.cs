@@ -14,11 +14,11 @@ namespace DownloadManager.PresentationLogic.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private IWindow _window;
+        private readonly IWindow _window;
         private readonly IPageRepository _pageRepository;
-        private readonly IUrlPersister _persister;
+        private readonly IFileSystem _fileSystem;
 
-        CancellationTokenSource? cts;
+        private CancellationTokenSource? cts;
 
         private RelayCommand? _addUrlCommand;
         private RelayCommand? _openFileCommand;
@@ -29,16 +29,16 @@ namespace DownloadManager.PresentationLogic.ViewModels
         private double _progressReport;
 
         public MainWindowViewModel(IPageRepository repo,
-            IUrlPersister persister,
+            IFileSystem urlPersister,
             IWindow window)
         {
             if (repo == null) throw new ArgumentNullException(nameof(repo));
-            if (persister == null) throw new ArgumentNullException(nameof(persister));
+            if (urlPersister == null) throw new ArgumentNullException(nameof(urlPersister));
             if (window == null) throw new ArgumentNullException(nameof(window));
 
             _pageRepository = repo;
             _window = window;
-            _persister = persister;
+            _fileSystem = urlPersister;
         }
 
         public ICommand DownloadCommand =>
@@ -100,7 +100,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
 
         private void LoadUrls()
         {
-            var urls = _persister.LoadUrls();
+            var urls = _fileSystem.LoadUrls();
 
             if (urls != null)
             {
@@ -112,16 +112,12 @@ namespace DownloadManager.PresentationLogic.ViewModels
             }
         }
 
-        private void SaveUrls()
-        {
-            var listOfUrls = Urls.Select(x => x.Url);
-            _persister.SaveUrls(listOfUrls);
-        }
+        private void SaveUrls()=> _fileSystem.SaveUrls(GetArrayOfUrls());
 
+        private string[] GetArrayOfUrls()=> Urls.Select(x => x.Url).ToArray();
 
         private async void DownloadPagesAsync()
         {
-            string[] addresses = Urls.Select(x => x.Url).ToArray();
             foreach (var url in Urls)
                 url.Status = "Ready";
             cts = new CancellationTokenSource();
@@ -131,7 +127,8 @@ namespace DownloadManager.PresentationLogic.ViewModels
             try
             {
                 var progressIndicator = DisplayProgressBarAndUrlStatus();
-                List<string> results = await _pageRepository.DownloadAsync(addresses, token, progressIndicator);
+                List<string> results = 
+                    await _pageRepository.DownloadAsync(GetArrayOfUrls(), token,progressIndicator);
             }
             finally
             {
@@ -153,7 +150,6 @@ namespace DownloadManager.PresentationLogic.ViewModels
                 return progressIndicator;
             }
         }
-
 
 
         private void CancelDownloading()

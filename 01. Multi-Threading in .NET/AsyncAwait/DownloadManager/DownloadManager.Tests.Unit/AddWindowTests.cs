@@ -1,7 +1,9 @@
 
 using DownloadManager.DataAccess;
 using DownloadManager.Domain;
+using DownloadManager.PresentationLogic;
 using DownloadManager.PresentationLogic.ViewModels;
+using Moq;
 using System.Collections.ObjectModel;
 using System.Security.Policy;
 using Xunit;
@@ -14,27 +16,38 @@ namespace DownloadManager.Tests.Unit
         [Fact]
         public void Add_url_via_modal_window()
         {
-            IUrlPersister persister = new UrlPersister();
+            //var _persister = new Mock<IUrlPersister>();
+            //var _strDownloader = new Mock<IStringDownloader>();
+            //var _pageRepo = new Mock<IPageRepository>(_strDownloader);
+            IFileSystem persister = new UrlPersister();
             IStringDownloader strDownloader = new StringDownloader();
             IPageRepository pageRepo = new DownloadedPageRepository(strDownloader);
-            var sut = new MainWindowViewModel(pageRepo, persister, null);
-            sut.Urls.Add(new UrlModel { Url = "test", Status = "Ready" });
+
+            ObservableCollection<UrlModel> Urls = new();
+            AddUrlViewModel addWindow = new AddUrlViewModel(Urls);
+            var window = new Mock<IWindow>();
+           //// _window.Setup(x => x.CreateChild(addWindow).ShowDialogue())
+              //  .Returns(true);
+            var sut = new MainWindowViewModel(pageRepo, persister, window.Object);
+
+            // _sut.Urls.Add(new UrlModel { Url = "test", Status = "Ready" });
 
             sut.AddUrlCommand.CanExecute(true);
             sut.AddUrlCommand.Execute(null);
-
-            Assert.Equal();
+            window.Verify(x => x.CreateChild(addWindow).ShowDialogue(), 
+                Times.Once);
+           // Assert.Equal("test", _sut.Urls.First().Url);
         }
 
         [Fact]
         public void Adding_a_new_url()
         {
-            //var sut = new AddUrlViewModel { Url = "test" };
+            //var _sut = new AddUrlViewModel { Url = "test" };
 
-            //sut.OkCommand.Execute(null);
+            //_sut.OkCommand.Execute(null);
 
-            //Assert.Equal("test", sut.Urls.Last().Url);
-            //Assert.Equal("Ready", sut.Urls.Last().Status);
+            //Assert.Equal("test", _sut.Urls.Last().Url);
+            //Assert.Equal("Ready", _sut.Urls.Last().Status);
         }
 
     }

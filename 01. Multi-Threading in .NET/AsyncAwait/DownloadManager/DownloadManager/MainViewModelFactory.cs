@@ -13,15 +13,15 @@ namespace DownloadManager
     public class MainViewModelFactory: IMainViewModelFactory
     {
        // private readonly IUrlManagementAgent _agent;
-       private readonly IPageRepository _repo;
-        private readonly IUrlPersister _persister;
+       private readonly IPageRepository _repository;
+        private readonly IFileSystem _fileSystem;
 
-        public MainViewModelFactory(IPageRepository repo, IUrlPersister persister)
+        public MainViewModelFactory(IPageRepository repository, IFileSystem fileSystem)
         {
-            ArgumentNullException.ThrowIfNull(repo,nameof(repo));
-            ArgumentNullException.ThrowIfNull(persister,nameof(persister));
-            _repo = repo;
-            _persister = persister;
+            ArgumentNullException.ThrowIfNull(repository,nameof(repository));
+            ArgumentNullException.ThrowIfNull(fileSystem,nameof(fileSystem));
+            _repository = repository;
+            _fileSystem = fileSystem;
             // _agent = agent ?? throw new ArgumentNullException(nameof(agent));
         }
 
@@ -29,7 +29,7 @@ namespace DownloadManager
         {
             ArgumentNullException.ThrowIfNull(window,nameof(window));
 
-            return new MainWindowViewModel(_repo, _persister, window);
+            return new MainWindowViewModel(_repository, _fileSystem, window);
         }
     }
 }

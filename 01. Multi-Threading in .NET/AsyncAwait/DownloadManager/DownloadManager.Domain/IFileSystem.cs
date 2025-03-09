@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DownloadManager.Domain
 {
-    public interface IUrlPersister
+    public interface IFileSystem
     {
         void SaveUrls(IEnumerable<string> lines);
         string[]? LoadUrls();

@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace DownloadManager.DataAccess
 {
-    public class UrlPersister:IUrlPersister
+    public class UrlPersister:IFileSystem
     {
         public void SaveUrls(IEnumerable<string> lines)
         {

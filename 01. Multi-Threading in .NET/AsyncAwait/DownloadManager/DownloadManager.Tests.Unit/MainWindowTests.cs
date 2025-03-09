@@ -3,37 +3,64 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DownloadManager.Helpers;
 using DownloadManager.PresentationLogic.ViewModels;
 using DownloadManager.DataAccess;
 using DownloadManager.Domain;
 using Moq;
 using Xunit;
+using System.Windows;
+using DownloadManager.PresentationLogic;
+using System.Collections.ObjectModel;
 
 namespace DownloadManager.Tests.Unit
 {
-    public class MainWindowTests
+    public class MainWindowTests : IDisposable
     {
-        [Fact]
-        public void Load_urls_from_file()
+        private Mock<IFileSystem> _persister;
+        private IStringDownloader _strDownloader;
+        private IPageRepository _pageRepo;
+
+        // ObservableCollection<UrlModel> Urls = new();
+        // AddUrlViewModel addWindow = new AddUrlViewModel(Urls);
+        private Mock<IWindow> _window;
+        private MainWindowViewModel _sut;
+
+        public MainWindowTests()
         {
-            var fileSystemMock = new Mock<IFileSystem>();
-            fileSystemMock.Setup(x => x.LoadFileContent())
-                .Returns(["testUrl1", "testUrl2"]);
-           // var sut = new MainWindowViewModel(fileSystemMock.Object);
+            _persister = new Mock<IFileSystem>();
+            _strDownloader = new StringDownloader();
+            _pageRepo = new DownloadedPageRepository(_strDownloader);
+            _window = new Mock<IWindow>();
+            _sut = new MainWindowViewModel(
+               _pageRepo, _persister.Object, _window.Object);
+        }
 
-           // sut.LoadUrlsCommand.Execute(null);
-            // sut.SaveCommand.Execute(null);
+        public void Dispose()
+        {
 
-            fileSystemMock.Verify(
-                x => x.SaveDialog(new string[] { "testUrl1", "testUrl2" }),
-                Times.Once);
+        }
+
+        [Fact]
+        public void Load_urls_from_a_file()
+        {
+            _persister.Setup(x => x.LoadUrls()).Returns(["testUrl1"]);
+
+            _sut.LoadUrlsCommand.Execute(null);
+
+            Assert.Equal("testUrl1", _sut.Urls.First().Url);
+            _persister.Verify(x => x.LoadUrls(), Times.Once);
+        }
+
+        [Fact]
+        public void Change_progress_indicator()
+        {
+
         }
 
         [Fact]
         public void Save_urls_to_a_file()
         {
-            
+
         }
 
         [Fact]

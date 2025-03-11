@@ -14,9 +14,9 @@ namespace DownloadManager
     {
        // private readonly IUrlManagementAgent _agent;
        private readonly IPageRepository _repository;
-        private readonly IFileSystem _fileSystem;
+        private readonly IUrlPersister _fileSystem;
 
-        public MainViewModelFactory(IPageRepository repository, IFileSystem fileSystem)
+        public MainViewModelFactory(IPageRepository repository, IUrlPersister fileSystem)
         {
             ArgumentNullException.ThrowIfNull(repository,nameof(repository));
             ArgumentNullException.ThrowIfNull(fileSystem,nameof(fileSystem));

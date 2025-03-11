@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace DownloadManager.Domain
 {
-    public interface IFileSystem
+    public interface IOpenFileDialog
     {
-        string[]? ReadFileLines(string? path);
-        void WriteLinesToFile(string? path, IEnumerable<string> lines);
+        string? Filter { get; set; }
+        bool? ShowDialog();
+        string? FileName { get; set; }
     }
 }

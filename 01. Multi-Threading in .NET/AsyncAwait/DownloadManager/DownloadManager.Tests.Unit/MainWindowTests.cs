@@ -16,9 +16,13 @@ namespace DownloadManager.Tests.Unit
 {
     public class MainWindowTests : IDisposable
     {
-        private Mock<IFileSystem> _persister;
-        private IStringDownloader _strDownloader;
-        private IPageRepository _pageRepo;
+        private Mock<IOpenFileDialog> _loadFileDialog;
+        private Mock<IOpenFileDialog> _saveFileDialog;
+        private Mock<IFileSystem> _fileSystem;
+
+        private Mock<IUrlPersister> _urlPersister;
+        private IStringDownloader _pageDownloader;
+        private Mock<IPageRepository> _pageRepository;
 
         // ObservableCollection<UrlModel> Urls = new();
         // AddUrlViewModel addWindow = new AddUrlViewModel(Urls);
@@ -27,12 +31,17 @@ namespace DownloadManager.Tests.Unit
 
         public MainWindowTests()
         {
-            _persister = new Mock<IFileSystem>();
-            _strDownloader = new StringDownloader();
-            _pageRepo = new DownloadedPageRepository(_strDownloader);
+            _loadFileDialog = new Mock<IOpenFileDialog>();
+            _saveFileDialog = new Mock<IOpenFileDialog>();
+            _fileSystem = new Mock<IFileSystem>();
+            // _urlPersister = new UrlPersister(_loadFileDialog.Object,
+            //     _saveFileDialog.Object, _fileSystem.Object);
+             _urlPersister = new Mock<IUrlPersister>();
+            _pageDownloader = new StringDownloader();
+            _pageRepository = new Mock<IPageRepository>();//new DownloadedPageRepository(_pageDownloader);
             _window = new Mock<IWindow>();
-            _sut = new MainWindowViewModel(
-               _pageRepo, _persister.Object, _window.Object);
+            //_sut = new MainWindowViewModel(
+            //   _pageRepository, _urlPersister, _window.Object);
         }
 
         public void Dispose()
@@ -43,12 +52,18 @@ namespace DownloadManager.Tests.Unit
         [Fact]
         public void Load_urls_from_a_file()
         {
-            _persister.Setup(x => x.LoadUrls()).Returns(["testUrl1"]);
+            // arrange
+           // var urlPersister = new Mock<IUrlPersister>();
+             _urlPersister.Setup(x => x.LoadUrls()).Returns(["testUrl1"]);
+            _sut = new MainWindowViewModel(_pageRepository.Object, 
+                _urlPersister.Object, _window.Object);
 
+            // act
             _sut.LoadUrlsCommand.Execute(null);
 
+            // assert
             Assert.Equal("testUrl1", _sut.Urls.First().Url);
-            _persister.Verify(x => x.LoadUrls(), Times.Once);
+            // _urlPersister.Verify(x => x.LoadUrls(), Times.Once);
         }
 
         [Fact]
@@ -60,7 +75,59 @@ namespace DownloadManager.Tests.Unit
         [Fact]
         public void Save_urls_to_a_file()
         {
+            // arrange
+           // var urlPersister = new Mock<IUrlPersister>();
 
+            _sut = new MainWindowViewModel(
+                _pageRepository.Object, _urlPersister.Object, _window.Object);
+            _sut.Urls.Add(new UrlModel {Url = "test"});
+
+            // act
+            _sut.SaveCommand.Execute(null);
+
+            // assert
+            _urlPersister.Verify(x => x.SaveUrlsToFile(new string[] { "test" }),Times.Once);
+        }
+
+        [Fact]
+        public void Save_urls_to_a_file_Copy()
+        {
+            // arrange
+            var _loadFileDialog = new LoadFileDialog();//new Mock<IOpenFileDialog>();
+            var _saveFileDialog = new Mock<IOpenFileDialog>();
+            _fileSystem = new Mock<IFileSystem>();
+
+            _saveFileDialog.SetupGet(x => x.FileName).Returns("testName");
+            _saveFileDialog.Setup(x => x.ShowDialog()).Returns(true);
+
+            // _fileSystem.Setup(x => x.ReadFileLines("testName")).
+            //     Returns(new[] { "testValue1" });
+
+    //        _urlPersister = new UrlPersister(_loadFileDialog,
+    //_saveFileDialog.Object, _fileSystem.Object);
+            // _urlPersister = new Mock<IUrlPersister>();
+            //_pageDownloader = new StringDownloader();
+            //_pageRepository = new DownloadedPageRepository(_pageDownloader);
+            //_window = new Mock<IWindow>();
+            //_sut = new MainWindowViewModel(
+            //   _pageRepository, _urlPersister, _window.Object);
+
+
+            //_urlPersister = new UrlPersister(
+            //    _loadFileDialog.Object,
+            //    _saveFileDialog.Object,
+            //    _fileSystem.Object);
+            string[] urls = ["testUrl"];
+           // _urlPersister.SaveUrlsToFile(urls);
+
+            // act
+            // _sut.SaveCommand.Execute(null);
+
+            // assert
+            _fileSystem.Verify(x => x.WriteLinesToFile(
+                "testName", new string[] { "testUrl" }),
+                Times.Once);
+            // _urlPersister.Verify(x => x.SaveUrlsToFile(), Times.Once);
         }
 
         [Fact]

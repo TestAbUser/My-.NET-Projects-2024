@@ -10,18 +10,35 @@ using System.Windows;
 
 namespace DownloadManager.DataAccess
 {
-    public class UrlPersister:IFileSystem
+    public class UrlPersister:IUrlPersister
     {
-        public void SaveUrls(IEnumerable<string> lines)
+        private readonly IOpenFileDialog _loadFileDialog;
+        private readonly IOpenFileDialog _saveFileDialog;
+        private readonly IFileSystem _fileSystem;
+
+        public UrlPersister(IOpenFileDialog loadFileDialog, 
+            IOpenFileDialog saveFileDialog,
+            IFileSystem file)
         {
-            var saveDlg = new SaveFileDialog { Filter = "Text Files |*.txt" };
-            // Did they click on the OK button?
-            if (true == saveDlg.ShowDialog())
+            ArgumentNullException.ThrowIfNull(loadFileDialog, nameof(loadFileDialog));
+            ArgumentNullException.ThrowIfNull(saveFileDialog, nameof(saveFileDialog));
+            ArgumentNullException.ThrowIfNull(file, nameof(file));
+
+            _loadFileDialog = loadFileDialog;
+            _saveFileDialog = saveFileDialog;
+            _fileSystem = file;
+        }
+
+        public void SaveUrlsToFile(IEnumerable<string> lines)
+        {
+            _saveFileDialog.Filter = "Text Files |*.txt" ;
+
+            if (true == _saveFileDialog.ShowDialog())
             {
                 try
                 {
-                    // Save data in the DataGrid to the named file.
-                    File.WriteAllLines(saveDlg.FileName, lines);
+                    // Save data from the DataGrid to the named file.
+                    _fileSystem.WriteLinesToFile(_saveFileDialog.FileName, lines);
                 }
                 catch (IOException ex)
                 {
@@ -30,19 +47,19 @@ namespace DownloadManager.DataAccess
             }
         }
 
-        // Opens Dialog window to load a file.
         public string[]? LoadUrls()
         {
-            // Create an open file dialog box and only show text files.
-            var openDlg = new OpenFileDialog { Filter = "Text Files |*.txt" };
+            _loadFileDialog.Filter = "Text Files |*.txt";
+
             string[]? dataFromFile = null;
+
             // Did they click on the OK button?
-            if (true == openDlg.ShowDialog())
+            if (true == _loadFileDialog.ShowDialog())
             {
                 try
                 {
                     // Load all text of selected file.
-                    dataFromFile = File.ReadAllLines(openDlg.FileName);
+                    dataFromFile =  _fileSystem.ReadFileLines(_loadFileDialog.FileName);
                 }
                 catch (IOException ex)
                 {

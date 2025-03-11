@@ -16,7 +16,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
     {
         private readonly IWindow _window;
         private readonly IPageRepository _pageRepository;
-        private readonly IFileSystem _fileSystem;
+        private readonly IUrlPersister _urlPersister;
 
         private CancellationTokenSource? cts;
 
@@ -29,7 +29,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
         private double _progressReport;
 
         public MainWindowViewModel(IPageRepository repo,
-            IFileSystem urlPersister,
+            IUrlPersister urlPersister,
             IWindow window)
         {
             if (repo == null) throw new ArgumentNullException(nameof(repo));
@@ -38,7 +38,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
 
             _pageRepository = repo;
             _window = window;
-            _fileSystem = urlPersister;
+            _urlPersister = urlPersister;
         }
 
         public ICommand DownloadCommand =>
@@ -100,7 +100,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
 
         private void LoadUrls()
         {
-            var urls = _fileSystem.LoadUrls();
+            var urls = _urlPersister.LoadUrls();
 
             if (urls != null)
             {
@@ -112,7 +112,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
             }
         }
 
-        private void SaveUrls()=> _fileSystem.SaveUrls(GetArrayOfUrls());
+        private void SaveUrls()=> _urlPersister.SaveUrlsToFile(GetArrayOfUrls());
 
         private string[] GetArrayOfUrls()=> Urls.Select(x => x.Url).ToArray();
 

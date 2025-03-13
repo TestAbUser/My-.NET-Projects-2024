@@ -27,6 +27,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
         private RelayCommand? _cancelCommand;
         private string? _statusBarText;
         private double _progressReport;
+        private AddUrlViewModel _addUrlViewModel;
 
         public MainWindowViewModel(IPageRepository repo,
             IUrlPersister urlPersister,
@@ -39,6 +40,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
             _pageRepository = repo;
             _window = window;
             _urlPersister = urlPersister;
+            _addUrlViewModel = new AddUrlViewModel(Urls);
         }
 
         public ICommand DownloadCommand =>
@@ -48,15 +50,27 @@ namespace DownloadManager.PresentationLogic.ViewModels
             _cancelCommand ??= new RelayCommand(CancelDownloading, CanCancelDownload);
 
         public ICommand AddUrlCommand =>
-            _addUrlCommand ??= new RelayCommand(AddUrl, CanOpenAddWindowCommand);
+            _addUrlCommand ??= new RelayCommand<AddUrlViewModel>(AddUrl, CanOpenAddWindowCommand);
 
         public ICommand LoadUrlsCommand =>
             _openFileCommand ??= new RelayCommand(LoadUrls, CanOpenAddWindowCommand);
+       
         public ICommand SaveCommand =>
             _saveCommand ??= new RelayCommand(SaveUrls);
 
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public AddUrlViewModel AddUrlVM
+        {
+            get => _addUrlViewModel;
+            set
+            {
+                if (value == _addUrlViewModel) return;
+                _addUrlViewModel = value;
+                OnPropertyChanged(nameof(AddUrlVM));
+            }
+        }
 
         public double ProgressReport
         {
@@ -87,10 +101,8 @@ namespace DownloadManager.PresentationLogic.ViewModels
 
 
         // Adds url via a modal window.
-        private void AddUrl()
+        private void AddUrl(AddUrlViewModel viewModel)
         {
-            // Pass the collection holding Urls to the other window's view model.
-            AddUrlViewModel viewModel = new(Urls);
             if (_window.CreateChild(viewModel).ShowDialogue() ?? false)
             {
                 viewModel.ClickOk();
@@ -158,6 +170,9 @@ namespace DownloadManager.PresentationLogic.ViewModels
             cts?.Dispose();
             StatusBarText = null;
         }
+
+        private bool CanOpenAddWindowCommand(AddUrlViewModel auvm) => 
+                                                        cts == null || cts.IsCancellationRequested;
 
         private bool CanOpenAddWindowCommand() => cts == null || cts.IsCancellationRequested;
 

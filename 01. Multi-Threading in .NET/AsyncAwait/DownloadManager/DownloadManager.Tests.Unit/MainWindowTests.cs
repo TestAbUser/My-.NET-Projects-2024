@@ -11,6 +11,7 @@ using Xunit;
 using System.Windows;
 using DownloadManager.PresentationLogic;
 using System.Collections.ObjectModel;
+using System.Security.Policy;
 
 namespace DownloadManager.Tests.Unit
 {
@@ -36,7 +37,7 @@ namespace DownloadManager.Tests.Unit
             _fileSystem = new Mock<IFileSystem>();
             // _urlPersister = new UrlPersister(_loadFileDialog.Object,
             //     _saveFileDialog.Object, _fileSystem.Object);
-             _urlPersister = new Mock<IUrlPersister>();
+            _urlPersister = new Mock<IUrlPersister>();
             _pageDownloader = new StringDownloader();
             _pageRepository = new Mock<IPageRepository>();//new DownloadedPageRepository(_pageDownloader);
             _window = new Mock<IWindow>();
@@ -53,9 +54,9 @@ namespace DownloadManager.Tests.Unit
         public void Load_urls_from_a_file()
         {
             // arrange
-           // var urlPersister = new Mock<IUrlPersister>();
-             _urlPersister.Setup(x => x.LoadUrls()).Returns(["testUrl1"]);
-            _sut = new MainWindowViewModel(_pageRepository.Object, 
+            // var urlPersister = new Mock<IUrlPersister>();
+            _urlPersister.Setup(x => x.LoadUrls()).Returns(["testUrl1"]);
+            _sut = new MainWindowViewModel(_pageRepository.Object,
                 _urlPersister.Object, _window.Object);
 
             // act
@@ -76,17 +77,47 @@ namespace DownloadManager.Tests.Unit
         public void Save_urls_to_a_file()
         {
             // arrange
-           // var urlPersister = new Mock<IUrlPersister>();
+            // var urlPersister = new Mock<IUrlPersister>();
 
             _sut = new MainWindowViewModel(
                 _pageRepository.Object, _urlPersister.Object, _window.Object);
-            _sut.Urls.Add(new UrlModel {Url = "test"});
+            _sut.Urls.Add(new UrlModel { Url = "test" });
 
             // act
             _sut.SaveCommand.Execute(null);
 
             // assert
-            _urlPersister.Verify(x => x.SaveUrlsToFile(new string[] { "test" }),Times.Once);
+            _urlPersister.Verify(x =>
+                   x.SaveUrlsToFile(new string[] { "test" }), Times.Once);
+        }
+
+        [Fact]
+        public void Click_add_button_to_open_modal_window()
+        {
+
+        }
+
+        [Fact]
+        public void Add_a_new_url()
+        {
+            // arrange
+            ObservableCollection<UrlModel> testUrlModels = 
+                                       [new UrlModel { Url = "Url1" }];
+            AddUrlViewModel auvm = new(testUrlModels);
+            _window.Setup(x => 
+            x.CreateChild(auvm).ShowDialogue()).Returns(true);
+
+            _sut = new(
+                _pageRepository.Object, _urlPersister.Object, _window.Object);
+            auvm.Url = "Url2";
+
+            // act
+            _sut.AddUrlCommand.Execute(auvm);
+
+            // assert
+            Assert.Equal("Url2", testUrlModels.Last().Url);
+            Assert.Equal("Ready", testUrlModels.Last().Status);
+            Assert.Equal(2, testUrlModels.Count);
         }
 
         [Fact]
@@ -103,8 +134,8 @@ namespace DownloadManager.Tests.Unit
             // _fileSystem.Setup(x => x.ReadFileLines("testName")).
             //     Returns(new[] { "testValue1" });
 
-    //        _urlPersister = new UrlPersister(_loadFileDialog,
-    //_saveFileDialog.Object, _fileSystem.Object);
+            //        _urlPersister = new UrlPersister(_loadFileDialog,
+            //_saveFileDialog.Object, _fileSystem.Object);
             // _urlPersister = new Mock<IUrlPersister>();
             //_pageDownloader = new StringDownloader();
             //_pageRepository = new DownloadedPageRepository(_pageDownloader);
@@ -118,7 +149,7 @@ namespace DownloadManager.Tests.Unit
             //    _saveFileDialog.Object,
             //    _fileSystem.Object);
             string[] urls = ["testUrl"];
-           // _urlPersister.SaveUrlsToFile(urls);
+            // _urlPersister.SaveUrlsToFile(urls);
 
             // act
             // _sut.SaveCommand.Execute(null);

@@ -15,14 +15,14 @@ namespace DownloadManager.PresentationLogic.ViewModels
         public string Url { get; set; } = string.Empty;
 
         // ObservableCollection type notifies about changes in the collection.
-        public ObservableCollection<UrlModel> Urls { get; } = new();
+        public ObservableCollection<UrlModel> Urls { get; }
 
         public AddUrlViewModel(ObservableCollection<UrlModel> Urls)
         {
             this.Urls = Urls;
         }
 
-        public void ClickOk()
+        internal void ClickOk()
         {
             Urls?.Add(new UrlModel { Url = Url, Status = "Ready" });
         }

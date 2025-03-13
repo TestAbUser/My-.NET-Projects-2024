@@ -39,7 +39,7 @@ namespace DownloadManager.Tests.Unit
             //     _saveFileDialog.Object, _fileSystem.Object);
             _urlPersister = new Mock<IUrlPersister>();
             _pageDownloader = new StringDownloader();
-            _pageRepository = new Mock<IPageRepository>();//new DownloadedPageRepository(_pageDownloader);
+            _pageRepository = new Mock<IPageRepository>();//new PageRepository(_pageDownloader);
             _window = new Mock<IWindow>();
             //_sut = new MainWindowViewModel(
             //   _pageRepository, _urlPersister, _window.Object);
@@ -92,7 +92,28 @@ namespace DownloadManager.Tests.Unit
         }
 
         [Fact]
-        public void Click_add_button_to_open_modal_window()
+        public void Start_downloading_pages()
+        {
+            // arrange
+             List<string> pages = new List<string>() { "test"};
+
+            _pageRepository.Setup(x => x.DownloadPagesAsync(
+                It.IsAny<string[]>(), 
+                It.IsAny<CancellationToken>(), 
+                It.IsAny<IProgress<(double, string)>?>())).ReturnsAsync(pages);
+           
+            _sut = new MainWindowViewModel(
+                _pageRepository.Object, _urlPersister.Object, _window.Object);
+
+            // act
+            _sut.DownloadCommand.Execute(null);
+
+            // assert
+            Assert.Equal("test", _sut.Pages.First());
+        }
+
+        [Fact]
+        public void Cancel_downloading_pages()
         {
 
         }
@@ -138,7 +159,7 @@ namespace DownloadManager.Tests.Unit
             //_saveFileDialog.Object, _fileSystem.Object);
             // _urlPersister = new Mock<IUrlPersister>();
             //_pageDownloader = new StringDownloader();
-            //_pageRepository = new DownloadedPageRepository(_pageDownloader);
+            //_pageRepository = new PageRepository(_pageDownloader);
             //_window = new Mock<IWindow>();
             //_sut = new MainWindowViewModel(
             //   _pageRepository, _urlPersister, _window.Object);
@@ -175,9 +196,9 @@ namespace DownloadManager.Tests.Unit
                    await Task.Yield();
                    return "test";
                });
-            var sut = new DownloadedPageRepository(downloaderMock.Object);
+            var sut = new PageRepository(downloaderMock.Object);
 
-            var downloadedPages = await sut.DownloadAsync(addresses, ct);
+            var downloadedPages = await sut.DownloadPagesAsync(addresses, ct);
 
             Assert.Equal("test", downloadedPages.ElementAt(0));
         }

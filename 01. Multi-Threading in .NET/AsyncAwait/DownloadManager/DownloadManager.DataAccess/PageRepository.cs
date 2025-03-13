@@ -3,17 +3,17 @@ using System.Net.Http;
 
 namespace DownloadManager.DataAccess
 {
-    public class DownloadedPageRepository: IPageRepository
+    public class PageRepository: IPageRepository
     {
         private readonly IStringDownloader _strDownloader;
 
-        public DownloadedPageRepository(IStringDownloader strDownloader)
+        public PageRepository(IStringDownloader strDownloader)
         {
             _strDownloader = strDownloader;
         }
 
         // Downloads pages as strings, allowing for cancellation and progress report.
-        public async Task<List<string>> DownloadAsync(string[] addresses,
+        public async Task<List<string>> DownloadPagesAsync(string[] addresses,
             CancellationToken ct, IProgress<ValueTuple<double, string>>? progress = null)
         {
             List<string> pages = [];

@@ -15,7 +15,7 @@ namespace DownloadManager
             IFileSystem file = new SaveOrLoadFile();
             IUrlPersister fileSystem = new UrlPersister(loadFileDialog, saveFileDialog, file);
             IStringDownloader strDownloader = new StringDownloader();
-            IPageRepository pageRepo = new DownloadedPageRepository(strDownloader);
+            IPageRepository pageRepo = new PageRepository(strDownloader);
 
             IMainViewModelFactory vmFactory = new MainViewModelFactory(pageRepo, fileSystem);
 

@@ -17,6 +17,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
         private readonly IWindow _window;
         private readonly IPageRepository _pageRepository;
         private readonly IUrlPersister _urlPersister;
+        private List<string> _pages;
 
         private CancellationTokenSource? cts;
 
@@ -41,6 +42,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
             _window = window;
             _urlPersister = urlPersister;
             _addUrlViewModel = new AddUrlViewModel(Urls);
+            _pages = new List<string>();
         }
 
         public ICommand DownloadCommand =>
@@ -60,6 +62,16 @@ namespace DownloadManager.PresentationLogic.ViewModels
 
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public List<string> Pages
+        {
+            get => _pages;
+            set
+            {
+                if (value == _pages) return;
+                _pages = value;
+            }
+        }
 
         public AddUrlViewModel AddUrlVM
         {
@@ -109,7 +121,6 @@ namespace DownloadManager.PresentationLogic.ViewModels
             }
         }
 
-
         private void LoadUrls()
         {
             var urls = _urlPersister.LoadUrls();
@@ -139,8 +150,8 @@ namespace DownloadManager.PresentationLogic.ViewModels
             try
             {
                 var progressIndicator = DisplayProgressBarAndUrlStatus();
-                List<string> results = 
-                    await _pageRepository.DownloadAsync(GetArrayOfUrls(), token,progressIndicator);
+                Pages = await _pageRepository.DownloadPagesAsync(
+                    GetArrayOfUrls(), token,progressIndicator);
             }
             finally
             {

@@ -21,7 +21,7 @@ namespace DownloadManager.Tests.Unit
             //var _pageRepository = new Mock<IPageRepository>(_pageDownloader);
             //IUrlPersister persister = new UrlPersister();
             //IStringDownloader strDownloader = new StringDownloader();
-            //IPageRepository pageRepo = new DownloadedPageRepository(strDownloader);
+            //IPageRepository pageRepo = new PageRepository(strDownloader);
 
            // ObservableCollection<UrlModel> Urls = new();
            // AddUrlViewModel addWindow = new AddUrlViewModel(Urls);

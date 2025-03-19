@@ -9,6 +9,8 @@ using DownloadManager.DataAccess;
 using System.Windows.Input;
 using DownloadManager;
 using Microsoft.Win32;
+using CToolkit = CommunityToolkit.Mvvm.Input;
+using System.Collections.Specialized;
 
 namespace DownloadManager.PresentationLogic.ViewModels
 {
@@ -19,12 +21,16 @@ namespace DownloadManager.PresentationLogic.ViewModels
         private readonly IUrlPersister _urlPersister;
         private List<string> _pages;
 
-        private CancellationTokenSource? cts;
+        ObservableCollection<UrlModel> urls;
+
+        private CancellationTokenSource? _cts;
+        private CancellationToken _cancellationToken;
 
         private RelayCommand? _addUrlCommand;
         private RelayCommand? _openFileCommand;
         private RelayCommand? _saveCommand;
-        private RelayCommand? _downloadPageCommand;
+        // private RelayCommand? _downloadPageCommand;
+        private CToolkit.AsyncRelayCommand/*<CancellationToken>*/? _downloadPageCommand;
         private RelayCommand? _cancelCommand;
         private string? _statusBarText;
         private double _progressReport;
@@ -42,11 +48,19 @@ namespace DownloadManager.PresentationLogic.ViewModels
             _window = window;
             _urlPersister = urlPersister;
             _addUrlViewModel = new AddUrlViewModel(Urls);
+           // _cts = new CancellationTokenSource();
             _pages = new List<string>();
+            // urls= new ObservableCollection<UrlModel>();
+            Urls.CollectionChanged += OnUrlsCollectionChanged;
         }
 
-        public ICommand DownloadCommand =>
-            _downloadPageCommand ??= new RelayCommand(DownloadPagesAsync, CanDownloadPages);
+        //public ICommand DownloadCommand =>
+        //    _downloadPageCommand ??= new RelayCommand(DownloadPagesAsync, CanDownloadPages);
+
+        public CToolkit.IAsyncRelayCommand DownloadCommand =>
+            _downloadPageCommand ??=
+            new CToolkit.AsyncRelayCommand(
+                DownloadPagesAsync, CanDownloadPages);
 
         public ICommand CancelCommand =>
             _cancelCommand ??= new RelayCommand(CancelDownloading, CanCancelDownload);
@@ -56,12 +70,11 @@ namespace DownloadManager.PresentationLogic.ViewModels
 
         public ICommand LoadUrlsCommand =>
             _openFileCommand ??= new RelayCommand(LoadUrls, CanOpenAddWindowCommand);
-       
+
         public ICommand SaveCommand =>
             _saveCommand ??= new RelayCommand(SaveUrls);
 
 
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         public List<string> Pages
         {
@@ -70,6 +83,28 @@ namespace DownloadManager.PresentationLogic.ViewModels
             {
                 if (value == _pages) return;
                 _pages = value;
+            }
+        }
+
+        public CancellationToken CancellationToken
+        {
+            get => _cancellationToken;
+            set
+            {
+                if (value == _cancellationToken) return;
+                _cancellationToken = value;
+                OnPropertyChanged(nameof(CancellationToken));
+            }
+        }
+
+        public CancellationTokenSource? Cts
+        {
+            get => _cts;
+            set
+            {
+                if (value == _cts) return;
+                _cts = value;
+                OnPropertyChanged(nameof(Cts));
             }
         }
 
@@ -111,6 +146,10 @@ namespace DownloadManager.PresentationLogic.ViewModels
         // ObservableCollection type notifies about changes in the collection.
         public ObservableCollection<UrlModel> Urls { get; } = [];
 
+        private void OnUrlsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+           _downloadPageCommand?.NotifyCanExecuteChanged();
+        }
 
         // Adds url via a modal window.
         private void AddUrl(AddUrlViewModel viewModel)
@@ -135,31 +174,47 @@ namespace DownloadManager.PresentationLogic.ViewModels
             }
         }
 
-        private void SaveUrls()=> _urlPersister.SaveUrlsToFile(GetArrayOfUrls());
+        private void SaveUrls() => _urlPersister.SaveUrlsToFile(GetArrayOfUrls());
 
-        private string[] GetArrayOfUrls()=> Urls.Select(x => x.Url).ToArray();
+        private string[] GetArrayOfUrls() => Urls.Select(x => x.Url).ToArray();
 
-        private async void DownloadPagesAsync()
+        private CancellationToken InitializeToken(CancellationToken ct)
+        {
+            _cts = new CancellationTokenSource();
+           // if (ct == default)
+           // {
+                
+                ct = _cts.Token;
+           // }
+            return ct;
+        }
+
+        private async Task DownloadPagesAsync(CancellationToken token)
         {
             foreach (var url in Urls)
                 url.Status = "Ready";
-            cts = new CancellationTokenSource();
-            CancellationToken token = cts.Token;
+            //InitializeToken(token);
             int count = 0;
             StatusBarText = "Downloading...";
             try
             {
                 var progressIndicator = DisplayProgressBarAndUrlStatus();
                 Pages = await _pageRepository.DownloadPagesAsync(
-                    GetArrayOfUrls(), token,progressIndicator);
+                    GetArrayOfUrls(), token, progressIndicator);
+                //token.ThrowIfCancellationRequested();
             }
+            //catch (OperationCanceledException ex)
+            //{ }
             finally
             {
                 ProgressReport = 0;
-                cts.Dispose();
-                cts = null;
+               // _cts.Dispose();
+               // _cts = null;
+               // token = default;
                 StatusBarText = null;
-                ((RelayCommand)DownloadCommand).RaiseCanExecuteChanged();
+                // DownloadCommand.NotifyCanExecuteChanged();
+                ((RelayCommand)CancelCommand).RaiseCanExecuteChanged();
+               // ((CToolkit.AsyncRelayCommand)DownloadCommand).NotifyCanExecuteChanged();//.RaiseCanExecuteChanged();
             }
 
             Progress<ValueTuple<double, string>> DisplayProgressBarAndUrlStatus()
@@ -177,21 +232,26 @@ namespace DownloadManager.PresentationLogic.ViewModels
 
         private void CancelDownloading()
         {
-            cts?.Cancel();
-            cts?.Dispose();
+            _downloadPageCommand?.Cancel();
+            // _cts?.Cancel();
+            // _cts?.Dispose();
             StatusBarText = null;
         }
 
-        private bool CanOpenAddWindowCommand(AddUrlViewModel auvm) => 
-                                                        cts == null || cts.IsCancellationRequested;
+        private bool CanOpenAddWindowCommand(AddUrlViewModel auvm) =>
+            !DownloadCommand.IsRunning;
+        // _cts == null || _cts.IsCancellationRequested;
 
-        private bool CanOpenAddWindowCommand() => cts == null || cts.IsCancellationRequested;
+        private bool CanOpenAddWindowCommand() => _cts == null || _cts.IsCancellationRequested;
 
         // Download button is enabled if the urls are displayed and download process isn't in progress.
-        private bool CanDownloadPages() => Urls.Count > 0 && (cts == null || cts.IsCancellationRequested);
+        private bool CanDownloadPages() => Urls.Count > 0 && !DownloadCommand.IsRunning;//(_cts == null || _cts.IsCancellationRequested);
 
         // Cancel button is enabled only if download is in progress.
-        private bool CanCancelDownload() => cts != null && !cts.IsCancellationRequested;
+        private bool CanCancelDownload() => DownloadCommand.CanBeCanceled;
+            //_cts != null && !_cts.IsCancellationRequested;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName = "")
         {

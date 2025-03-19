@@ -31,10 +31,13 @@ namespace DownloadManager.DataAccess
                 await throttler.WaitAsync().ConfigureAwait(false);
                 try
                 {
-                    // Using condition to check whether the url is valid, otherwise set its status as Failed. 
                     if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
                     {
                         page = await _strDownloader.DownloadPageAsStringAsync(address, ct).ConfigureAwait(false);
+                      
+                        // Since _strDownloader can in theory have implementation (or be mocked in such a way)
+                        // that does not throw OperationCanceledException, I must throw it explicitly. 
+                        ct.ThrowIfCancellationRequested();
                         progress?.Report(((double)tempCount * 100 / totalCount, "Completed"));
                         tempCount++;
                     }

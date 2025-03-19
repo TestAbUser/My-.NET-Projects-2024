@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DownloadManager.DataAccess\DownloadManager.DataAccess.csproj" />
     <ProjectReference Include="..\DownloadManager.Domain\DownloadManager.Domain.csproj" />
   </ItemGroup>

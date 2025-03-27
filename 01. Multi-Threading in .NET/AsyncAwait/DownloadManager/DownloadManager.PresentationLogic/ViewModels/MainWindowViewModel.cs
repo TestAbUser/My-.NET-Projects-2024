@@ -159,6 +159,7 @@ namespace DownloadManager.PresentationLogic.ViewModels
             StatusBarText = "Downloading...";
             try
             {
+                //await Task.Delay(500);
                 var progressIndicator = DisplayProgressBarAndUrlStatus();
                 Pages = await _pageRepository.DownloadPagesAsync(
                     GetArrayOfUrls(), token, progressIndicator);

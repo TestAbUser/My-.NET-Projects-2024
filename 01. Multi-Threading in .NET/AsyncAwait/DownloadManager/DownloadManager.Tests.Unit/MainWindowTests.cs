@@ -96,7 +96,7 @@ namespace DownloadManager.Tests.Unit
         }
 
         [Fact]
-        public void Start_downloading_pages()
+        public async Task Start_downloading_pages()
         {
             // arrange
             List<string> pages = new List<string>() { "test" };
@@ -105,103 +105,51 @@ namespace DownloadManager.Tests.Unit
                 It.IsAny<string[]>(),
                 It.IsAny<CancellationToken>(),
                 It.IsAny<IProgress<(double, string)>?>()))
-                .ReturnsAsync(pages);
+                .ReturnsAsync(pages, TimeSpan.FromMilliseconds(100));
 
             _sut = new MainWindowViewModel(
                 _pageRepository.Object, _urlPersister.Object, _window.Object);
 
             // act
             _sut.DownloadCommand.Execute(null);
+            await _sut.DownloadCommand.ExecutionTask!;
 
             // assert
+            Assert.False(_sut.DownloadCommand.IsCancellationRequested);
             Assert.Equal("test", _sut.Pages.First());
         }
 
         [Fact]
         public async Task Cancel_downloading_pages()
         {
-            var cont = TestContext.Current;
             // arrange
             var addresses = new string[] { "https://test1", "https://test2" };
-            var prg = new Progress<(double, string)>();
-            var cts = new CancellationTokenSource();
-            // cts.Cancel();
-            CancellationToken token = cts.Token;
-            // token.ThrowIfCancellationRequested();
-            //  IStringDownloader strDownloader = new StringDownloader();
-
             var stringDownloaderStub = new Mock<IStringDownloader>();
-            //Task<string> setUp = Task.Run(async () =>
-            //{
-            //    await Task.Delay(1000);
-            //    return "test2";
-            //});
 
             stringDownloaderStub.Setup(x =>
             x.DownloadPageAsStringAsync(
               It.IsAny<string>(),
               It.IsAny<CancellationToken>()))
-                //.Throws(new OperationCanceledException())
-                .ReturnsAsync("test", TimeSpan.FromMilliseconds(50));
-              //  .Returns(setUp);
-                //.Verifiable();
+                .ReturnsAsync("test", TimeSpan.FromMilliseconds(1000));
 
             var pageRepository = new PageRepository(stringDownloaderStub.Object);
-            //  var res = pageRepository.DownloadPagesAsync(addresses, token,prg);
-
-
-            _pageRepository.Setup(x => x.DownloadPagesAsync(
-                It.IsAny<string[]>(),
-                token,//It.IsAny<CancellationToken>(),
-                It.IsAny<IProgress<(double, string)>?>()))
-                .ReturnsAsync(new List<string> { "test" },
-                TimeSpan.FromMilliseconds(1000));
-
-            // await strDownloader.DownloadPageAsStringAsync(addresses.First(),token);
 
             _sut = new MainWindowViewModel(
                pageRepository, _urlPersister.Object, _window.Object);
             _sut.Urls.Add(new UrlModel { Url = addresses.First() });
             _sut.Urls.Add(new UrlModel { Url = addresses.ElementAt(1) });
 
-            //var res = pageRepository.DownloadPagesAsync(
-            // addresses, token, prg);
+            _sut.DownloadCommand.Execute(null);
 
             // act
-            //_sut.CancellationToken = TestContext.Current.CancellationToken;
-            // _sut.Cts = cts;
-            // _sut.CancellationToken = token;
-
-            var cans = _sut.DownloadCommand.ExecuteAsync(null);
             _sut.CancelCommand.Execute(null);
-
-            //await Task.Run(() =>
-            //{
-
-            //    //    // await Task.Delay(500);
-            //    //   await  _sut.DownloadCommand.ExecuteAsync(null);
-            //    //    // await _sut.DownloadCommand.CanExecuteAsync(null);
-            //    _sut.CancelCommand.Execute(null);
-
-            //}, TestContext.Current.CancellationToken);
-
-            //  _sut.CancelCommand.Execute(null);
-
-            //var cans = Task.Run(() =>
-            // _sut.CancelCommand.Execute(null),
-            // TestContext.Current.CancellationToken);
-
-            await cans;
-            // res;
-
+            await _sut.DownloadCommand.ExecutionTask!;
 
             // assert
-            Assert.Equal("test", _sut.Pages.First());
-            Assert.Equal("test", _sut.Pages.ElementAt(1));
-            //await  Assert.ThrowsAsync<OperationCanceledException>(async()=>
-            //     await pageRepository.DownloadPagesAsync(addresses,token, prg));
-            // Assert.True(token.IsCancellationRequested);
-            // stringDownloaderStub.Verify();
+            Assert.False(_sut.DownloadCommand.CanBeCanceled);
+            Assert.True(_sut.DownloadCommand.IsCancellationRequested);
+
+            Assert.Empty(_sut.Pages);
         }
 
         [Fact]
@@ -227,45 +175,10 @@ namespace DownloadManager.Tests.Unit
             Assert.Equal(2, testUrlModels.Count);
         }
 
-        [Fact]
-        public void Save_urls_to_a_file_Copy()
-        {
-            // arrange
-            var _loadFileDialog = new LoadFileDialog();//new Mock<IOpenFileDialog>();
-            var _saveFileDialog = new Mock<IOpenFileDialog>();
-            _fileSystem = new Mock<IFileSystem>();
+        //private MainWindowViewModel CreateMainWindowViewModel()
+        //{
+        //    return new MainWindowViewModel(this);
+        //}
 
-            _saveFileDialog.SetupGet(x => x.FileName).Returns("testName");
-            _saveFileDialog.Setup(x => x.ShowDialog()).Returns(true);
-
-            // _fileSystem.Setup(x => x.ReadFileLines("testName")).
-            //     Returns(new[] { "testValue1" });
-
-            //        _urlPersister = new UrlPersister(_loadFileDialog,
-            //_saveFileDialog.Object, _fileSystem.Object);
-            // _urlPersister = new Mock<IUrlPersister>();
-            //_pageDownloader = new StringDownloader();
-            //_pageRepository = new PageRepository(_pageDownloader);
-            //_window = new Mock<IWindow>();
-            //_sut = new MainWindowViewModel(
-            //   _pageRepository, _urlPersister, _window.Object);
-
-
-            //_urlPersister = new UrlPersister(
-            //    _loadFileDialog.Object,
-            //    _saveFileDialog.Object,
-            //    _fileSystem.Object);
-            string[] urls = ["testUrl"];
-            // _urlPersister.SaveUrlsToFile(urls);
-
-            // act
-            // _sut.SaveCommand.Execute(null);
-
-            // assert
-            _fileSystem.Verify(x => x.WriteLinesToFile(
-                "testName", new string[] { "testUrl" }),
-                Times.Once);
-            // _urlPersister.Verify(x => x.SaveUrlsToFile(), Times.Once);
-        }
     }
 }

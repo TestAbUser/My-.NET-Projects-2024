@@ -15,22 +15,23 @@ using System.Security.Policy;
 using Xunit.Sdk;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Engine.ClientProtocol;
 using System.Windows.Navigation;
+using System.Runtime.CompilerServices;
 
 namespace DownloadManager.Tests.Unit
 {
     public class MainWindowTests : IDisposable
     {
-        private Mock<IOpenFileDialog> _loadFileDialog;
-        private Mock<IOpenFileDialog> _saveFileDialog;
-        private Mock<IFileSystem> _fileSystem;
+        private readonly Mock<IOpenFileDialog> _loadFileDialog;
+        private readonly Mock<IOpenFileDialog> _saveFileDialog;
+        private readonly Mock<IFileSystem> _fileSystem;
 
-        private Mock<IUrlPersister> _urlPersister;
-        private IStringDownloader _pageDownloader;
-        private Mock<IPageRepository> _pageRepository;
+        private readonly Mock<IUrlPersister> _urlPersister;
+        private readonly IStringDownloader _pageDownloader;
+        private readonly Mock<IPageRepository> _pageRepository;
 
         // ObservableCollection<UrlModel> Urls = new();
         // AddUrlViewModel addWindow = new AddUrlViewModel(Urls);
-        private Mock<IWindow> _window;
+        private readonly Mock<IWindow> _window;
         private MainWindowViewModel _sut;
 
         // Create a helper class for setup.Ex: var stringCalculator = CreateDefaultStringCalculator();
@@ -54,12 +55,14 @@ namespace DownloadManager.Tests.Unit
 
         }
 
-        [Fact]
-        public void Load_urls_from_a_file()
+        [Theory]
+        [InlineData([new string[] { "https://test1", "https://test2" }])]
+        [InlineData([new string[] { "https://test1", "invalidUrl" }])]
+        [InlineData([new string[] {}])]
+        public void Load_urls_from_a_file(string[] urls)
         {
             // arrange
-            // var urlPersister = new Mock<IUrlPersister>();
-            _urlPersister.Setup(x => x.LoadUrls()).Returns(["testUrl1"]);
+            _urlPersister.Setup(x => x.LoadUrls()).Returns(urls);
             _sut = new MainWindowViewModel(_pageRepository.Object,
                 _urlPersister.Object, _window.Object);
 
@@ -67,8 +70,9 @@ namespace DownloadManager.Tests.Unit
             _sut.LoadUrlsCommand.Execute(null);
 
             // assert
-            Assert.Equal("testUrl1", _sut.Urls.First().Url);
-            // _urlPersister.Verify(x => x.LoadUrls(), Times.Once);
+
+            Assert.Equal(urls, _sut.Urls.Select(x=>x.Url));
+            _urlPersister.Verify(x => x.LoadUrls(), Times.Once);
         }
 
         [Fact]
@@ -130,7 +134,7 @@ namespace DownloadManager.Tests.Unit
             x.DownloadPageAsStringAsync(
               It.IsAny<string>(),
               It.IsAny<CancellationToken>()))
-                .ReturnsAsync("test", TimeSpan.FromMilliseconds(1000));
+                .ReturnsAsync("test", TimeSpan.FromMilliseconds(100));
 
             var pageRepository = new PageRepository(stringDownloaderStub.Object);
 

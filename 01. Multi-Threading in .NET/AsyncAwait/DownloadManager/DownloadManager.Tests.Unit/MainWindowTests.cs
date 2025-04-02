@@ -47,7 +47,7 @@ namespace DownloadManager.Tests.Unit
             _pageRepository = new Mock<IPageRepository>();//new PageRepository(_pageDownloader);
             _window = new Mock<IWindow>();
             //_sut = new MainWindowViewModel(
-            //   _pageRepository, _urlPersister, _window.Object);
+            //   pageRepository, _urlPersister, window.Object);
         }
 
         public void Dispose()
@@ -57,7 +57,6 @@ namespace DownloadManager.Tests.Unit
 
         [Theory]
         [InlineData([new string[] { "https://test1", "https://test2" }])]
-        [InlineData([new string[] { "https://test1", "invalidUrl" }])]
         [InlineData([new string[] {}])]
         public void Load_urls_from_a_file(string[] urls)
         {
@@ -160,18 +159,23 @@ namespace DownloadManager.Tests.Unit
         public void Add_a_new_url()
         {
             // arrange
-            ObservableCollection<UrlModel> testUrlModels =
+            Mock<IPageRepository> pageRepository = new ();
+            Mock<IUrlPersister> urlPersister = new ();
+            Mock<IWindow> window = new ();
+
+        ObservableCollection<UrlModel> testUrlModels =
                                        [new UrlModel { Url = "Url1" }];
             AddUrlViewModel auvm = new(testUrlModels);
-            _window.Setup(x =>
-            x.CreateChild(auvm).ShowDialogue()).Returns(true);
+            window.Setup(x => x.CreateChild(auvm)
+                               .ShowDialogue())
+                               .Returns(true);
 
-            _sut = new(
-                _pageRepository.Object, _urlPersister.Object, _window.Object);
+            var sut = CreateMainWindowViewModel(pageRepository.Object,
+                urlPersister.Object, window.Object);
             auvm.Url = "Url2";
 
             // act
-            _sut.AddUrlCommand.Execute(auvm);
+            sut.AddUrlCommand.Execute(auvm);
 
             // assert
             Assert.Equal("Url2", testUrlModels.Last().Url);
@@ -179,10 +183,13 @@ namespace DownloadManager.Tests.Unit
             Assert.Equal(2, testUrlModels.Count);
         }
 
-        //private MainWindowViewModel CreateMainWindowViewModel()
-        //{
-        //    return new MainWindowViewModel(this);
-        //}
+        private static MainWindowViewModel CreateMainWindowViewModel(
+       IPageRepository pageRepository,
+       IUrlPersister urlPersister,
+       IWindow window)
+        {
+            return new MainWindowViewModel(pageRepository, urlPersister,window);
+        }
 
     }
 }

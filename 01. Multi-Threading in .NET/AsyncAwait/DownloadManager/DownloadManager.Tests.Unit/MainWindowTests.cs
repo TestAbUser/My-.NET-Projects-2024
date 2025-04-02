@@ -57,7 +57,7 @@ namespace DownloadManager.Tests.Unit
 
         [Theory]
         [InlineData([new string[] { "https://test1", "https://test2" }])]
-        [InlineData([new string[] {}])]
+        [InlineData([new string[] { }])]
         public void Load_urls_from_a_file(string[] urls)
         {
             // arrange
@@ -70,7 +70,7 @@ namespace DownloadManager.Tests.Unit
 
             // assert
 
-            Assert.Equal(urls, _sut.Urls.Select(x=>x.Url));
+            Assert.Equal(urls, _sut.Urls.Select(x => x.Url));
             _urlPersister.Verify(x => x.LoadUrls(), Times.Once);
         }
 
@@ -126,6 +126,8 @@ namespace DownloadManager.Tests.Unit
         public async Task Cancel_downloading_pages()
         {
             // arrange
+            Mock<IUrlPersister> urlPersister = new();
+            Mock<IWindow> window = new();
             var addresses = new string[] { "https://test1", "https://test2" };
             var stringDownloaderStub = new Mock<IStringDownloader>();
 
@@ -135,36 +137,37 @@ namespace DownloadManager.Tests.Unit
               It.IsAny<CancellationToken>()))
                 .ReturnsAsync("test", TimeSpan.FromMilliseconds(100));
 
-            var pageRepository = new PageRepository(stringDownloaderStub.Object);
+            PageRepository pageRepository = new(stringDownloaderStub.Object);
 
-            _sut = new MainWindowViewModel(
-               pageRepository, _urlPersister.Object, _window.Object);
-            _sut.Urls.Add(new UrlModel { Url = addresses.First() });
-            _sut.Urls.Add(new UrlModel { Url = addresses.ElementAt(1) });
+            MainWindowViewModel sut = CreateMainWindowViewModel(
+               pageRepository, urlPersister.Object, window.Object);
 
-            _sut.DownloadCommand.Execute(null);
+            sut.Urls.Add(new UrlModel { Url = addresses[0] });
+            sut.Urls.Add(new UrlModel { Url = addresses[1] });
+
+            sut.DownloadCommand.Execute(null);
 
             // act
-            _sut.CancelCommand.Execute(null);
-            await _sut.DownloadCommand.ExecutionTask!;
+            sut.CancelCommand.Execute(null);
+            await sut.DownloadCommand.ExecutionTask!;
 
             // assert
-            Assert.False(_sut.DownloadCommand.CanBeCanceled);
-            Assert.True(_sut.DownloadCommand.IsCancellationRequested);
+            Assert.False(sut.DownloadCommand.CanBeCanceled);
+            Assert.True(sut.DownloadCommand.IsCancellationRequested);
 
-            Assert.Empty(_sut.Pages);
+            Assert.Empty(sut.Pages);
         }
 
         [Fact]
         public void Add_a_new_url()
         {
             // arrange
-            Mock<IPageRepository> pageRepository = new ();
-            Mock<IUrlPersister> urlPersister = new ();
-            Mock<IWindow> window = new ();
+            Mock<IPageRepository> pageRepository = new();
+            Mock<IUrlPersister> urlPersister = new();
+            Mock<IWindow> window = new();
 
-        ObservableCollection<UrlModel> testUrlModels =
-                                       [new UrlModel { Url = "Url1" }];
+            ObservableCollection<UrlModel> testUrlModels =
+                                           [new UrlModel { Url = "Url1" }];
             AddUrlViewModel auvm = new(testUrlModels);
             window.Setup(x => x.CreateChild(auvm)
                                .ShowDialogue())
@@ -188,7 +191,7 @@ namespace DownloadManager.Tests.Unit
        IUrlPersister urlPersister,
        IWindow window)
         {
-            return new MainWindowViewModel(pageRepository, urlPersister,window);
+            return new MainWindowViewModel(pageRepository, urlPersister, window);
         }
 
     }

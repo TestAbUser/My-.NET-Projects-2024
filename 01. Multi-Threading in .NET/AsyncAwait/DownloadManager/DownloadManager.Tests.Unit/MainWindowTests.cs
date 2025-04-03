@@ -102,24 +102,27 @@ namespace DownloadManager.Tests.Unit
         public async Task Start_downloading_pages()
         {
             // arrange
-            List<string> pages = new List<string>() { "test" };
+            List<string> pages = ["test"];
+            Mock<IPageRepository> pageRepository = new();
+            Mock<IUrlPersister> urlPersister = new();
+            Mock<IWindow> window = new();
 
-            _pageRepository.Setup(x => x.DownloadPagesAsync(
+            pageRepository.Setup(x => x.DownloadPagesAsync(
                 It.IsAny<string[]>(),
                 It.IsAny<CancellationToken>(),
                 It.IsAny<IProgress<(double, string)>?>()))
                 .ReturnsAsync(pages, TimeSpan.FromMilliseconds(100));
 
-            _sut = new MainWindowViewModel(
-                _pageRepository.Object, _urlPersister.Object, _window.Object);
+            var sut = CreateMainWindowViewModel(
+                 pageRepository.Object, urlPersister.Object, window.Object);
 
             // act
-            _sut.DownloadCommand.Execute(null);
-            await _sut.DownloadCommand.ExecutionTask!;
+            sut.DownloadCommand.Execute(null);
+            await sut.DownloadCommand.ExecutionTask!;
 
             // assert
-            Assert.False(_sut.DownloadCommand.IsCancellationRequested);
-            Assert.Equal("test", _sut.Pages.First());
+            Assert.False(sut.DownloadCommand.IsCancellationRequested);
+            Assert.Equal("test", sut.Pages[0]);
         }
 
         [Fact]
@@ -128,8 +131,8 @@ namespace DownloadManager.Tests.Unit
             // arrange
             Mock<IUrlPersister> urlPersister = new();
             Mock<IWindow> window = new();
-            var addresses = new string[] { "https://test1", "https://test2" };
-            var stringDownloaderStub = new Mock<IStringDownloader>();
+            string[] addresses = { "https://test1", "https://test2" };
+            Mock<IStringDownloader> stringDownloaderStub = new();
 
             stringDownloaderStub.Setup(x =>
             x.DownloadPageAsStringAsync(

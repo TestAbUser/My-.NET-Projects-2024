@@ -19,41 +19,8 @@ using System.Runtime.CompilerServices;
 
 namespace DownloadManager.Tests.Unit
 {
-    public class MainWindowTests : IDisposable
+    public class MainWindowTests
     {
-        private readonly Mock<IOpenFileDialog> _loadFileDialog;
-        private readonly Mock<IOpenFileDialog> _saveFileDialog;
-        private readonly Mock<IFileSystem> _fileSystem;
-
-        private readonly Mock<IUrlPersister> _urlPersister;
-        private readonly IStringDownloader _pageDownloader;
-        private readonly Mock<IPageRepository> _pageRepository;
-
-        // ObservableCollection<UrlModel> Urls = new();
-        // AddUrlViewModel addWindow = new AddUrlViewModel(Urls);
-        private readonly Mock<IWindow> _window;
-        private MainWindowViewModel _sut;
-
-        // Create a helper class for setup.Ex: var stringCalculator = CreateDefaultStringCalculator();
-        public MainWindowTests()
-        {
-            _loadFileDialog = new Mock<IOpenFileDialog>();
-            _saveFileDialog = new Mock<IOpenFileDialog>();
-            _fileSystem = new Mock<IFileSystem>();
-            // _urlPersister = new UrlPersister(_loadFileDialog.Object,
-            //     _saveFileDialog.Object, _fileSystem.Object);
-            _urlPersister = new Mock<IUrlPersister>();
-            _pageDownloader = new StringDownloader();
-            _pageRepository = new Mock<IPageRepository>();//new PageRepository(_pageDownloader);
-            _window = new Mock<IWindow>();
-            //_sut = new MainWindowViewModel(
-            //   pageRepository, _urlPersister, window.Object);
-        }
-
-        public void Dispose()
-        {
-
-        }
 
         [Theory]
         [InlineData([new string[] { "https://test1", "https://test2" }])]
@@ -61,17 +28,20 @@ namespace DownloadManager.Tests.Unit
         public void Load_urls_from_a_file(string[] urls)
         {
             // arrange
-            _urlPersister.Setup(x => x.LoadUrls()).Returns(urls);
-            _sut = new MainWindowViewModel(_pageRepository.Object,
-                _urlPersister.Object, _window.Object);
+            Mock<IPageRepository> pageRepository = new();
+            Mock<IUrlPersister> urlPersister = new();
+            Mock<IWindow> window = new();
+            urlPersister.Setup(x => x.LoadUrls()).Returns(urls);
+
+            var sut = CreateMainWindowViewModel(pageRepository.Object,
+             urlPersister.Object, window.Object);
 
             // act
-            _sut.LoadUrlsCommand.Execute(null);
+            sut.LoadUrlsCommand.Execute(null);
 
             // assert
-
-            Assert.Equal(urls, _sut.Urls.Select(x => x.Url));
-            _urlPersister.Verify(x => x.LoadUrls(), Times.Once);
+            Assert.Equal(urls, sut.Urls.Select(x => x.Url));
+            urlPersister.Verify(x => x.LoadUrls(), Times.Once);
         }
 
         [Fact]
@@ -191,12 +161,23 @@ namespace DownloadManager.Tests.Unit
             Assert.Equal(2, testUrlModels.Count);
         }
 
+        // Using Factory method instead of using constructor to initialize SUT makes
+        // tests more readable and avoids shared data between tests (Khorikov)
         private static MainWindowViewModel CreateMainWindowViewModel(
        IPageRepository pageRepository,
        IUrlPersister urlPersister,
        IWindow window)
         {
             return new MainWindowViewModel(pageRepository, urlPersister, window);
+        }
+
+        private static MainWindowViewModel CreateMainWindowViewModel()
+        {
+            Mock<IPageRepository> pageRepository = new();
+            Mock<IUrlPersister> urlPersister = new();
+            Mock<IWindow> window = new();
+            return new MainWindowViewModel(pageRepository.Object,
+                urlPersister.Object, window.Object);
         }
 
     }

@@ -84,17 +84,19 @@ namespace DownloadManager.Tests.Unit
         public void Save_urls_to_a_file()
         {
             // arrange
-            // var urlPersister = new Mock<IUrlPersister>();
+            Mock<IPageRepository> pageRepository = new();
+            Mock<IUrlPersister> urlPersister = new();
+            Mock<IWindow> window = new();
 
-            _sut = new MainWindowViewModel(
-                _pageRepository.Object, _urlPersister.Object, _window.Object);
-            _sut.Urls.Add(new UrlModel { Url = "test" });
+            var sut = CreateMainWindowViewModel(
+                pageRepository.Object, urlPersister.Object, window.Object);
+            sut.Urls.Add(new UrlModel { Url = "test" });
 
             // act
-            _sut.SaveCommand.Execute(null);
+            sut.SaveCommand.Execute(null);
 
             // assert
-            _urlPersister.Verify(x =>
+            urlPersister.Verify(x =>
                    x.SaveUrlsToFile(new string[] { "test" }), Times.Once);
         }
 

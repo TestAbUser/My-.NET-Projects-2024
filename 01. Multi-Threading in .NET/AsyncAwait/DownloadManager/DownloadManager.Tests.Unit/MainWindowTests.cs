@@ -1,39 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DownloadManager.PresentationLogic.ViewModels;
+﻿using DownloadManager.PresentationLogic.ViewModels;
 using DownloadManager.DataAccess;
 using DownloadManager.Domain;
 using Moq;
 using Xunit;
-using System.Windows;
 using DownloadManager.PresentationLogic;
 using System.Collections.ObjectModel;
-using System.Security.Policy;
-using Xunit.Sdk;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Engine.ClientProtocol;
-using System.Windows.Navigation;
-using System.Runtime.CompilerServices;
 
 namespace DownloadManager.Tests.Unit
 {
     public class MainWindowTests
     {
-
         [Theory]
         [InlineData([new string[] { "https://test1", "https://test2" }])]
         [InlineData([new string[] { }])]
         public void Load_urls_from_a_file(string[] urls)
         {
             // arrange
-            Mock<IPageRepository> pageRepository = new();
-            Mock<IUrlPersister> urlPersister = new();
-            Mock<IWindow> window = new();
+            (var pageRepository, var urlPersister, var window) =
+                           InitializeMainWindowViewModelParameters();
             urlPersister.Setup(x => x.LoadUrls()).Returns(urls);
 
-            var sut = CreateMainWindowViewModel(pageRepository.Object,
+            MainWindowViewModel sut = CreateMainWindowViewModel(pageRepository.Object,
              urlPersister.Object, window.Object);
 
             // act
@@ -54,11 +41,10 @@ namespace DownloadManager.Tests.Unit
         public void Save_urls_to_a_file()
         {
             // arrange
-            Mock<IPageRepository> pageRepository = new();
-            Mock<IUrlPersister> urlPersister = new();
-            Mock<IWindow> window = new();
+            (var pageRepository, var urlPersister, var window) =
+                         InitializeMainWindowViewModelParameters();
 
-            var sut = CreateMainWindowViewModel(
+            MainWindowViewModel sut = CreateMainWindowViewModel(
                 pageRepository.Object, urlPersister.Object, window.Object);
             sut.Urls.Add(new UrlModel { Url = "test" });
 
@@ -75,9 +61,8 @@ namespace DownloadManager.Tests.Unit
         {
             // arrange
             List<string> pages = ["test"];
-            Mock<IPageRepository> pageRepository = new();
-            Mock<IUrlPersister> urlPersister = new();
-            Mock<IWindow> window = new();
+            (var pageRepository, var urlPersister, var window) =
+                    InitializeMainWindowViewModelParameters();
 
             pageRepository.Setup(x => x.DownloadPagesAsync(
                 It.IsAny<string[]>(),
@@ -85,7 +70,7 @@ namespace DownloadManager.Tests.Unit
                 It.IsAny<IProgress<(double, string)>?>()))
                 .ReturnsAsync(pages, TimeSpan.FromMilliseconds(100));
 
-            var sut = CreateMainWindowViewModel(
+            MainWindowViewModel sut = CreateMainWindowViewModel(
                  pageRepository.Object, urlPersister.Object, window.Object);
 
             // act
@@ -137,9 +122,9 @@ namespace DownloadManager.Tests.Unit
         public void Add_a_new_url()
         {
             // arrange
-            Mock<IPageRepository> pageRepository = new();
-            Mock<IUrlPersister> urlPersister = new();
-            Mock<IWindow> window = new();
+            (var pageRepository, var urlPersister, var window) =
+                 InitializeMainWindowViewModelParameters();
+
 
             ObservableCollection<UrlModel> testUrlModels =
                                            [new UrlModel { Url = "Url1" }];
@@ -148,8 +133,9 @@ namespace DownloadManager.Tests.Unit
                                .ShowDialogue())
                                .Returns(true);
 
-            var sut = CreateMainWindowViewModel(pageRepository.Object,
-                urlPersister.Object, window.Object);
+            MainWindowViewModel sut = CreateMainWindowViewModel(pageRepository.Object,
+                                                                urlPersister.Object,
+                                                                window.Object);
             auvm.Url = "Url2";
 
             // act
@@ -161,7 +147,7 @@ namespace DownloadManager.Tests.Unit
             Assert.Equal(2, testUrlModels.Count);
         }
 
-        // Using Factory method instead of using constructor to initialize SUT makes
+        // Using Factory method instead of constructor to initialize SUT makes
         // tests more readable and avoids shared data between tests (Khorikov)
         private static MainWindowViewModel CreateMainWindowViewModel(
        IPageRepository pageRepository,
@@ -171,13 +157,12 @@ namespace DownloadManager.Tests.Unit
             return new MainWindowViewModel(pageRepository, urlPersister, window);
         }
 
-        private static MainWindowViewModel CreateMainWindowViewModel()
+        private static (Mock<IPageRepository>, Mock<IUrlPersister>, Mock<IWindow>) InitializeMainWindowViewModelParameters()
         {
             Mock<IPageRepository> pageRepository = new();
             Mock<IUrlPersister> urlPersister = new();
             Mock<IWindow> window = new();
-            return new MainWindowViewModel(pageRepository.Object,
-                urlPersister.Object, window.Object);
+            return (pageRepository, urlPersister, window);
         }
 
     }

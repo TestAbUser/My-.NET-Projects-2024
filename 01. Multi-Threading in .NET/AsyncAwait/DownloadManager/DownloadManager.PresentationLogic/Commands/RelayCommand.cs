@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace DownloadManager.Commands
+namespace DownloadManager.PresentationLogic.Commands
 {
     // Is used when there aren't any parameters needed for the CanExecute() and Execute() methods.
     public class RelayCommand : ICommand

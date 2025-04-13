@@ -1,4 +1,4 @@
-﻿namespace DownloadManager.Commands
+﻿namespace DownloadManager.PresentationLogic.Commands
 {
     // Is used when CanExecute() and Execute() methods take a parameter.
     public class RelayCommand<T> : RelayCommand

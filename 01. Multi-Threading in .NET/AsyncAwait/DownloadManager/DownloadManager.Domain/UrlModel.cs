@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
+
 using System.ComponentModel;
 
-namespace DownloadManager.Models
+namespace DownloadManager.Domain
 {
     public class UrlModel : INotifyPropertyChanged
     {
@@ -17,7 +17,6 @@ namespace DownloadManager.Models
                 OnPropertyChanged(nameof(Url));
             }
         }
-        private readonly ObservableCollection<string> _urls = new();
 
         public string Status
         {
@@ -35,4 +34,5 @@ namespace DownloadManager.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
 }

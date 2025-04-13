@@ -1,5 +1,4 @@
-﻿using DownloadManager.ViewModels;
-using System.Windows;
+﻿using System.Windows;
 
 namespace DownloadManager
 {
@@ -11,11 +10,6 @@ namespace DownloadManager
         public AddUrlWindow()
         {
             InitializeComponent();
-        }
-
-        public AddUrlWindow(AddUrlWindowViewModel viewModel) : this()
-        {
-            DataContext = viewModel;
         }
     }
 }

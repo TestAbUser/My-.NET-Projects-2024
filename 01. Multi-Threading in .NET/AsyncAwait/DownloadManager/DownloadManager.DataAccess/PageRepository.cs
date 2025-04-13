@@ -1,13 +1,19 @@
-﻿using System.Net.Http;
+using DownloadManager.Domain;
+using System.Net.Http;
 
-namespace DownloadManager.Helpers
+namespace DownloadManager.DataAccess
 {
-    public static class Downloader
+    public class PageRepository: IPageRepository
     {
-        private static readonly HttpClient s_client = new();
+        private readonly IStringDownloader _strDownloader;
+
+        public PageRepository(IStringDownloader strDownloader)
+        {
+            _strDownloader = strDownloader;
+        }
 
         // Downloads pages as strings, allowing for cancellation and progress report.
-        public static async Task<List<string>> DownloadAsync(string[] addresses,
+        public async Task<List<string>> DownloadPagesAsync(string[] addresses,
             CancellationToken ct, IProgress<ValueTuple<double, string>>? progress = null)
         {
             List<string> pages = [];
@@ -25,10 +31,13 @@ namespace DownloadManager.Helpers
                 await throttler.WaitAsync().ConfigureAwait(false);
                 try
                 {
-                    // Using condition to check whether the url is valid, otherwise set its status as Failed. 
                     if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
                     {
-                        page = await s_client.GetStringAsync(address, ct).ConfigureAwait(false);
+                        page = await _strDownloader.DownloadPageAsStringAsync(address, ct).ConfigureAwait(false);
+                      
+                        // Since _strDownloader can in theory have implementation (or be mocked in such a way)
+                        // that does not throw OperationCanceledException, I must throw it explicitly. 
+                        ct.ThrowIfCancellationRequested();
                         progress?.Report(((double)tempCount * 100 / totalCount, "Completed"));
                         tempCount++;
                     }
@@ -80,4 +89,5 @@ namespace DownloadManager.Helpers
             return await await Task.WhenAny(killJoy.Task, Task.WhenAll(tasks)).ConfigureAwait(false);
         }
     }
+
 }

@@ -19,8 +19,6 @@ namespace DownloadManager.PresentationLogic.ViewModels
         private readonly IUrlPersister _urlPersister;
         private List<string> _pages;
 
-       // ObservableCollection<UrlModel>? urls;
-
         private RelayCommand? _addUrlCommand;
         private RelayCommand? _openFileCommand;
         private RelayCommand? _saveCommand;
